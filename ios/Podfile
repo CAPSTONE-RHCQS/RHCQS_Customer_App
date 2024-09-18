@@ -38,3 +38,5 @@ target 'RHCQS_Customer_App' do
     )
   end
 end
+
+pod 'RNSVG', :path => '../node_modules/react-native-svg'

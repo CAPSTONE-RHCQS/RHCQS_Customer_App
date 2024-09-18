@@ -6,15 +6,24 @@ buildscript {
         targetSdkVersion = 34
         ndkVersion = "26.1.10909125"
         kotlinVersion = "1.9.24"
+        useIntlJsc = false
+        sharedTestUtilVersion = "1.0.0"
     }
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://plugins.gradle.org/m2/' }
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
-        classpath("com.android.tools.build:gradle")
-        classpath("com.facebook.react:react-native-gradle-plugin")
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+        classpath("com.android.tools.build:gradle:8.0.2")
+        classpath("com.facebook.react:react-native-gradle-plugin:0.71.3")
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24")
+        if (useIntlJsc) {
+            classpath 'org.webkit:android-jsc-intl:+' 
+        } else {
+            classpath 'org.webkit:android-jsc:+' 
+        }
     }
 }
 
