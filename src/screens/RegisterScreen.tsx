@@ -11,13 +11,17 @@ import AppBar from '../components/Appbar';
 import InputField from '../components/InputField';
 import CustomButton from '../components/CustomButton';
 import {FONTFAMILY} from '../theme/theme';
+import { useNavigation } from '@react-navigation/native';
+import { AuthStackNavigationProp } from '@/types/TypeScreen';
 
-const RegisterScreen = () => {
+const RegisterScreen: React.FC = () => {
+  const navigationAuth = useNavigation<AuthStackNavigationProp>();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confilmPassword, setConfilmPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const handleRegister = () => {};
+  const handleRegister = () => navigationAuth.navigate('LoginScreen');
 
   return (
     <View style={styles.container}>

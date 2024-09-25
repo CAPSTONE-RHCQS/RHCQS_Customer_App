@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontSize: 18,
     fontFamily: 'Montserrat-SemiBold',
-    color: '#333',
+    color: 'black',
   },
   rightContainer: {
     width: 24,

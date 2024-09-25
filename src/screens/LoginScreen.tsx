@@ -5,25 +5,34 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  Image, // Import Image
+  Image,
 } from 'react-native';
-import { AuthStackNavigationProp } from '../types/TypeScreen'; 
+import {
+  AuthStackNavigationProp,
+  AppStackNavigationProp,
+} from '../types/TypeScreen';
 import {LinearGradient} from 'react-native-linear-gradient';
 import {FONTFAMILY} from '../theme/theme';
 import CustomButton from '../components/CustomButton';
 import InputField from '../components/InputField';
 import {useNavigation} from '@react-navigation/native';
 
-const LoginScreen = ({}) => {
-  const navigation = useNavigation<AuthStackNavigationProp>();
+const LoginScreen: React.FC = () => {
+  //Stack
+  const navigationAuth = useNavigation<AuthStackNavigationProp>();
+  const navigationApp = useNavigation<AppStackNavigationProp>();
 
+  //State
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const handleLogin = () => {};
+
+  //Handle
   const handleForgotPassword = () => {};
+  const handleLogin = () =>
+    navigationApp.navigate('HomeScreen');
   const handleRegister = () => {
-    navigation.navigate(`RegisterScreen`); 
+    navigationAuth.navigate('RegisterScreen');
   };
 
   return (

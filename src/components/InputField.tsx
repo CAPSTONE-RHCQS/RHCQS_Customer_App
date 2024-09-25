@@ -8,6 +8,7 @@ interface InputFieldProps {
   onChangeText: (text: string) => void;
   placeholder: string;
   secureTextEntry?: boolean;
+  keyboardType?: 'default' | 'numeric' | 'email-address' | 'phone-pad';
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -15,6 +16,7 @@ const InputField: React.FC<InputFieldProps> = ({
   value,
   onChangeText,
   placeholder,
+  keyboardType = 'default',
 }) => {
   return (
     <View>
@@ -24,6 +26,8 @@ const InputField: React.FC<InputFieldProps> = ({
         placeholder={placeholder}
         value={value}
         onChangeText={onChangeText}
+        placeholderTextColor="#B7B3C0"
+        keyboardType={keyboardType}
       />
     </View>
   );
@@ -32,7 +36,7 @@ const InputField: React.FC<InputFieldProps> = ({
 const styles = StyleSheet.create({
   title: {
     fontFamily: FONTFAMILY.montserat_semibold,
-    fontSize: 16,
+    fontSize: 14,
     color: 'black',
     marginBottom: 10,
     textAlign: 'left',
