@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useContext } from 'react';
 import {
   View,
   Text,
@@ -7,33 +7,42 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import {
-  AuthStackNavigationProp,
-  AppStackNavigationProp,
-} from '../types/TypeScreen';
-import {LinearGradient} from 'react-native-linear-gradient';
-import {FONTFAMILY} from '../theme/theme';
+import { useNavigation } from '@react-navigation/native';
+import { AuthStackNavigationProp } from '../types/TypeScreen';
+import { LinearGradient } from 'react-native-linear-gradient';
 import CustomButton from '../components/CustomButton';
 import InputField from '../components/InputField';
-import {useNavigation} from '@react-navigation/native';
+import { AuthContext } from '../context/AuthContext';
 
 const LoginScreen: React.FC = () => {
-  //Stack
   const navigationAuth = useNavigation<AuthStackNavigationProp>();
-  const navigationApp = useNavigation<AppStackNavigationProp>();
+  const { login } = useContext(AuthContext)!;
 
-  //State
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // State để khóa nút
 
-  //Handle
-  const handleForgotPassword = () => {};
-  const handleLogin = () =>
-    navigationApp.navigate('HomeScreen');
-  const handleRegister = () => {
-    navigationAuth.navigate('RegisterScreen');
+  const handleLogin = async () => {
+    // Khóa nút và đổi màu nút
+    setIsButtonDisabled(true);
+    try {
+      await login(email, password);
+      setSuccessMessage('Đăng nhập thành công!');
+      setErrorMessage('');
+    } catch (error: any) {
+      setErrorMessage(error.message);
+      setSuccessMessage('');
+    } finally {
+      // Mở lại nút sau khi xử lý xong
+      setIsButtonDisabled(false);
+    }
   };
+
+  // Kiểm tra các ô nhập có giá trị chưa
+  const isFormValid = email !== '' && password !== ''; 
 
   return (
     <View>
@@ -81,19 +90,19 @@ const LoginScreen: React.FC = () => {
             />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity onPress={handleForgotPassword}>
-          <Text style={styles.forgotPassword}>Quên mật khẩu?</Text>
-        </TouchableOpacity>
+        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
+        {successMessage ? <Text style={styles.successText}>{successMessage}</Text> : null}
       </View>
       <CustomButton
         title="Đăng Nhập"
         onPress={handleLogin}
-        colors={['#53A6A8', '#3C9597', '#1F7F81']}
-        style={{marginHorizontal: 20}}
+        colors={isButtonDisabled || !isFormValid ? ['#CCCCCC','#CCCCCC'] : ['#53A6A8', '#3C9597', '#1F7F81']} // Đổi màu nút khi bị khóa
+        style={{ marginHorizontal: 20 }}
+        disabled={isButtonDisabled || !isFormValid}
       />
       <View style={styles.registerContainer}>
         <Text style={styles.registertext}>Bạn chưa có tài khoản?</Text>
-        <TouchableOpacity onPress={handleRegister}>
+        <TouchableOpacity onPress={() => navigationAuth.navigate('RegisterScreen')}>
           <Text style={styles.registerclick}>Đăng Ký</Text>
         </TouchableOpacity>
       </View>
@@ -110,7 +119,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   brandName: {
-    fontFamily: FONTFAMILY.montserat_bold,
+    fontFamily: 'Montserrat-Bold',
     color: 'white',
     marginTop: 200,
     fontSize: 40,
@@ -139,21 +148,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   title: {
-    fontFamily: FONTFAMILY.montserat_semibold,
+    fontFamily: 'Montserrat-SemiBold',
     color: 'black',
     marginTop: 20,
     fontSize: 16,
     marginBottom: 10,
     textAlign: 'left',
-  },
-  input: {
-    fontFamily: FONTFAMILY.montserat_medium,
-    borderColor: '#B7B3C0',
-    maxHeight: 100,
-    height: 60,
-    borderWidth: 2,
-    borderRadius: 15,
-    paddingHorizontal: 18,
   },
   passwordContainer: {
     flexDirection: 'row',
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   },
   passwordInput: {
     flex: 1,
-    fontFamily: FONTFAMILY.montserat_medium,
+    fontFamily: 'Montserrat-Medium',
     color: 'black',
   },
   eyeIcon: {
@@ -177,27 +177,30 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
   },
-  forgotPassword: {
-    fontFamily: FONTFAMILY.montserat_semibold,
-    color: 'black',
-    textAlign: 'right',
-    marginTop: 12,
-    marginBottom: 12,
+  errorText: {
+    color: 'red',
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  successText: {
+    color: 'green', // Màu cho thông báo thành công
+    marginTop: 10,
+    textAlign: 'center',
   },
   registerContainer: {
-    fontFamily: FONTFAMILY.montserat_semibold,
+    fontFamily: 'Montserrat-SemiBold',
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 16,
   },
   registertext: {
-    fontFamily: FONTFAMILY.montserat_semibold,
+    fontFamily: 'Montserrat-SemiBold',
     color: 'black',
     marginLeft: 5,
   },
   registerclick: {
-    fontFamily: FONTFAMILY.montserat_semibold,
+    fontFamily: 'Montserrat-SemiBold',
     color: '#029AA4',
     marginLeft: 5,
   },

@@ -9,11 +9,12 @@ interface CustomButtonProps {
   onPress: () => void;
   colors: string[];
   style?: ViewStyle | ViewStyle[];
+  disabled?: boolean;
 }
 
-const CustomButton: React.FC<CustomButtonProps> = ({ title, onPress, colors, style }) => {
+const CustomButton: React.FC<CustomButtonProps> = ({ title, onPress, colors, style, disabled }) => {
   return (
-    <TouchableOpacity onPress={onPress} style={[styles.buttonContainer, style]}>
+    <TouchableOpacity onPress={disabled ? undefined : onPress} style={[styles.buttonContainer, style]} disabled={disabled}>
       <LinearGradient
         colors={colors}
         start={{ x: 0, y: 0 }}

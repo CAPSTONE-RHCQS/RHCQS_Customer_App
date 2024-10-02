@@ -9,10 +9,11 @@ export type AuthStackParamList = {
 
 export type AppStackParamList = {
   HomeScreen: undefined;
-  LandAreaScreen: undefined;
+  ConstructionScreen: undefined;
   UltilitiesScreen: undefined;
+  ElevatorTechnical: { Name: string };
+  PIT: {Name: string};
 };
-
 
 export type AuthStackNavigationProp = NativeStackNavigationProp<AuthStackParamList>;
 export type AppStackNavigationProp = NativeStackNavigationProp<AppStackParamList>;

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -6,32 +6,58 @@ import {
   Modal,
   TouchableOpacity,
   StatusBar,
+  Image,
 } from 'react-native';
 import InputField from '../../components/InputField';
 import AppBar from '../../components/Appbar';
 import FloorSelection from '../../components/FloorSelection';
-import {FONTFAMILY} from '../../theme/theme';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { FONTFAMILY } from '../../theme/theme';
 import Construction from '../../components/Construction';
-import buildOptionsData from '../../model/data';
 import CustomButton from '../../components/CustomButton';
-import {ScrollView} from 'react-native-gesture-handler';
-import {useNavigation} from '@react-navigation/native';
-import {AppStackNavigationProp} from '@/types/TypeScreen';
+import { ScrollView } from 'react-native-gesture-handler';
+import { useNavigation } from '@react-navigation/native';
+import { AppStackNavigationProp } from '@/types/TypeScreen';
+import { getConstructionOption } from '../../api/Contruction/Contruction';
+import { Item } from '../../types/screens/Contruction/ContructionType';
 
-const LandAreaScreen: React.FC = () => {
+const ConstructionScreen: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
 
-  const [landArear, setLandArea] = useState('');
-  const [constructionArea, setContructionArea] = useState('');
+  const [landArea, setLandArea] = useState('');
+  const [constructionArea, setConstructionArea] = useState('');
   const [selectedFloors, setSelectedFloors] = useState<number | null>(1);
-  const [isChecked, setIsChecked] = useState(false);
+  const [checkedItems, setCheckedItems] = useState<string[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
+  const [buildOptionsData, setBuildOptionsData] = useState<Item[]>([]);
 
-  const handleDetailPress = () => {};
+  useEffect(() => {
+    const fetchConstructionOption = async () => {
+      const data = await getConstructionOption();
+      setBuildOptionsData(data);
+    };
+    fetchConstructionOption();
+  }, []);
 
-  const handleCheckBoxPress = () => {
-    setIsChecked(!isChecked);
+  const handleDetailPress = (Name: string) => {
+    switch (Name) {
+      case 'Thông Tầng lầu 1':
+        navigationApp.navigate('ElevatorTechnical', { Name });
+        break;
+      case 'PIT':
+        navigationApp.navigate('PIT', { Name });
+        break;
+      default:
+        console.log('Không tìm thấy màn hình cho ID:', Name);
+        break;
+    }
+  };
+
+  const handleCheckBoxPress = (id: string) => {
+    setCheckedItems(prevState =>
+      prevState.includes(id)
+        ? prevState.filter(item => item !== id)
+        : [...prevState, id]
+    );
   };
 
   const handleContinuePress = () => {
@@ -41,9 +67,9 @@ const LandAreaScreen: React.FC = () => {
   const renderBuildOptions = () => {
     return buildOptionsData.map((option, index) => {
       const isFloorOption =
-        option.title.includes('Lầu') || option.title.includes('Thông tầng');
+        option.Name.includes('Lầu') || option.Name.includes('Thông Tầng');
       const floorNumber = isFloorOption
-        ? parseInt(option.title.match(/\d+/)?.[0] || '0')
+        ? parseInt(option.Name.match(/\d+/)?.[0] || '0')
         : 0;
 
       if (isFloorOption && selectedFloors && floorNumber > selectedFloors) {
@@ -53,11 +79,13 @@ const LandAreaScreen: React.FC = () => {
       return (
         <Construction
           key={index}
-          title={option.title}
-          price={option.price}
-          area={option.area}
-          onDetailPress={handleDetailPress}
-          isChecked={isChecked}
+          id={option.Id}
+          title={option.Name}
+          price="0"
+          area="0"
+          unit={option.Unit}
+          onDetailPress={() => handleDetailPress(option.Name)}
+          isChecked={checkedItems.includes(option.Id)}
           onCheckBoxPress={handleCheckBoxPress}
         />
       );
@@ -72,7 +100,7 @@ const LandAreaScreen: React.FC = () => {
         <View>
           <InputField
             name="Diện tích đất"
-            value={landArear}
+            value={landArea}
             onChangeText={setLandArea}
             placeholder="100"
             keyboardType="numeric"
@@ -80,7 +108,7 @@ const LandAreaScreen: React.FC = () => {
           <InputField
             name="Diện tích xây dựng"
             value={constructionArea}
-            onChangeText={setContructionArea}
+            onChangeText={setConstructionArea}
             placeholder="90"
             keyboardType="numeric"
           />
@@ -94,7 +122,10 @@ const LandAreaScreen: React.FC = () => {
             <Text style={styles.selectedText}>
               {selectedFloors ? `${selectedFloors} tầng lầu` : 'Chọn số tầng'}
             </Text>
-            <Icon name="chevron-down" size={20} color="black" />
+            <Image
+              source={require('../../assets/image/icon/chevron/chevron-down.png')}
+              style={{ width: 20, height: 20 }}
+            />
           </TouchableOpacity>
         </View>
         <View style={styles.buildOptionGroup}>
@@ -201,6 +232,14 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 20,
   },
+  closeButton: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  closeButtonText: {
+    fontSize: 14,
+    color: '#53A6A8',
+  },
 });
 
-export default LandAreaScreen;
+export default ConstructionScreen;

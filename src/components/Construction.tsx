@@ -1,21 +1,24 @@
-import {FONTFAMILY} from '../theme/theme';
+import { FONTFAMILY } from '../theme/theme';
 import React from 'react';
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 
-interface Construction {
+interface ConstructionProps {
+  id: string;
   title: string;
   price: string;
   area: string;
+  unit: string;
   onDetailPress: () => void;
   isChecked: boolean;
-  onCheckBoxPress: () => void;
+  onCheckBoxPress: (id: string) => void;
 }
 
-const Construction: React.FC<Construction> = ({
+const Construction: React.FC<ConstructionProps> = ({
+  id,
   title,
   price,
   area,
+  unit,
   onDetailPress,
   isChecked,
   onCheckBoxPress,
@@ -31,14 +34,20 @@ const Construction: React.FC<Construction> = ({
         </View>
         <View style={styles.priceGroup}>
           <Text style={styles.price}>{price}</Text>
-          <Text style={styles.area}>{area}</Text>
+          <Text style={styles.area}>{area}{unit}</Text>
         </View>
       </View>
-      <TouchableOpacity onPress={onCheckBoxPress} style={styles.checkbox}>
+      <TouchableOpacity onPress={() => onCheckBoxPress(id)} style={styles.checkbox}>
         {isChecked ? (
-          <Icon name="checkbox" size={24} color="black" />
+          <Image
+            source={require('../assets/image/icon/checkbox/selected.png')}
+            style={{ width: 20, height: 20 }}
+          />
         ) : (
-          <Icon name="square-outline" size={24} color="black" />
+          <Image
+            source={require('../assets/image/icon/checkbox/circle.png')}
+            style={{ width: 20, height: 20 }}
+          />
         )}
       </TouchableOpacity>
     </View>
@@ -62,7 +71,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: 'black',
     fontFamily: FONTFAMILY.montserat_medium,
-    marginBottom: 5
+    marginBottom: 5,
   },
   detailText: {
     fontSize: 12,
@@ -79,7 +88,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.montserat_medium,
     fontSize: 14,
     color: '#02A9A3',
-    marginBottom: 5
+    marginBottom: 5,
   },
   area: {
     fontFamily: FONTFAMILY.montserat_medium,

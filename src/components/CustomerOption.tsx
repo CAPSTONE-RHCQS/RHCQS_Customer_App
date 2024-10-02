@@ -11,7 +11,7 @@ const CustomerOptions: React.FC = () => {
   const handlePress = (option: string) => {
     console.log(`${option} pressed`);
     if (option === 'Tính chi phí xây dựng') {
-      navigationApp.navigate('LandAreaScreen');
+      navigationApp.navigate('ConstructionScreen');
     }
   };
 
