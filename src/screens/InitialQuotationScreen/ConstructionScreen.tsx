@@ -87,7 +87,7 @@ const ConstructionScreen: React.FC = () => {
         return null;
       }
 
-      const displayPrice = option.Name === 'Mái che' || 'Hố PIT' ? totalPrice : 0;
+      const displayPrice = option.Name === 'Mái che' ? totalPrice : 0;
       const displayArea = option.Name === 'Mái che' ? area : 0;
 
       return (

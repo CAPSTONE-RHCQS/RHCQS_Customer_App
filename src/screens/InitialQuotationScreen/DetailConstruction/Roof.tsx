@@ -56,10 +56,7 @@ const Roof: React.FC = () => {
   useEffect(() => {
     const fetchConstructionOption = async () => {
       const data = await getConstructionByName(Name);
-      console.log('Fetched data:', data);
-      console.log('TruocSubConstructionItems:', data?.Id);
       if (data) {
-        console.log('SubConstructionItems:', data.SubConstructionItems);
         setConstructionData(data.SubConstructionItems || []);
         const initialCoefficients =
           data.SubConstructionItems?.reduce((acc, item) => {
@@ -89,7 +86,6 @@ const Roof: React.FC = () => {
   };
 
   const renderCheckboxOption = () => {
-    console.log('constructionData', constructionData);
     return constructionData.map((option: SubConstructionItem) => {
       return (
         <Checkbox

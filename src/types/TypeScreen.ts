@@ -10,6 +10,7 @@ export type AppStackParamList = {
   ConstructionScreen: { totalPrice: number, area: string };
   UltilitiesScreen: undefined;
   ConstructionStack: { screen: keyof ConstructionStackParamList; params: { Name: string } };
+  Package: undefined;
 };
 
 export type ConstructionStackParamList = {

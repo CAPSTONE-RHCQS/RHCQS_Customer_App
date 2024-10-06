@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API_ROOT } from "./constants";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const axiosInstance = axios.create({
   baseURL: API_ROOT,
@@ -8,12 +9,16 @@ const axiosInstance = axios.create({
   },
 });
 
-export const setAuthToken = (token: string | null) => {
-  if (token) {
-    axiosInstance.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-  } else {
-    delete axiosInstance.defaults.headers.common['Authorization'];
-  }
-};
 
+export const getHeaders = async () => {
+  const token = await AsyncStorage.getItem('accessToken');
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json',
+  };
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+};
 export default axiosInstance;

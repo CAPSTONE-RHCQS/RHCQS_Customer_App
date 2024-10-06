@@ -5,6 +5,7 @@ import TabNavigation from './TabNavigation';
 import UltilitiesScreen from '../screens/InitialQuotationScreen/UltilitiesScreen';
 import ConstructionScreen from '../screens/InitialQuotationScreen/ConstructionScreen';
 import ConstructionStack from './ContrutionDetailStack';
+import Package from '../screens/InitialQuotationScreen/Package';
 
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
@@ -16,6 +17,7 @@ const AppStack: React.FC = () => {
       <Stack.Screen name="ConstructionScreen" component={ConstructionScreen} />
       <Stack.Screen name="UltilitiesScreen" component={UltilitiesScreen} />
       <Stack.Screen name="ConstructionStack" component={ConstructionStack} /> 
+      <Stack.Screen name="Package" component={Package} />
     </Stack.Navigator>
   );
 };

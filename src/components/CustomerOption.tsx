@@ -9,9 +9,8 @@ const CustomerOptions: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
 
   const handlePress = (option: string) => {
-    console.log(`${option} pressed`);
     if (option === 'Tính chi phí xây dựng') {
-      navigationApp.navigate('ConstructionScreen');
+      navigationApp.navigate('Package');
     }
   };
 

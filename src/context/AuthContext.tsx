@@ -1,6 +1,6 @@
 import {API_ROOT} from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axiosInstance, {setAuthToken} from '../utils/axios';
+import axiosInstance, {getHeaders} from '../utils/axios';
 import React, {createContext, useState, useEffect} from 'react';
 
 interface AuthContextType {
@@ -23,7 +23,6 @@ const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
         console.log(token);
         if (token) {
           setUserToken(token);
-          setAuthToken(token);
         }
       } catch (error) {
         console.error('Failed to load token from storage');
@@ -45,8 +44,6 @@ const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
       const {Token} = response.data;
       setUserToken(Token);
       await AsyncStorage.setItem('accessToken', Token);
-      setAuthToken(Token);
-
       return response.data;
     } catch (error: any) {
       const errorMessage =
@@ -63,7 +60,6 @@ const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
       await AsyncStorage.removeItem('accessToken');
       await AsyncStorage.removeItem('refreshToken');
       setUserToken(null);
-      setAuthToken(null);
     } catch (error) {
       console.error('Failed to logout');
     } finally {
