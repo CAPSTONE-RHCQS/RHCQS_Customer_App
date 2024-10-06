@@ -3,7 +3,7 @@ import {Text, View} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import AppBar from '../../../components/Appbar';
 
-const Stereobate: React.FC = () => {
+const Mezzanine : React.FC = () => {
   const route = useRoute();
   const { Name } = route.params as { Name: string };
 
@@ -15,4 +15,4 @@ const Stereobate: React.FC = () => {
   );
 };
 
-export default Stereobate;
+export default Mezzanine ;

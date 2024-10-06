@@ -13,6 +13,7 @@ import { LinearGradient } from 'react-native-linear-gradient';
 import CustomButton from '../components/CustomButton';
 import InputField from '../components/InputField';
 import { AuthContext } from '../context/AuthContext';
+import { FONTFAMILY } from '../theme/theme';
 
 const LoginScreen: React.FC = () => {
   const navigationAuth = useNavigation<AuthStackNavigationProp>();
@@ -23,10 +24,9 @@ const LoginScreen: React.FC = () => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false); // State để khóa nút
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const handleLogin = async () => {
-    // Khóa nút và đổi màu nút
     setIsButtonDisabled(true);
     try {
       await login(email, password);
@@ -36,12 +36,9 @@ const LoginScreen: React.FC = () => {
       setErrorMessage(error.message);
       setSuccessMessage('');
     } finally {
-      // Mở lại nút sau khi xử lý xong
       setIsButtonDisabled(false);
     }
   };
-
-  // Kiểm tra các ô nhập có giá trị chưa
   const isFormValid = email !== '' && password !== ''; 
 
   return (
@@ -119,7 +116,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   brandName: {
-    fontFamily: 'Montserrat-Bold',
+    fontFamily: FONTFAMILY.montserat_bold,
     color: 'white',
     marginTop: 200,
     fontSize: 40,
@@ -140,15 +137,15 @@ const styles = StyleSheet.create({
   },
   logo: {
     position: 'absolute',
-    width: '30%',
-    height: '30%',
+    width: '29%',
+    height: '32%',
   },
   inputgroup: {
     marginTop: 30,
     marginHorizontal: 20,
   },
   title: {
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: FONTFAMILY.montserat_bold,
     color: 'black',
     marginTop: 20,
     fontSize: 16,
@@ -166,7 +163,7 @@ const styles = StyleSheet.create({
   },
   passwordInput: {
     flex: 1,
-    fontFamily: 'Montserrat-Medium',
+    fontFamily: FONTFAMILY.montserat_medium,
     color: 'black',
   },
   eyeIcon: {
@@ -183,24 +180,24 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   successText: {
-    color: 'green', // Màu cho thông báo thành công
+    color: 'green',
     marginTop: 10,
     textAlign: 'center',
   },
   registerContainer: {
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: FONTFAMILY.montserat_semibold,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 16,
   },
   registertext: {
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: FONTFAMILY.montserat_semibold,
     color: 'black',
     marginLeft: 5,
   },
   registerclick: {
-    fontFamily: 'Montserrat-SemiBold',
+    fontFamily: FONTFAMILY.montserat_semibold,
     color: '#029AA4',
     marginLeft: 5,
   },

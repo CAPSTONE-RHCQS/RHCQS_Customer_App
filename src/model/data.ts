@@ -1,3 +1,5 @@
+import { SubConstructionItem } from '../types/screens/Contruction/ContructionType';
+
 export const sliderData = [
     {
       image: require('../assets/image/banner/1x/Banner_hoan_thien-100.jpg'),
@@ -118,3 +120,48 @@ const buildOptionsData = [
 ];
 
 export default buildOptionsData;
+
+export const subConstructionItemsData: SubConstructionItem[] = [
+  {
+    Id: "990dda26-6171-42e7-b142-3a817dfeddb4",
+    Name: "Mái BTCT lợp ngói (nghiêng 30 độ)",
+    Coefficient: 1.3,
+    Unit: "m2        ",
+    InsDate: "2024-09-27T21:37:09"
+  },
+  {
+    Id: "751237b8-2523-4c94-80c8-4a7275f4de9e",
+    Name: "Mái ngói kèo thép (nghiêng 30 độ)",
+    Coefficient: 0.91,
+    Unit: "m2        ",
+    InsDate: "2024-09-27T21:37:09"
+  },
+  {
+    Id: "009e7ab2-3963-4edf-b520-8afb87cb7bef",
+    Name: "Mái BTCT lợp ngói (nghiêng 45 độ)",
+    Coefficient: 1.4,
+    Unit: "m2        ",
+    InsDate: "2024-09-27T21:37:09"
+  },
+  {
+    Id: "bf5ca42f-87d8-4520-b2d4-9cd8e36c6f42",
+    Name: "Mái BTCT nghiêng",
+    Coefficient: 0.7,
+    Unit: "m2        ",
+    InsDate: "2024-09-27T21:37:09"
+  },
+  {
+    Id: "7e442652-eefc-43b7-918b-a264a10e679d",
+    Name: "Mái BTCT",
+    Coefficient: 0.5,
+    Unit: "m2        ",
+    InsDate: "2024-09-27T21:37:09"
+  },
+  {
+    Id: "cd3d06cc-1f01-4010-b908-fc5d3ef244e9",
+    Name: "Mái ngói kèo thép (nghiêng 45 độ)",
+    Coefficient: 0.98,
+    Unit: "m2        ",
+    InsDate: "2024-09-27T21:37:09"
+  }
+];

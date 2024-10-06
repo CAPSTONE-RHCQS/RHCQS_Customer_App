@@ -8,7 +8,7 @@ export const isTokenValid = (Token: string | null): boolean => {
     const currentTime = Date.now() / 1000;
 
     return decoded.exp > currentTime;
-  } catch (error) {
+  } catch (error) { 
     return false;
   }
 };

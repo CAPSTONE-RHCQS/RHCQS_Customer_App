@@ -1,6 +1,6 @@
 import {API_ROOT} from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
+import axiosInstance, {setAuthToken} from '../utils/axios';
 import React, {createContext, useState, useEffect} from 'react';
 
 interface AuthContextType {
@@ -20,9 +20,10 @@ const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
     const loadUserToken = async () => {
       try {
         const token = await AsyncStorage.getItem('accessToken');
+        console.log(token);
         if (token) {
           setUserToken(token);
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+          setAuthToken(token);
         }
       } catch (error) {
         console.error('Failed to load token from storage');
@@ -37,18 +38,19 @@ const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
   const login = async (email: string, password: string) => {
     setIsLoading(true);
     try {
-      const response = await axios.post(`${API_ROOT}/login`, {
+      const response = await axiosInstance.post(`${API_ROOT}/login`, {
         email,
         password,
       });
       const {Token} = response.data;
       setUserToken(Token);
       await AsyncStorage.setItem('accessToken', Token);
-      axios.defaults.headers.common['Authorization'] = `Bearer ${Token}`;
-      
+      setAuthToken(Token);
+
       return response.data;
     } catch (error: any) {
-      const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
+      const errorMessage =
+        error.response?.data?.message || 'Login failed. Please try again.';
       throw new Error('Login failed: ' + errorMessage);
     } finally {
       setIsLoading(false);
@@ -61,7 +63,7 @@ const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
       await AsyncStorage.removeItem('accessToken');
       await AsyncStorage.removeItem('refreshToken');
       setUserToken(null);
-      delete axios.defaults.headers.common['Authorization'];
+      setAuthToken(null);
     } catch (error) {
       console.error('Failed to logout');
     } finally {

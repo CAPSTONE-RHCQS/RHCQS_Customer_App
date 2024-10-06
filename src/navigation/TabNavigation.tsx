@@ -13,8 +13,8 @@ function TabNavigation() {
       screenOptions={({route}) => ({
         headerShown: false,
         tabBarShowLabel: true,
-        tabBarStyle: {backgroundColor: 'white', height: 55},
-        tabBarLabelStyle: {fontSize: 12, fontFamily: FONTFAMILY.montserat_bold},
+        tabBarStyle: {backgroundColor: 'white', height: 60},
+        tabBarLabelStyle: {fontSize: 12, marginBottom:3, fontFamily: FONTFAMILY.montserat_bold},
         tabBarInactiveTintColor: '#D9D9D9',
         tabBarActiveTintColor: '#5BABAC',
         tabBarIcon: ({focused}) => {
@@ -29,7 +29,7 @@ function TabNavigation() {
               ? require('../assets/image/icon/TabNav/user-outline.png')
               : require('../assets/image/icon/TabNav/user-outline-grey.png');
           }
-          return <Image source={iconName} style={{width: 20, height: 20}} />;
+          return <Image source={iconName} style={{width: 30, height: 30}} />;
         },
       })}>
       <Tab.Screen name="Trang chủ" component={HomeScreen} />

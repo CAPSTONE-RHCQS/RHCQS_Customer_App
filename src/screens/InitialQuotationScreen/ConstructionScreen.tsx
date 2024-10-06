@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,17 +11,29 @@ import {
 import InputField from '../../components/InputField';
 import AppBar from '../../components/Appbar';
 import FloorSelection from '../../components/FloorSelection';
-import { FONTFAMILY } from '../../theme/theme';
+import {FONTFAMILY} from '../../theme/theme';
 import Construction from '../../components/Construction';
 import CustomButton from '../../components/CustomButton';
-import { ScrollView } from 'react-native-gesture-handler';
-import { useNavigation } from '@react-navigation/native';
-import { AppStackNavigationProp } from '@/types/TypeScreen';
-import { getConstructionOption } from '../../api/Contruction/Contruction';
-import { Item } from '../../types/screens/Contruction/ContructionType';
+import {ScrollView} from 'react-native-gesture-handler';
+import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
+import {
+  AppStackNavigationProp,
+  AppStackParamList,
+} from '../../types/TypeScreen';
+import constructionScreenMap from '../../types/screens/Contruction/ContructionScreenMap';
+import {getConstructionOption} from '../../api/Contruction/Contruction';
+import {Item} from '../../types/screens/Contruction/ContructionType';
+
+type ConstructionScreenRouteProp = RouteProp<
+  AppStackParamList,
+  'ConstructionScreen'
+>;
 
 const ConstructionScreen: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
+  const route = useRoute<ConstructionScreenRouteProp>();
+  const totalPrice = route.params?.totalPrice || 0;
+  const area = route.params?.area || 0;
 
   const [landArea, setLandArea] = useState('');
   const [constructionArea, setConstructionArea] = useState('');
@@ -39,16 +51,15 @@ const ConstructionScreen: React.FC = () => {
   }, []);
 
   const handleDetailPress = (Name: string) => {
-    switch (Name) {
-      case 'Thông Tầng lầu 1':
-        navigationApp.navigate('ElevatorTechnical', { Name });
-        break;
-      case 'PIT':
-        navigationApp.navigate('PIT', { Name });
-        break;
-      default:
-        console.log('Không tìm thấy màn hình cho ID:', Name);
-        break;
+    const screenName = constructionScreenMap[Name];
+
+    if (screenName) {
+      navigationApp.navigate('ConstructionStack', {
+        screen: screenName,
+        params: {Name},
+      });
+    } else {
+      console.warn('Không tìm thấy hạn mục:', Name);
     }
   };
 
@@ -56,7 +67,7 @@ const ConstructionScreen: React.FC = () => {
     setCheckedItems(prevState =>
       prevState.includes(id)
         ? prevState.filter(item => item !== id)
-        : [...prevState, id]
+        : [...prevState, id],
     );
   };
 
@@ -76,13 +87,16 @@ const ConstructionScreen: React.FC = () => {
         return null;
       }
 
+      const displayPrice = option.Name === 'Mái che' || 'Hố PIT' ? totalPrice : 0;
+      const displayArea = option.Name === 'Mái che' ? area : 0;
+
       return (
         <Construction
           key={index}
           id={option.Id}
           title={option.Name}
-          price="0"
-          area="0"
+          price={displayPrice.toLocaleString()}
+          area={displayArea.toLocaleString()}
           unit={option.Unit}
           onDetailPress={() => handleDetailPress(option.Name)}
           isChecked={checkedItems.includes(option.Id)}
@@ -124,7 +138,7 @@ const ConstructionScreen: React.FC = () => {
             </Text>
             <Image
               source={require('../../assets/image/icon/chevron/chevron-down.png')}
-              style={{ width: 20, height: 20 }}
+              style={{width: 20, height: 20}}
             />
           </TouchableOpacity>
         </View>
@@ -231,14 +245,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginHorizontal: 20,
     marginBottom: 20,
-  },
-  closeButton: {
-    marginTop: 20,
-    alignItems: 'center',
-  },
-  closeButtonText: {
-    fontSize: 14,
-    color: '#53A6A8',
   },
 });
 

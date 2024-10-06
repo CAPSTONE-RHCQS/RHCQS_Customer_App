@@ -3,16 +3,16 @@ import {Text, View} from 'react-native';
 import {useRoute} from '@react-navigation/native';
 import AppBar from '../../../components/Appbar';
 
-const ElevatorTechnicalScreen: React.FC = () => {
+const ElevatorTechnical: React.FC = () => {
   const route = useRoute();
-  const { id } = route.params as { id: number };
+  const { Name } = route.params as { Name: string };
 
   return (
     <View>
         <AppBar nameScreen='Tính chi phí xây dựng thô'/>
-      <Text>ID: {id}</Text>
+      <Text>{Name}</Text>
     </View>
   );
 };
 
-export default ElevatorTechnicalScreen;
+export default ElevatorTechnical;

@@ -11,8 +11,10 @@ import AppBar from '../components/Appbar';
 import InputField from '../components/InputField';
 import CustomButton from '../components/CustomButton';
 import {FONTFAMILY} from '../theme/theme';
-import { useNavigation } from '@react-navigation/native';
-import { AuthStackNavigationProp } from '@/types/TypeScreen';
+import {useNavigation} from '@react-navigation/native';
+import {AuthStackNavigationProp} from '@/types/TypeScreen';
+import {registerUser} from '../api/Auth/Auth';
+import { Register } from '../types/Customer';
 
 const RegisterScreen: React.FC = () => {
   const navigationAuth = useNavigation<AuthStackNavigationProp>();
@@ -21,7 +23,27 @@ const RegisterScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confilmPassword, setConfilmPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const handleRegister = () => navigationAuth.navigate('LoginScreen');
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const handleRegister = async () => {
+
+    try {
+      const registerData: Register = {
+        email,
+        password,
+        confirmPassword: confilmPassword,
+      };
+      const response = await registerUser(
+        registerData.email,
+        registerData.password,
+        registerData.confirmPassword,
+      );
+      setErrorMessage(null);
+      navigationAuth.navigate('LoginScreen');
+    } catch (error: any) {
+      setErrorMessage(error.message);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -77,6 +99,7 @@ const RegisterScreen: React.FC = () => {
             />
           </TouchableOpacity>
         </View>
+        {errorMessage && <Text style={styles.errorText}>{errorMessage}</Text>}
       </View>
       <View style={styles.buttonContainer}>
         <CustomButton
@@ -133,6 +156,11 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
     width: 20,
     height: 20,
+  },
+  errorText: {
+    color: 'red',
+    marginTop: 10,
+    fontFamily: FONTFAMILY.montserat_medium,
   },
 });
 
