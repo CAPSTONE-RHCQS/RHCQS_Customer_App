@@ -1,12 +1,14 @@
 import React, { useContext } from 'react';
 import { Text, View, Button, StyleSheet } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
+import storage from '../utils/storage';
 
 const ProfileScreen: React.FC = () => {
 const {logout} = useContext(AuthContext)!;
 
   const handleLogout = async () => {
     await logout();
+    await storage.clear();
   };
 
   return (

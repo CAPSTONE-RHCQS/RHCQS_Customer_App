@@ -14,6 +14,7 @@ import {
 } from '@/types/TypeScreen';
 import {getConstructionByName} from '../../../api/Contruction/Contruction';
 import {SubConstructionItem} from '../../../types/screens/Contruction/ContructionType';
+import storage from '../../../utils/storage';
 
 const Roof: React.FC = () => {
   const navigationContruction = useNavigation<AppStackNavigationProp>();
@@ -29,16 +30,15 @@ const Roof: React.FC = () => {
   const [constructionData, setConstructionData] = useState<
     SubConstructionItem[]
   >([]);
-
-  
+  const [roughPackagePrice, setRoughPackagePrice] = useState<number>(0);
 
   const constructionArea = area ? parseFloat(area) * coefficient : 0;
-  const unitPrice = 200000;
+  const unitPrice = roughPackagePrice;
   const totalPrice = constructionArea * unitPrice || 0;
 
   useEffect(() => {
     const loadArea = async () => {
-      const savedArea = await AsyncStorage.getItem('area');
+      const savedArea = await storage.getItem('area');
       if (savedArea) {
         setArea(savedArea);
       }
@@ -48,10 +48,20 @@ const Roof: React.FC = () => {
 
   useEffect(() => {
     const saveArea = async () => {
-      await AsyncStorage.setItem('area', area);
+      await storage.setItem('area', area);
     };
     saveArea();
   }, [area]);
+
+  useEffect(() => {
+    const loadRoughPackagePrice = async () => {
+      const price = await storage.getItem('roughPackagePrice');
+      if (price) {
+        setRoughPackagePrice(parseFloat(price));
+      }
+    };
+    loadRoughPackagePrice();
+  }, []);
 
   useEffect(() => {
     const fetchConstructionOption = async () => {
@@ -71,7 +81,17 @@ const Roof: React.FC = () => {
     fetchConstructionOption();
   }, [Name]);
 
-  const handleCheck = (id: string) => {
+  useEffect(() => {
+    const loadCheckedItems = async () => {
+      const savedCheckedItems = await AsyncStorage.getItem('checkedItems');
+      if (savedCheckedItems) {
+        setCheckedItems(JSON.parse(savedCheckedItems));
+      }
+    };
+    loadCheckedItems();
+  }, []);
+
+  const handleCheck = async (id: string) => {
     const newCheckedItems = {...checkedItems};
     Object.keys(newCheckedItems).forEach(key => {
       newCheckedItems[key] = false;
@@ -79,24 +99,42 @@ const Roof: React.FC = () => {
     newCheckedItems[id] = true;
     setCheckedItems(newCheckedItems);
     setCoefficient(coefficients[id]);
+
+    const limitedCheckedItems = Object.keys(newCheckedItems).reduce((acc, key) => {
+      if (newCheckedItems[key]) {
+        acc[key] = newCheckedItems[key];
+      }
+      return acc;
+    }, {} as {[key: string]: boolean});
+
+    await storage.setItem('checkedItems', JSON.stringify(limitedCheckedItems));
   };
 
-  const handleContinuePress = () => {
-    navigationContruction.navigate('ConstructionScreen', {totalPrice, area});
+  const handleContinuePress = async () => {
+    await storage.setItem('totalPriceRoof', totalPrice.toString());
+    await storage.setItem('areaRoof', area.toString());
+
+    navigationContruction.navigate('ConstructionScreen', {
+      totalPrice,
+      area: Number(area),
+      source: 'Mái che',
+    });
   };
 
   const renderCheckboxOption = () => {
-    return constructionData.map((option: SubConstructionItem) => {
-      return (
-        <Checkbox
-          key={option.Id}
-          id={option.Id}
-          label={option.Name}
-          isChecked={!!checkedItems[option.Id]}
-          onCheck={handleCheck}
-        />
-      );
-    });
+    return constructionData.map(
+      (option: SubConstructionItem, index: number) => {
+        return (
+          <Checkbox
+            key={`${option.Id}-${index}`}
+            id={option.Id}
+            label={option.Name}
+            isChecked={!!checkedItems[option.Id]}
+            onCheck={handleCheck}
+          />
+        );
+      },
+    );
   };
 
   return (

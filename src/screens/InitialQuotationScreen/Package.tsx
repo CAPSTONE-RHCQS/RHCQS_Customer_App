@@ -1,77 +1,158 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { getPackages } from '../../api/Package/Package';
+import {View, Text, StyleSheet, Button, Alert} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {getPackages} from '../../api/Package/Package';
 import Checkbox from '../../components/Checkbox';
-import { FONTFAMILY } from '../../theme/theme';
+import {FONTFAMILY} from '../../theme/theme';
 import AppBar from '../../components/Appbar';
+import CustomButton from '../../components/CustomButton';
+import Separator from '../../components/Separator';
+import {AppStackNavigationProp} from '../../types/TypeScreen';
+import {useNavigation} from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Package: React.FC = () => {
-    const [packages, setPackages] = useState<{ PackageName: string; Price: number }[]>([]);
-    const [checkedItems, setCheckedItems] = useState<Set<string>>(new Set());
-  
-    useEffect(() => {
-      const fetchPackages = async () => {
-        const data = await getPackages();
-        setPackages(data);
-      };
-  
-      fetchPackages();
-    }, []);
-  
-    const handleCheck = (id: string) => {
-      setCheckedItems((prev) => {
-        const newCheckedItems = new Set(prev);
-        if (newCheckedItems.has(id)) {
-          newCheckedItems.delete(id);
-        } else {
-          newCheckedItems.add(id);
-        }
-        return newCheckedItems;
-      });
+  const navigationApp = useNavigation<AppStackNavigationProp>();
+
+  const [packages, setPackages] = useState<
+    {Id: string; PackageName: string; Price: number}[]
+  >([]);
+  const [selectedRough, setSelectedRough] = useState<string | null>(null);
+  const [selectedComplete, setSelectedComplete] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchPackages = async () => {
+      const data = await getPackages();
+      setPackages(data);
     };
 
-    // const handleNext = () => {
-    //     navigationApp.navigate('ConstructionScreen');
-    //   };
-  
-    return (
-      <View>
-        <AppBar nameScreen='Chọn gói thi công' />
-        {packages.map((pkg, index) => (
+    fetchPackages();
+  }, []);
+
+  const handleRoughCheck = (id: string) => {
+    setSelectedRough(id);
+  };
+
+  const handleCompleteCheck = (id: string) => {
+    setSelectedComplete(prev => (prev === id ? null : id));
+  };
+
+  const handleNext = async () => {
+    // Thêm async vào hàm
+    if (!selectedRough && !selectedComplete) {
+      Alert.alert('Thông báo', 'Bạn phải chọn ít nhất một gói.');
+      return;
+    }
+
+    const roughPackagePrice =
+      packages.find(pkg => pkg.PackageName === selectedRough)?.Price || 0;
+    const completePackagePrice =
+      packages.find(pkg => pkg.PackageName === selectedComplete)?.Price || 0;
+
+    await AsyncStorage.setItem('selectedRough', selectedRough || '');
+    await AsyncStorage.setItem('selectedComplete', selectedComplete || '');
+    await AsyncStorage.setItem(
+      'roughPackagePrice',
+      roughPackagePrice.toString(),
+    );
+    await AsyncStorage.setItem(
+      'completePackagePrice',
+      completePackagePrice.toString(),
+    );
+
+    navigationApp.navigate('ConstructionScreen', {
+      selectedRough: selectedRough || '',
+      selectedComplete: selectedComplete || '',
+      roughPackagePrice,
+      completePackagePrice,
+    });
+  };
+
+  const renderRoughPackages = () => {
+    return packages
+      .filter(pkg => pkg.PackageName.includes('Gói thô'))
+      .map((pkg, index) => (
+        <>
           <Checkbox
             key={index}
-            id={pkg.PackageName} // Sử dụng PackageName làm id
-            label={`${pkg.PackageName} - ${pkg.Price.toLocaleString()} VND`} // Hiển thị PackageName và Price
-            isChecked={checkedItems.has(pkg.PackageName)}
-            onCheck={handleCheck}
+            id={pkg.PackageName}
+            label={`${pkg.PackageName} - ${pkg.Price.toLocaleString()} VND`}
+            isChecked={selectedRough === pkg.PackageName}
+            onCheck={handleRoughCheck}
           />
-        ))}
-      </View>
-    );
+          <Separator />
+        </>
+      ));
   };
-  
-  const styles = StyleSheet.create({
-    container: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginVertical: 14,
-    },
-    checkbox: {
-      width: 20,
-      height: 20,
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginRight: 10,
-    },
-    checkboxImage: {
-      width: 20,
-      height: 20,
-    },
-    label: {
-      fontFamily: FONTFAMILY.montserat_medium,
-      fontSize: 14,
-      color: 'black',
-    },
-  });
 
-export default Package
+  const renderCompletePackages = () => {
+    return packages
+      .filter(pkg => pkg.PackageName.includes('Gói hoàn thiện'))
+      .map((pkg, index) => (
+        <>
+          <Checkbox
+            key={index}
+            id={pkg.PackageName}
+            label={`${pkg.PackageName} - ${pkg.Price.toLocaleString()} VND`}
+            isChecked={selectedComplete === pkg.PackageName}
+            onCheck={handleCompleteCheck}
+          />
+          <Separator />
+        </>
+      ));
+  };
+
+  return (
+    <View style={styles.container}>
+      <AppBar nameScreen="Chọn gói thi công" />
+      <View style={styles.packageContainer}>
+        <View>
+          <Text style={styles.sectionTitle}>Gói thô</Text>
+          {renderRoughPackages()}
+        </View>
+        <View>
+          <Text style={styles.sectionTitle2}>Gói hoàn thiện</Text>
+          {renderCompletePackages()}
+        </View>
+      </View>
+      <View style={styles.buttonContainer}>
+        <CustomButton
+          title="Tiếp tục"
+          onPress={handleNext}
+          colors={['#53A6A8', '#3C9597', '#1F7F81']}
+        />
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  packageContainer: {
+    marginVertical: 14,
+    marginHorizontal: 20,
+    flex: 1,
+  },
+  sectionTitle: {
+    fontFamily: FONTFAMILY.montserat_bold,
+    fontSize: 20,
+    color: 'black',
+    marginVertical: 10,
+  },
+  sectionTitle2: {
+    marginTop: 40,
+    fontFamily: FONTFAMILY.montserat_bold,
+    fontSize: 20,
+    color: 'black',
+    marginVertical: 10,
+  },
+  buttonContainer: {
+    justifyContent: 'flex-end',
+    marginHorizontal: 20,
+    marginBottom: 20,
+  },
+});
+
+export default Package;

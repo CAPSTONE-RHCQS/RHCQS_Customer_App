@@ -1,6 +1,6 @@
 import {API_ROOT} from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axiosInstance, {getHeaders} from '../utils/axios';
+import axiosInstance from '../utils/axios';
 import React, {createContext, useState, useEffect} from 'react';
 
 interface AuthContextType {

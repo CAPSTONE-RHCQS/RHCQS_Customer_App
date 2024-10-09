@@ -1,6 +1,6 @@
 import { ConstructionStackParamList } from "../../TypeScreen";
 
-const constructionScreenMap: Record<string, keyof ConstructionStackParamList> = {
+export const constructionScreenMap: Record<string, keyof ConstructionStackParamList> = {
     'Phòng kỹ thuật thang máy': 'ElevatorTechnical',
     'Hố PIT': 'PIT',
     'Sân': 'Yard',
@@ -26,8 +26,29 @@ const constructionScreenMap: Record<string, keyof ConstructionStackParamList> = 
     'Thông Tầng lầu 5': 'FifthFloorVoid',
     'Thông Tầng lầu 6': 'SixthFloorVoid',
   };
-  
-  export default constructionScreenMap;
 
-  
+  // Phòng kỹ thuật thang máy
+  // Hố PIT
+  // Sân
+  // Hầm
+  // Trệt
+  // Tầng lửng
+  // Thông tầng lửng
+  // Sân thượng không có mái che
+  // Sân thượng có mái che
+  // Móng
+  // Mái che
+  // Mái phụ
+  // Lầu 1
+  // Lầu 2
+  // Lầu 3
+  // Lầu 4
+  // Lầu 5
+  // Lầu 6
+  // Thông Tầng lầu 1
+  // Thông Tầng lầu 2
+  // Thông Tầng lầu 3
+  // Thông Tầng lầu 4
+  // Thông Tầng lầu 5
+  // Thông Tầng lầu 6
   

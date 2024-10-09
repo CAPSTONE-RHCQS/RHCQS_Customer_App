@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   StyleSheet,
   Text,
@@ -11,18 +11,20 @@ import {
 import InputField from '../../components/InputField';
 import AppBar from '../../components/Appbar';
 import FloorSelection from '../../components/FloorSelection';
-import {FONTFAMILY} from '../../theme/theme';
+import { FONTFAMILY } from '../../theme/theme';
 import Construction from '../../components/Construction';
 import CustomButton from '../../components/CustomButton';
-import {ScrollView} from 'react-native-gesture-handler';
-import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
+import { ScrollView } from 'react-native-gesture-handler';
+import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import {
   AppStackNavigationProp,
   AppStackParamList,
 } from '../../types/TypeScreen';
-import constructionScreenMap from '../../types/screens/Contruction/ContructionScreenMap';
-import {getConstructionOption} from '../../api/Contruction/Contruction';
-import {Item} from '../../types/screens/Contruction/ContructionType';
+import { constructionScreenMap } from '../../types/screens/Contruction/ContructionScreenMap';
+import { getConstructionOption } from '../../api/Contruction/Contruction';
+import { Item } from '../../types/screens/Contruction/ContructionType';
+import Separator from '../../components/Separator';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 type ConstructionScreenRouteProp = RouteProp<
   AppStackParamList,
@@ -32,8 +34,16 @@ type ConstructionScreenRouteProp = RouteProp<
 const ConstructionScreen: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
   const route = useRoute<ConstructionScreenRouteProp>();
-  const totalPrice = route.params?.totalPrice || 0;
-  const area = route.params?.area || 0;
+
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [totalPricePIT, setTotalPricePIT] = useState<number>(0);
+  const [area, setArea] = useState<number>(0);
+  const [areaPIT, setAreaPIT] = useState<number>(0); 
+
+  const [selectedRough, setSelectedRough] = useState<string>('');
+  const [selectedComplete, setSelectedComplete] = useState<string>('');
+  const [roughPackagePrice, setRoughPackagePrice] = useState<number>(0);
+  const [completePackagePrice, setCompletePackagePrice] = useState<number>(0);
 
   const [landArea, setLandArea] = useState('');
   const [constructionArea, setConstructionArea] = useState('');
@@ -41,6 +51,67 @@ const ConstructionScreen: React.FC = () => {
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [buildOptionsData, setBuildOptionsData] = useState<Item[]>([]);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const storedTotalPrice = await AsyncStorage.getItem('totalPrice');
+        const storedArea = await AsyncStorage.getItem('area');
+
+        if (storedTotalPrice) {
+          setTotalPrice(parseFloat(storedTotalPrice));
+        }
+        if (storedArea) {
+          setArea(parseFloat(storedArea));
+        } 
+
+        const storedSelectedRough = await AsyncStorage.getItem('selectedRough');
+        const storedSelectedComplete = await AsyncStorage.getItem('selectedComplete');
+        const storedRoughPackagePrice = await AsyncStorage.getItem('roughPackagePrice');
+        const storedCompletePackagePrice = await AsyncStorage.getItem('completePackagePrice');
+
+        if (storedSelectedRough) {
+          setSelectedRough(storedSelectedRough);
+        }
+        if (storedSelectedComplete) {
+          setSelectedComplete(storedSelectedComplete);
+        }
+        if (storedRoughPackagePrice) {
+          setRoughPackagePrice(parseFloat(storedRoughPackagePrice));
+        }
+        if (storedCompletePackagePrice) {
+          setCompletePackagePrice(parseFloat(storedCompletePackagePrice));
+        }
+
+        const storedTotalPricePIT = await AsyncStorage.getItem('totalPricePIT'); 
+        const storedAreaPIT = await AsyncStorage.getItem('areaPIT'); 
+
+        if (storedTotalPricePIT) setTotalPricePIT(parseFloat(storedTotalPricePIT)); 
+        if (storedAreaPIT) setAreaPIT(parseFloat(storedAreaPIT)); 
+      } catch (error) {
+        console.error('Error loading data from AsyncStorage:', error);
+      }
+    };
+
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    const { source, totalPrice, totalPricePIT } = route.params;
+
+    switch (source) {
+      case 'Mái che':
+        setTotalPrice(totalPrice ? Number(totalPrice) : 0);
+        setArea(route.params.area ? Number(route.params.area) : 0);
+        break;
+      case 'Hố PIT':
+        setTotalPricePIT(totalPricePIT ? Number(totalPricePIT) : 0);
+        setAreaPIT(route.params.areaPIT ? Number(route.params.areaPIT) : 0);
+        break;
+      default:
+        break;
+    }
+  }, [route.params]);
 
   useEffect(() => {
     const fetchConstructionOption = async () => {
@@ -52,11 +123,10 @@ const ConstructionScreen: React.FC = () => {
 
   const handleDetailPress = (Name: string) => {
     const screenName = constructionScreenMap[Name];
-
     if (screenName) {
       navigationApp.navigate('ConstructionStack', {
         screen: screenName,
-        params: {Name},
+        params: { Name },
       });
     } else {
       console.warn('Không tìm thấy hạn mục:', Name);
@@ -87,8 +157,17 @@ const ConstructionScreen: React.FC = () => {
         return null;
       }
 
-      const displayPrice = option.Name === 'Mái che' ? totalPrice : 0;
-      const displayArea = option.Name === 'Mái che' ? area : 0;
+      let displayPrice = 0;
+      let displayArea = 0;
+
+      // Sử dụng state khác nhau cho từng loại Mái che và Hố PIT
+      if ( option.Name === 'Mái che') {
+        displayPrice = totalPrice; 
+        displayArea = area;
+      } else if ( option.Name === 'Hố PIT') {
+        displayPrice = totalPricePIT; 
+        displayArea = areaPIT; 
+      }
 
       return (
         <Construction
@@ -128,6 +207,7 @@ const ConstructionScreen: React.FC = () => {
           />
           <Text style={styles.noteText}>Đơn vị tính: m²</Text>
         </View>
+
         <View style={styles.floorsSelection}>
           <Text style={styles.floorsText}>Số tầng lầu</Text>
           <TouchableOpacity
@@ -138,7 +218,7 @@ const ConstructionScreen: React.FC = () => {
             </Text>
             <Image
               source={require('../../assets/image/icon/chevron/chevron-down.png')}
-              style={{width: 20, height: 20}}
+              style={{ width: 20, height: 20 }}
             />
           </TouchableOpacity>
         </View>
@@ -148,7 +228,28 @@ const ConstructionScreen: React.FC = () => {
           </ScrollView>
         </View>
       </View>
+
       <View style={styles.buttonContainer}>
+        <View style={styles.separator}></View>
+        <View style={styles.selectedPackagesContainer}>
+          <View style={styles.modalTitleContainer}>
+            <Text style={styles.modalTitlePackage}>Gói xây dựng</Text>
+          </View>
+
+          <View style={styles.selectedPackages}>
+            {selectedRough && (
+              <Text style={styles.packageText}>
+                {roughPackagePrice} - {selectedRough}
+              </Text>
+            )}
+            {selectedComplete && (
+              <Text style={styles.packageText}>
+                {completePackagePrice} - {selectedComplete}
+              </Text>
+            )}
+          </View>
+        </View>
+        <Separator />
         <CustomButton
           title="Tiếp tục"
           onPress={handleContinuePress}
@@ -207,6 +308,22 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 14,
   },
+
+  selectedPackagesContainer: {
+    flexDirection: 'row',
+    marginBottom: 20,
+  },
+  selectedPackages: {
+    position: 'absolute',
+    right: 0,
+    alignItems: 'flex-end',
+  },
+  packageText: {
+    fontFamily: FONTFAMILY.montserat_medium,
+    fontSize: 14,
+    marginRight: 20,
+    color: 'black',
+  },
   selectionBox: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -240,6 +357,21 @@ const styles = StyleSheet.create({
   modalTitle: {
     fontFamily: FONTFAMILY.montserat_bold,
     fontSize: 16,
+  },
+  modalTitleContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalTitlePackage: {
+    fontFamily: FONTFAMILY.montserat_semibold,
+    fontSize: 14,
+    color: 'black',
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#5E5D5DFF',
+    marginBottom: 20,
   },
   buttonContainer: {
     justifyContent: 'flex-end',

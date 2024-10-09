@@ -25,6 +25,7 @@ export const getConstructionByName = async (name: string): Promise<Item | null> 
 
     const response = await axiosInstance.get<Item>(apiUrl, { headers });
     if (response.status === 200) {
+      console.log(response.data);
       return response.data;
     } else {
       console.error(`Error fetching construction data: HTTP ${response.status}`);
