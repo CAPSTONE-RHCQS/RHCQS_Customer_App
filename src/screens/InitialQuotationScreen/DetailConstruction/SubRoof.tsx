@@ -34,11 +34,11 @@ const SubRoof: React.FC = () => {
 
   const constructionArea = areaSubRoof ? parseFloat(areaSubRoof) * coefficient : 0;
   const unitPrice = roughPackagePrice;
-  const totalPrice = constructionArea * unitPrice || 0;
+  const totalPriceSubRoof = constructionArea * unitPrice || 0;
 
   useEffect(() => {
     const loadArea = async () => {
-      const savedArea = await storage.getItem('area');
+      const savedArea = await storage.getItem('areaSubRoof');
       if (savedArea) {
         setAreaSubRoof(savedArea);
       }
@@ -111,12 +111,12 @@ const SubRoof: React.FC = () => {
   };
 
   const handleContinuePress = async () => {
-    await storage.setItem('totalPriceRoof', totalPrice.toString());
+    await storage.setItem('totalPriceSubRoofRoof', totalPriceSubRoof.toString());
     await storage.setItem('areaSubRoof', areaSubRoof.toString());
 
     navigationContruction.navigate('ConstructionScreen', {
-      totalPrice,
-      area: Number(areaSubRoof),
+      totalPriceSubRoof,
+      areaSubRoof: Number(areaSubRoof),
       source: 'Mái phụ',
     });
   };
@@ -170,7 +170,7 @@ const SubRoof: React.FC = () => {
           <Separator />
           <View style={styles.titleGroup}>
             <Text style={styles.title}>Thành tiền</Text>
-            <Text style={styles.total}>{totalPrice.toLocaleString()} VNĐ</Text>
+            <Text style={styles.total}>{totalPriceSubRoof.toLocaleString()} VNĐ</Text>
           </View>
         </View>
       </View>

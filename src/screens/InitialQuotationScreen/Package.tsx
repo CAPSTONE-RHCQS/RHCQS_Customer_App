@@ -70,10 +70,10 @@ const Package: React.FC = () => {
   const renderRoughPackages = () => {
     return packages
       .filter(pkg => pkg.PackageName.includes('Gói thô'))
-      .map((pkg, index) => (
+      .map(pkg => (
         <>
           <Checkbox
-            key={index}
+            key={pkg.Id}
             id={pkg.PackageName}
             label={`${pkg.PackageName} - ${pkg.Price.toLocaleString()} VND`}
             isChecked={selectedRough === pkg.PackageName}
@@ -87,10 +87,10 @@ const Package: React.FC = () => {
   const renderCompletePackages = () => {
     return packages
       .filter(pkg => pkg.PackageName.includes('Gói hoàn thiện'))
-      .map((pkg, index) => (
+      .map(pkg => (
         <>
           <Checkbox
-            key={index}
+            key={pkg.Id}
             id={pkg.PackageName}
             label={`${pkg.PackageName} - ${pkg.Price.toLocaleString()} VND`}
             isChecked={selectedComplete === pkg.PackageName}

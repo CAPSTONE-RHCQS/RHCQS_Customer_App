@@ -10,17 +10,17 @@ export type AppStackParamList = {
   ConstructionScreen: {
     //totalPrice
     totalPricePIT?: number; //hố pit
-    totalPrice?: number; //mái che
+    totalPriceRoof?: number; //mái che
     totalPriceSubRoof?: number; //mái phụ
     totalPriceStereobate?: number; // móng
-    totalPriceBasement?: number; //trệt
+    totalPriceBasement?: number; //hầm
     totalPriceYard?: number; //sân
     totalPriceElevatorTechnical?: number; //thang máy
-    totalPriceGroundFloor?: number; //thông tầng
+    totalPriceGroundFloor?: number; //trệt
     totalPriceMezzanine?: number; //tầng lửng
     totalPriceMezzanineVoid?: number; //thông tầng lửng
-    totalPriceOpenRooftop?: number; // tâng thượng mái che
-    totalPriceCoveredRooftop?: number; //tầng thượng ko có mái che
+    totalPriceOpenRooftop?: number; // tâng thượng ko mái che
+    totalPriceRooftop?: number; //tầng thượng có mái che
     //totalPriceFloor
     totalPriceFirstFloor?: number; //lầu 1
     totalPriceSecondFloor?: number; //lầu 2
@@ -38,18 +38,18 @@ export type AppStackParamList = {
 
 
     //area
-    area?: number; //mái che
+    areaRoof?: number; //mái che
     areaPIT?: number; //hố pit
     areaSubRoof?: number; //mái phụ
     areaStereobate?: number; //móng
-    areaBasement?: number; //trệt
+    areaBasement?: number; //hầm
     areaYard?: number; //sân
     areaElevatorTechnical?: number; //thang máy
-    areaGroundFloor?: number; //thông tầng
+    areaGroundFloor?: number; //trệt
     areaMezzanine?: number; //tầng lửng
     areaMezzanineVoid?: number; //thông tầng lửng
-    areaOpenRooftop?: number; //tầng thượng mái che
-    areaCoveredRooftop?: number; //tầng thượng ko có mái che
+    areaOpenRooftop?: number; //tầng thượng ko mái che
+    areaRooftop?: number; //tầng thượng có mái che
     //areaFloor
     areaFirstFloor?: number; //lầu 1
     areaSecondFloor?: number; //lầu 2
@@ -70,7 +70,7 @@ export type AppStackParamList = {
     selectedComplete?: string | null;
     roughPackagePrice?: number | null;
     completePackagePrice?: number | null;
-    source?: 'Mái che' | 'Hố PIT' | 'Sân' | 'Hầm' | 'Trệt' | 'Tầng lửng' | 'Thông tầng lửng' | 'Sân thượng không có mái che' | 'Sân thượng có mái che' | 'Móng' | 'Mái che' | 'Mái phụ' | 'Lầu 1' | 'Lầu 2' | 'Lầu 3' | 'Lầu 4' | 'Lầu 5' | 'Lầu 6' | 'Thông Tầng lầu 1' | 'Thông Tầng lầu 2' | 'Thông Tầng lầu 3' | 'Thông Tầng lầu 4' | 'Thông Tầng lầu 5' | 'Thông Tầng lầu 6';
+    source?: 'Phòng kỹ thuật thang máy' | 'Mái che' | 'Hố PIT' | 'Sân' | 'Hầm' | 'Trệt' | 'Tầng lửng' | 'Thông tầng lửng' | 'Sân thượng không có mái che' | 'Sân thượng có mái che' | 'Móng' | 'Mái che' | 'Mái phụ' | 'Lầu 1' | 'Lầu 2' | 'Lầu 3' | 'Lầu 4' | 'Lầu 5' | 'Lầu 6' | 'Thông Tầng lầu 1' | 'Thông Tầng lầu 2' | 'Thông Tầng lầu 3' | 'Thông Tầng lầu 4' | 'Thông Tầng lầu 5' | 'Thông Tầng lầu 6';
   };
   UltilitiesScreen: undefined;
   ConstructionStack: { screen: keyof ConstructionStackParamList; params: { Name: string } };

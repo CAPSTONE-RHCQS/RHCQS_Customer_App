@@ -8,8 +8,8 @@ const Separator: React.FC = () => {
 const styles = StyleSheet.create({
   separator: {
     borderBottomWidth: 1,
-    borderBottomColor: '#EFEFEF', // Màu của đường kẻ
-    marginVertical: 10, // Khoảng cách trên và dưới đường kẻ
+    borderBottomColor: '#EFEFEF',
+    marginVertical: 10, 
   },
 });
 

@@ -21,7 +21,7 @@ const Roof: React.FC = () => {
   const route = useRoute<RouteProp<ConstructionStackParamList, 'Roof'>>();
   const {Name} = route.params;
 
-  const [area, setArea] = useState('');
+  const [area, setArea] = useState<number>(0);
   const [checkedItems, setCheckedItems] = useState<{[key: string]: boolean}>(
     {},
   );
@@ -32,7 +32,7 @@ const Roof: React.FC = () => {
   >([]);
   const [roughPackagePrice, setRoughPackagePrice] = useState<number>(0);
 
-  const constructionArea = area ? parseFloat(area) * coefficient : 0;
+  const constructionArea = area ? area * coefficient : 0;
   const unitPrice = roughPackagePrice;
   const totalPrice = constructionArea * unitPrice || 0;
 
@@ -115,8 +115,8 @@ const Roof: React.FC = () => {
     await storage.setItem('areaRoof', area.toString());
 
     navigationContruction.navigate('ConstructionScreen', {
-      totalPrice,
-      area: Number(area),
+      totalPriceRoof: totalPrice,
+      areaRoof : Number(area),
       source: 'Mái che',
     });
   };
@@ -144,8 +144,8 @@ const Roof: React.FC = () => {
       <View style={styles.bodyContainer}>
         <InputField
           name=""
-          value={area}
-          onChangeText={setArea}
+          value={area.toString()}
+          onChangeText={(text) => setArea(parseFloat(text))}
           placeholder="Nhập diện tích"
           keyboardType="numeric"
         />
