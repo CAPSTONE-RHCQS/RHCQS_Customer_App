@@ -7,14 +7,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import AppBar from '../components/Appbar';
-import InputField from '../components/InputField';
-import CustomButton from '../components/CustomButton';
-import {FONTFAMILY} from '../theme/theme';
+import AppBar from '../../components/Appbar';
+import InputField from '../../components/InputField';
+import CustomButton from '../../components/CustomButton';
+import {FONTFAMILY} from '../../theme/theme';
 import {useNavigation} from '@react-navigation/native';
 import {AuthStackNavigationProp} from '@/types/TypeScreen';
-import {registerUser} from '../api/Auth/Auth';
-import { Register } from '../types/Customer';
+import {registerUser} from '../../api/Auth/Auth';
+import { Register } from '../../types/Customer';
 
 const RegisterScreen: React.FC = () => {
   const navigationAuth = useNavigation<AuthStackNavigationProp>();
@@ -70,8 +70,8 @@ const RegisterScreen: React.FC = () => {
             <Image
               source={
                 isPasswordVisible
-                  ? require('../assets/image/LoginScreen/Eye-off.png')
-                  : require('../assets/image/LoginScreen/Eye-show.png')
+                  ? require('../../assets/image/LoginScreen/Eye-off.png')
+                  : require('../../assets/image/LoginScreen/Eye-show.png')
               }
               style={styles.eyeImage}
             />
@@ -92,8 +92,8 @@ const RegisterScreen: React.FC = () => {
             <Image
               source={
                 isPasswordVisible
-                  ? require('../assets/image/LoginScreen/Eye-off.png')
-                  : require('../assets/image/LoginScreen/Eye-show.png')
+                  ? require('../../assets/image/LoginScreen/Eye-off.png')
+                  : require('../../assets/image/LoginScreen/Eye-show.png')
               }
               style={styles.eyeImage}
             />

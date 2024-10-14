@@ -21,8 +21,19 @@ const Package: React.FC = () => {
 
   useEffect(() => {
     const fetchPackages = async () => {
-      const data = await getPackages();
-      setPackages(data);
+      try {
+        const cachedData = await AsyncStorage.getItem('packages');
+        if (cachedData) {
+          console.log('Using cached package data');
+          setPackages(JSON.parse(cachedData));
+        } else {
+          const data = await getPackages();
+          setPackages(data);
+          await AsyncStorage.setItem('packages', JSON.stringify(data));
+        }
+      } catch (error) {
+        console.error('Error fetching packages:', error);
+      }
     };
 
     fetchPackages();
@@ -37,7 +48,6 @@ const Package: React.FC = () => {
   };
 
   const handleNext = async () => {
-    // Thêm async vào hàm
     if (!selectedRough && !selectedComplete) {
       Alert.alert('Thông báo', 'Bạn phải chọn ít nhất một gói.');
       return;

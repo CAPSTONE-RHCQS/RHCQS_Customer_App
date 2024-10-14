@@ -20,12 +20,12 @@ const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
     const loadUserToken = async () => {
       try {
         const token = await AsyncStorage.getItem('accessToken');
-        console.log(token);
         if (token) {
           setUserToken(token);
+          console.log('token', token);
         }
       } catch (error) {
-        console.error('Failed to load token from storage');
+        console.error('Failed to load token from storage:', error);
       } finally {
         setIsLoading(false);
       }
@@ -48,6 +48,7 @@ const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || 'Login failed. Please try again.';
+      console.error('Login error:', errorMessage);
       throw new Error('Login failed: ' + errorMessage);
     } finally {
       setIsLoading(false);
@@ -61,7 +62,7 @@ const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
       await AsyncStorage.removeItem('refreshToken');
       setUserToken(null);
     } catch (error) {
-      console.error('Failed to logout');
+      console.error('Failed to logout:', error);
     } finally {
       setIsLoading(false);
     }

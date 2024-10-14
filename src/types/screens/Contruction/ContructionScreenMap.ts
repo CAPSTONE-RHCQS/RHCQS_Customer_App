@@ -1,5 +1,6 @@
 import { ConstructionStackParamList } from "../../TypeScreen";
 
+// Mavigation Screen Detail Mapping
 export const constructionScreenMap: Record<string, keyof ConstructionStackParamList> = {
   'Phòng kỹ thuật thang máy': 'ElevatorTechnical',
   'Hố PIT': 'PIT',
@@ -27,7 +28,7 @@ export const constructionScreenMap: Record<string, keyof ConstructionStackParamL
   'Thông Tầng lầu 6': 'SixthFloorVoid',
 };
 
-
+// Price and Area Mapping
 export const priceAreaMap = {
   'Mái che': { priceKey: 'totalPriceRoof', areaKey: 'areaRoof' },
   'Hố PIT': { priceKey: 'totalPricePIT', areaKey: 'areaPIT' },
@@ -55,6 +56,33 @@ export const priceAreaMap = {
   'Lầu 6': { priceKey: 'totalPriceSixthFloor', areaKey: 'areaSixthFloor' },
 };
 
+// Price and Area Mapping 
+export const priceAreaMapping: Record<string, [string, string]> = {
+  'Mái che': ['totalPriceRoof', 'areaRoof'],
+  'Hố PIT': ['totalPricePIT', 'areaPIT'],
+  'Mái phụ': ['totalPriceSubRoof', 'areaSubRoof'],
+  'Tầng lửng': ['totalPriceMezzanine', 'areaMezzanine'],
+  'Thông tầng lửng': ['totalPriceMezzanineVoid', 'areaMezzanineVoid'],
+  'Phòng kỹ thuật thang máy': ['totalPriceElevatorTechnical', 'areaElevatorTechnical'],
+  'Sân thượng không có mái che': ['totalPriceOpenRooftop', 'areaOpenRooftop'],
+  'Hầm': ['totalPriceBasement', 'areaBasement'],
+  'Móng': ['totalPriceStereobate', 'areaStereobate'],
+  'Sân': ['totalPriceYard', 'areaYard'],
+  'Sân thượng có mái che': ['totalPriceRooftop', 'areaRooftop'],
+  'Trệt': ['totalPriceGroundFloor', 'areaGroundFloor'],
+  'Thông Tầng lầu 1': ['totalPriceFirstFloorVoid', 'areaFirstFloorVoid'],
+  'Thông Tầng lầu 2': ['totalPriceSecondFloorVoid', 'areaSecondFloorVoid'],
+  'Thông Tầng lầu 3': ['totalPriceThirdFloorVoid', 'areaThirdFloorVoid'],
+  'Thông Tầng lầu 4': ['totalPriceFourthFloorVoid', 'areaFourthFloorVoid'],
+  'Thông Tầng lầu 5': ['totalPriceFifthFloorVoid', 'areaFifthFloorVoid'],
+  'Thông Tầng lầu 6': ['totalPriceSixthFloorVoid', 'areaSixthFloorVoid'],
+  'Lầu 1': ['totalPriceFirstFloor', 'areaFirstFloor'],
+  'Lầu 2': ['totalPriceSecondFloor', 'areaSecondFloor'],
+  'Lầu 3': ['totalPriceThirdFloor', 'areaThirdFloor'],
+  'Lầu 4': ['totalPriceFourthFloor', 'areaFourthFloor'],
+  'Lầu 5': ['totalPriceFifthFloor', 'areaFifthFloor'],
+  'Lầu 6': ['totalPriceSixthFloor', 'areaSixthFloor'],
+};
 
 // Phòng kỹ thuật thang máy
 // Hố PIT

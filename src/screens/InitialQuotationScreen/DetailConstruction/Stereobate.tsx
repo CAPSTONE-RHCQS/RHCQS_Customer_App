@@ -32,7 +32,9 @@ const Stereobate: React.FC = () => {
   >([]);
   const [roughPackagePrice, setRoughPackagePrice] = useState<number>(0);
 
-  const constructionArea = areaStereobate ? parseFloat(areaStereobate) * coefficient : 0;
+  const constructionArea = areaStereobate
+    ? parseFloat(areaStereobate) * coefficient
+    : 0;
   const unitPrice = roughPackagePrice;
   const totalPriceStereobate = constructionArea * unitPrice || 0;
 
@@ -100,18 +102,24 @@ const Stereobate: React.FC = () => {
     setCheckedItems(newCheckedItems);
     setCoefficient(coefficients[id]);
 
-    const limitedCheckedItems = Object.keys(newCheckedItems).reduce((acc, key) => {
-      if (newCheckedItems[key]) {
-        acc[key] = newCheckedItems[key];
-      }
-      return acc;
-    }, {} as {[key: string]: boolean});
+    const limitedCheckedItems = Object.keys(newCheckedItems).reduce(
+      (acc, key) => {
+        if (newCheckedItems[key]) {
+          acc[key] = newCheckedItems[key];
+        }
+        return acc;
+      },
+      {} as {[key: string]: boolean},
+    );
 
     await storage.setItem('checkedItems', JSON.stringify(limitedCheckedItems));
   };
 
   const handleContinuePress = async () => {
-    await storage.setItem('totalPriceStereobate', totalPriceStereobate.toString());
+    await storage.setItem(
+      'totalPriceStereobate',
+      totalPriceStereobate.toString(),
+    );
     await storage.setItem('areaStereobate', areaStereobate.toString());
 
     navigationContruction.navigate('ConstructionScreen', {
@@ -170,7 +178,9 @@ const Stereobate: React.FC = () => {
           <Separator />
           <View style={styles.titleGroup}>
             <Text style={styles.title}>Thành tiền</Text>
-            <Text style={styles.total}>{totalPriceStereobate.toLocaleString()} VNĐ</Text>
+            <Text style={styles.total}>
+              {totalPriceStereobate.toLocaleString()} VNĐ
+            </Text>
           </View>
         </View>
       </View>

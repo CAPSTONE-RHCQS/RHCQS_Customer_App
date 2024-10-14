@@ -8,12 +8,12 @@ import {
   Image,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { AuthStackNavigationProp } from '../types/TypeScreen';
+import { AuthStackNavigationProp } from '../../types/TypeScreen';
 import { LinearGradient } from 'react-native-linear-gradient';
-import CustomButton from '../components/CustomButton';
-import InputField from '../components/InputField';
-import { AuthContext } from '../context/AuthContext';
-import { FONTFAMILY } from '../theme/theme';
+import CustomButton from '../../components/CustomButton';
+import InputField from '../../components/InputField';
+import { AuthContext } from '../../context/AuthContext';
+import { FONTFAMILY } from '../../theme/theme';
 
 const LoginScreen: React.FC = () => {
   const navigationAuth = useNavigation<AuthStackNavigationProp>();
@@ -47,12 +47,12 @@ const LoginScreen: React.FC = () => {
         colors={['#1F7F81', '#3C9597', '#53A6A8']}
         style={styles.gradientView}>
         <Image
-          source={require('../assets/image/logo_white.png')}
+          source={require('../../assets/image/logo_white.png')}
           style={styles.logobg}
         />
         <View style={styles.brandView}>
           <Image
-            source={require('../assets/image/logo_white.png')}
+            source={require('../../assets/image/logo_white.png')}
             style={styles.logo}
           />
           <Text style={styles.brandName}>RHCQS</Text>
@@ -80,8 +80,8 @@ const LoginScreen: React.FC = () => {
             <Image
               source={
                 isPasswordVisible
-                  ? require('../assets/image/LoginScreen/Eye-off.png')
-                  : require('../assets/image/LoginScreen/Eye-show.png')
+                  ? require('../../assets/image/LoginScreen/Eye-off.png')
+                  : require('../../assets/image/LoginScreen/Eye-show.png')
               }
               style={styles.eyeImage}
             />

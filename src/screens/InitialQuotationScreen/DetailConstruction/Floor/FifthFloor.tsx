@@ -26,7 +26,9 @@ const FifthFloor: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [roughPackagePrice, setRoughPackagePrice] = useState<number>(0);
 
-  const constructionArea = areaFifthFloor ? Number(areaFifthFloor) * coefficient : 0;
+  const constructionArea = areaFifthFloor
+    ? Number(areaFifthFloor) * coefficient
+    : 0;
   const unitPrice = roughPackagePrice;
   const totalPriceFifthFloor = constructionArea * unitPrice || 0;
 
@@ -75,7 +77,10 @@ const FifthFloor: React.FC = () => {
 
   const handleContinuePress = async () => {
     // Lưu giá trị vào AsyncStorage
-    await storage.setItem('totalPriceFifthFloor', totalPriceFifthFloor.toString());
+    await storage.setItem(
+      'totalPriceFifthFloor',
+      totalPriceFifthFloor.toString(),
+    );
     await storage.setItem('areaFifthFloor', areaFifthFloor.toString());
 
     navigationContruction.navigate('ConstructionScreen', {
@@ -113,7 +118,9 @@ const FifthFloor: React.FC = () => {
         <Separator />
         <View style={styles.titleGroup}>
           <Text style={styles.title}>Thành tiền</Text>
-          <Text style={styles.total}>{totalPriceFifthFloor.toLocaleString()} VNĐ</Text>
+          <Text style={styles.total}>
+            {totalPriceFifthFloor.toLocaleString()} VNĐ
+          </Text>
         </View>
       </View>
       <View style={styles.buttonContainer}>

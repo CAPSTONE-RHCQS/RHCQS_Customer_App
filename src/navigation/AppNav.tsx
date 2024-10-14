@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useRef } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
+import React, {useContext, useEffect, useRef} from 'react';
+import {NavigationContainer} from '@react-navigation/native';
 import AppStack from './AppStack';
 import AuthStack from './AuthStack';
-import { AuthContext } from '../context/AuthContext';
-import { View, ActivityIndicator, Animated, StyleSheet } from 'react-native';
+import {AuthContext} from '../context/AuthContext';
+import {View, ActivityIndicator, Animated, StyleSheet} from 'react-native';
 
 const AppNav = () => {
   const authContext = useContext(AuthContext);
@@ -13,7 +13,7 @@ const AppNav = () => {
     return null;
   }
 
-  const { userToken, isLoading } = authContext;
+  const {userToken, isLoading} = authContext;
 
   useEffect(() => {
     if (isLoading) {
@@ -29,7 +29,7 @@ const AppNav = () => {
             duration: 1000,
             useNativeDriver: true,
           }),
-        ])
+        ]),
       ).start();
     } else {
       fadeAnim.setValue(1);
@@ -38,7 +38,7 @@ const AppNav = () => {
 
   return (
     <View style={styles.container}>
-      <Animated.View style={[styles.content, { opacity: fadeAnim }]}>
+      <Animated.View style={[styles.content, {opacity: fadeAnim}]}>
         <NavigationContainer>
           {userToken ? <AppStack /> : <AuthStack />}
         </NavigationContainer>

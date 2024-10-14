@@ -14,7 +14,6 @@ import {
 } from '@/types/TypeScreen';
 import {getConstructionByName} from '../../../api/Contruction/Contruction';
 import {SubConstructionItem} from '../../../types/screens/Contruction/ContructionType';
-import storage from '../../../utils/storage';
 
 const MezzanineVoid: React.FC = () => {
   const navigationContruction = useNavigation<AppStackNavigationProp>();
@@ -32,7 +31,7 @@ const MezzanineVoid: React.FC = () => {
     SubConstructionItem[]
   >([]);
   const [roughPackagePrice, setRoughPackagePrice] = useState<number>(0);
-  
+
   const constructionArea = areaMezzanineVoid
     ? parseFloat(areaMezzanineVoid) * coefficient
     : 0;
@@ -41,7 +40,7 @@ const MezzanineVoid: React.FC = () => {
 
   useEffect(() => {
     const loadArea = async () => {
-      const savedArea = await storage.getItem('areaMezzanineVoid');
+      const savedArea = await AsyncStorage.getItem('areaMezzanineVoid');
       if (savedArea) {
         setAreaMezzanineVoid(savedArea);
       }
@@ -51,14 +50,14 @@ const MezzanineVoid: React.FC = () => {
 
   useEffect(() => {
     const saveArea = async () => {
-      await storage.setItem('areaMezzanineVoid', areaMezzanineVoid);
+      await AsyncStorage.setItem('areaMezzanineVoid', areaMezzanineVoid);
     };
     saveArea();
   }, [areaMezzanineVoid]);
 
   useEffect(() => {
     const loadRoughPackagePrice = async () => {
-      const price = await storage.getItem('roughPackagePrice');
+      const price = await AsyncStorage.getItem('roughPackagePrice');
       if (price) {
         setRoughPackagePrice(parseFloat(price));
       }
@@ -77,6 +76,13 @@ const MezzanineVoid: React.FC = () => {
             return acc;
           }, {} as {[key: string]: number}) || {};
         setCoefficients(initialCoefficients);
+
+        // Chọn checkbox đầu tiên
+        if (data.SubConstructionItems && data.SubConstructionItems.length > 0) {
+          const firstItemId = data.SubConstructionItems[0].Id;
+          setCheckedItems({[firstItemId]: true});
+          setCoefficient(initialCoefficients[firstItemId]);
+        }
       } else {
         console.error('No data returned from API');
       }
@@ -113,21 +119,29 @@ const MezzanineVoid: React.FC = () => {
       {} as {[key: string]: boolean},
     );
 
-    await storage.setItem('checkedItems', JSON.stringify(limitedCheckedItems));
+    await AsyncStorage.setItem(
+      'checkedItems',
+      JSON.stringify(limitedCheckedItems),
+    );
   };
 
   const handleContinuePress = async () => {
-    await storage.setItem(
+    await AsyncStorage.setItem(
       'totalPriceMezzanineVoid',
       totalPriceMezzanineVoid.toString(),
     );
-    await storage.setItem('areaMezzanineVoid', areaMezzanineVoid.toString());
+    await AsyncStorage.setItem(
+      'areaMezzanineVoid',
+      areaMezzanineVoid.toString(),
+    );
 
     navigationContruction.navigate('ConstructionScreen', {
       totalPriceMezzanineVoid,
       areaMezzanineVoid: Number(areaMezzanineVoid),
       source: 'Thông tầng lửng',
     });
+    console.log('totalPriceMezzanineVoid', totalPriceMezzanineVoid);
+    console.log('areaMezzanineVoid', areaMezzanineVoid);
   };
 
   const renderCheckboxOption = () => {

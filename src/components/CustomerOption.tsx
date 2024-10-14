@@ -42,7 +42,7 @@ const CustomerOptions: React.FC = () => {
 
         {/* Thư viện mẫu nhà */}
         <TouchableOpacity
-          onPress={() => handlePress('Thư viện mẫu nhà')}
+          onPress={() => navigationApp.navigate('HouseLibrary')}
           activeOpacity={0.7}>
           <LinearGradient
             colors={['#5BABAD', '#3C9597', '#14787A']}

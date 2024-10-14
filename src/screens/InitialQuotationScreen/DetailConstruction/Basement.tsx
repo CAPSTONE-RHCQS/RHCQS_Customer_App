@@ -74,6 +74,13 @@ const Basement: React.FC = () => {
             return acc;
           }, {} as {[key: string]: number}) || {};
         setCoefficients(initialCoefficients);
+  
+        // Chọn checkbox đầu tiên
+        if (data.SubConstructionItems && data.SubConstructionItems.length > 0) {
+          const firstItemId = data.SubConstructionItems[0].Id;
+          setCheckedItems({ [firstItemId]: true });
+          setCoefficient(initialCoefficients[firstItemId]);
+        }
       } else {
         console.error('No data returned from API');
       }
@@ -117,7 +124,7 @@ const Basement: React.FC = () => {
     navigationContruction.navigate('ConstructionScreen', {
       totalPriceBasement,
       areaBasement: Number(areaBasement),
-      source: 'Móng',
+      source: 'Hầm',
     });
   };
 

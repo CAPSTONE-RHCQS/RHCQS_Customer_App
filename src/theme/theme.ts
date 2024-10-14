@@ -22,7 +22,6 @@ interface FontFamily {
     text: string;
     loadingOverlay: string;
     activityIndicator: string;
-    // Thêm các màu khác nếu cần
   }
   
   export const COLORS: Colors = {

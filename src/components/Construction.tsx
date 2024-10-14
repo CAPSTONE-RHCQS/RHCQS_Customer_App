@@ -1,6 +1,6 @@
-import { FONTFAMILY } from '../theme/theme';
+import {FONTFAMILY} from '../theme/theme';
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 
 interface ConstructionProps {
   id: string;
@@ -23,30 +23,52 @@ const Construction: React.FC<ConstructionProps> = ({
   isChecked,
   onCheckBoxPress,
 }) => {
+  const formatTitle = (title: string, maxChars: number) => {
+    let formattedTitle = '';
+    let currentLine = '';
+
+    title.split(' ').forEach(word => {
+      if ((currentLine + word).length > maxChars) {
+        formattedTitle += currentLine.trim() + '\n';
+        currentLine = word + ' ';
+      } else {
+        currentLine += word + ' ';
+      }
+    });
+
+    formattedTitle += currentLine.trim();
+    return formattedTitle;
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.textContainer}>
         <View>
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.title}>{formatTitle(title, 35)}</Text>
           <TouchableOpacity onPress={onDetailPress}>
             <Text style={styles.detailText}>Chi tiết</Text>
           </TouchableOpacity>
         </View>
         <View style={styles.priceGroup}>
           <Text style={styles.price}>{price}</Text>
-          <Text style={styles.area}>{area}{unit}</Text>
+          <Text style={styles.area}>
+            {area}
+            {unit}
+          </Text>
         </View>
       </View>
-      <TouchableOpacity onPress={() => onCheckBoxPress(id)} style={styles.checkbox}>
+      <TouchableOpacity
+        onPress={() => onCheckBoxPress(id)}
+        style={styles.checkbox}>
         {isChecked ? (
           <Image
             source={require('../assets/image/icon/checkbox/selected.png')}
-            style={{ width: 20, height: 20 }}
+            style={{width: 20, height: 20}}
           />
         ) : (
           <Image
             source={require('../assets/image/icon/checkbox/circle.png')}
-            style={{ width: 20, height: 20 }}
+            style={{width: 20, height: 20}}
           />
         )}
       </TouchableOpacity>
@@ -59,8 +81,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    borderBottomWidth: 1,
-    borderBottomColor: '#EFEFEF',
+    borderTopWidth: 1,
+    borderTopColor: '#EFEFEF',
   },
   textContainer: {
     flex: 1,
@@ -72,17 +94,18 @@ const styles = StyleSheet.create({
     color: 'black',
     fontFamily: FONTFAMILY.montserat_medium,
     marginBottom: 5,
+    flexWrap: 'wrap',
   },
   detailText: {
     fontSize: 12,
     fontFamily: FONTFAMILY.montserat_medium,
-    marginBottom: 5,
   },
   priceGroup: {
-    position: 'absolute',
-    paddingVertical: 15,
-    right: 0,
-    marginRight: 20,
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    marginRight: 10,
   },
   price: {
     fontFamily: FONTFAMILY.montserat_medium,

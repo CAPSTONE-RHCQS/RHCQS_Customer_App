@@ -16,7 +16,8 @@ import storage from '../../../../utils/storage';
 
 const SecondFloor: React.FC = () => {
   const navigationContruction = useNavigation<AppStackNavigationProp>();
-  const route = useRoute<RouteProp<ConstructionStackParamList, 'SecondFloor'>>();
+  const route =
+    useRoute<RouteProp<ConstructionStackParamList, 'SecondFloor'>>();
   const {Name} = route.params;
 
   const [areaSecondFloor, setAreaSecondFloor] = useState('');
@@ -26,7 +27,9 @@ const SecondFloor: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [roughPackagePrice, setRoughPackagePrice] = useState<number>(0);
 
-  const constructionArea = areaSecondFloor ? Number(areaSecondFloor) * coefficient : 0;
+  const constructionArea = areaSecondFloor
+    ? Number(areaSecondFloor) * coefficient
+    : 0;
   const unitPrice = roughPackagePrice;
   const totalPriceSecondFloor = constructionArea * unitPrice || 0;
 
@@ -75,7 +78,10 @@ const SecondFloor: React.FC = () => {
 
   const handleContinuePress = async () => {
     // Lưu giá trị vào AsyncStorage
-    await storage.setItem('totalPriceSecondFloor', totalPriceSecondFloor.toString());
+    await storage.setItem(
+      'totalPriceSecondFloor',
+      totalPriceSecondFloor.toString(),
+    );
     await storage.setItem('areaSecondFloor', areaSecondFloor.toString());
 
     navigationContruction.navigate('ConstructionScreen', {
@@ -113,7 +119,9 @@ const SecondFloor: React.FC = () => {
         <Separator />
         <View style={styles.titleGroup}>
           <Text style={styles.title}>Thành tiền</Text>
-          <Text style={styles.total}>{totalPriceSecondFloor.toLocaleString()} VNĐ</Text>
+          <Text style={styles.total}>
+            {totalPriceSecondFloor.toLocaleString()} VNĐ
+          </Text>
         </View>
       </View>
       <View style={styles.buttonContainer}>
