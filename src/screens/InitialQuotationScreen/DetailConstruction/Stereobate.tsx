@@ -15,12 +15,15 @@ import {
 import {getConstructionByName} from '../../../api/Contruction/Contruction';
 import {SubConstructionItem} from '../../../types/screens/Contruction/ContructionType';
 import storage from '../../../utils/storage';
+import {pushStereobate} from '../../../redux/actions/Contruction/DetailContructionAction';
+import {useDispatch} from 'react-redux';
 
 const Stereobate: React.FC = () => {
   const navigationContruction = useNavigation<AppStackNavigationProp>();
   const route = useRoute<RouteProp<ConstructionStackParamList, 'Stereobate'>>();
   const {Name} = route.params;
-
+  
+  const dispatch = useDispatch();
   const [areaStereobate, setAreaStereobate] = useState('');
   const [checkedItems, setCheckedItems] = useState<{[key: string]: boolean}>(
     {},
@@ -76,6 +79,29 @@ const Stereobate: React.FC = () => {
             return acc;
           }, {} as {[key: string]: number}) || {};
         setCoefficients(initialCoefficients);
+
+        // Kiểm tra xem có checkedItems đã lưu không
+        const savedCheckedItems = await AsyncStorage.getItem('checkedItems');
+        if (savedCheckedItems) {
+          const parsedCheckedItems = JSON.parse(savedCheckedItems);
+          setCheckedItems(parsedCheckedItems);
+
+          // Tìm hệ số đầu tiên được check
+          const checkedId = Object.keys(parsedCheckedItems).find(
+            id => parsedCheckedItems[id],
+          );
+          if (checkedId) {
+            setCoefficient(initialCoefficients[checkedId]);
+          }
+        } else if (
+          data.SubConstructionItems &&
+          data.SubConstructionItems.length > 0
+        ) {
+          // Nếu không có checkedItems đã lưu, chọn checkbox đầu tiên
+          const firstItemId = data.SubConstructionItems[0].Id;
+          setCheckedItems({[firstItemId]: true});
+          setCoefficient(initialCoefficients[firstItemId]);
+        }
       } else {
         console.error('No data returned from API');
       }
@@ -102,17 +128,8 @@ const Stereobate: React.FC = () => {
     setCheckedItems(newCheckedItems);
     setCoefficient(coefficients[id]);
 
-    const limitedCheckedItems = Object.keys(newCheckedItems).reduce(
-      (acc, key) => {
-        if (newCheckedItems[key]) {
-          acc[key] = newCheckedItems[key];
-        }
-        return acc;
-      },
-      {} as {[key: string]: boolean},
-    );
-
-    await storage.setItem('checkedItems', JSON.stringify(limitedCheckedItems));
+    // Lưu các mục đã được check vào storage
+    await AsyncStorage.setItem('checkedItems', JSON.stringify(newCheckedItems));
   };
 
   const handleContinuePress = async () => {
@@ -122,11 +139,18 @@ const Stereobate: React.FC = () => {
     );
     await storage.setItem('areaStereobate', areaStereobate.toString());
 
-    navigationContruction.navigate('ConstructionScreen', {
-      totalPriceStereobate,
-      areaStereobate: Number(areaStereobate),
-      source: 'Móng',
-    });
+    navigationContruction.navigate('ConstructionScreen');
+
+    dispatch(
+      pushStereobate({
+        name: Name,
+        totalPriceStereobate: totalPriceStereobate,
+        areaStereobate: areaStereobate,
+        checkedItems:
+          Object.keys(checkedItems).find(id => checkedItems[id]) || null,
+        coefficient: coefficient,
+      }),
+    );
   };
 
   const renderCheckboxOption = () => {

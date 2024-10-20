@@ -28,61 +28,6 @@ export const constructionScreenMap: Record<string, keyof ConstructionStackParamL
   'Thông Tầng lầu 6': 'SixthFloorVoid',
 };
 
-// Price and Area Mapping
-export const priceAreaMap = {
-  'Mái che': { priceKey: 'totalPriceRoof', areaKey: 'areaRoof' },
-  'Hố PIT': { priceKey: 'totalPricePIT', areaKey: 'areaPIT' },
-  'Mái phụ': { priceKey: 'totalPriceSubRoof', areaKey: 'areaSubRoof' },
-  'Sân thượng không có mái che': { priceKey: 'totalPriceOpenRooftop', areaKey: 'areaOpenRooftop' },
-  'Phòng kỹ thuật thang máy': { priceKey: 'totalPriceElevatorTechnical', areaKey: 'areaElevatorTechnical' },
-  'Hầm': { priceKey: 'totalPriceBasement', areaKey: 'areaBasement' },
-  'Tầng lửng': { priceKey: 'totalPriceMezzanine', areaKey: 'areaMezzanine' },
-  'Thông Tầng lửng': { priceKey: 'totalPriceMezzanineVoid', areaKey: 'areaMezzanineVoid' },
-  'Móng': { priceKey: 'totalPriceStereobate', areaKey: 'areaStereobate' },
-  'Sân': { priceKey: 'totalPriceYard', areaKey: 'areaYard' },
-  'Sân thượng có mái che': { priceKey: 'totalPriceRooftop', areaKey: 'areaRooftop' },
-  'Trệt': { priceKey: 'totalPriceGroundFloor', areaKey: 'areaGroundFloor' },
-  'Thông Tầng lầu 1': { priceKey: 'totalPriceFirstFloorVoid', areaKey: 'areaFirstFloorVoid' },
-  'Thông Tầng lầu 2': { priceKey: 'totalPriceSecondFloorVoid', areaKey: 'areaSecondFloorVoid' },
-  'Thông Tầng lầu 3': { priceKey: 'totalPriceThirdFloorVoid', areaKey: 'areaThirdFloorVoid' },
-  'Thông Tầng lầu 4': { priceKey: 'totalPriceFourthFloorVoid', areaKey: 'areaFourthFloorVoid' },
-  'Thông Tầng lầu 5': { priceKey: 'totalPriceFifthFloorVoid', areaKey: 'areaFifthFloorVoid' },
-  'Thông Tầng lầu 6': { priceKey: 'totalPriceSixthFloorVoid', areaKey: 'areaSixthFloorVoid' },
-  'Lầu 1': { priceKey: 'totalPriceFirstFloor', areaKey: 'areaFirstFloor' },
-  'Lầu 2': { priceKey: 'totalPriceSecondFloor', areaKey: 'areaSecondFloor' },
-  'Lầu 3': { priceKey: 'totalPriceThirdFloor', areaKey: 'areaThirdFloor' },
-  'Lầu 4': { priceKey: 'totalPriceFourthFloor', areaKey: 'areaFourthFloor' },
-  'Lầu 5': { priceKey: 'totalPriceFifthFloor', areaKey: 'areaFifthFloor' },
-  'Lầu 6': { priceKey: 'totalPriceSixthFloor', areaKey: 'areaSixthFloor' },
-};
-
-// Price and Area Mapping 
-export const priceAreaMapping: Record<string, [string, string]> = {
-  'Mái che': ['totalPriceRoof', 'areaRoof'],
-  'Hố PIT': ['totalPricePIT', 'areaPIT'],
-  'Mái phụ': ['totalPriceSubRoof', 'areaSubRoof'],
-  'Tầng lửng': ['totalPriceMezzanine', 'areaMezzanine'],
-  'Thông tầng lửng': ['totalPriceMezzanineVoid', 'areaMezzanineVoid'],
-  'Phòng kỹ thuật thang máy': ['totalPriceElevatorTechnical', 'areaElevatorTechnical'],
-  'Sân thượng không có mái che': ['totalPriceOpenRooftop', 'areaOpenRooftop'],
-  'Hầm': ['totalPriceBasement', 'areaBasement'],
-  'Móng': ['totalPriceStereobate', 'areaStereobate'],
-  'Sân': ['totalPriceYard', 'areaYard'],
-  'Sân thượng có mái che': ['totalPriceRooftop', 'areaRooftop'],
-  'Trệt': ['totalPriceGroundFloor', 'areaGroundFloor'],
-  'Thông Tầng lầu 1': ['totalPriceFirstFloorVoid', 'areaFirstFloorVoid'],
-  'Thông Tầng lầu 2': ['totalPriceSecondFloorVoid', 'areaSecondFloorVoid'],
-  'Thông Tầng lầu 3': ['totalPriceThirdFloorVoid', 'areaThirdFloorVoid'],
-  'Thông Tầng lầu 4': ['totalPriceFourthFloorVoid', 'areaFourthFloorVoid'],
-  'Thông Tầng lầu 5': ['totalPriceFifthFloorVoid', 'areaFifthFloorVoid'],
-  'Thông Tầng lầu 6': ['totalPriceSixthFloorVoid', 'areaSixthFloorVoid'],
-  'Lầu 1': ['totalPriceFirstFloor', 'areaFirstFloor'],
-  'Lầu 2': ['totalPriceSecondFloor', 'areaSecondFloor'],
-  'Lầu 3': ['totalPriceThirdFloor', 'areaThirdFloor'],
-  'Lầu 4': ['totalPriceFourthFloor', 'areaFourthFloor'],
-  'Lầu 5': ['totalPriceFifthFloor', 'areaFifthFloor'],
-  'Lầu 6': ['totalPriceSixthFloor', 'areaSixthFloor'],
-};
 
 // Phòng kỹ thuật thang máy
 // Hố PIT

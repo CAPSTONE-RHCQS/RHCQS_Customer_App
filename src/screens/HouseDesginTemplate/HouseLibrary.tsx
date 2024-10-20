@@ -4,7 +4,7 @@ import AppBar from '../../components/Appbar';
 import {getHouseTemplate} from '../../api/HouseTemplate/HouseTemplate';
 import {Item} from '../../types/screens/HouseTemplate/HouseTemplateType';
 
-const HouseLibrary = () => {
+const HouseLibrary: React.FC = () => {
   const [images, setImages] = useState<Item[]>([]);
 
   useEffect(() => {

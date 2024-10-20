@@ -11,112 +11,44 @@ import {
 import InputField from '../../components/InputField';
 import AppBar from '../../components/Appbar';
 import FloorSelection from '../../components/FloorSelection';
-import {FONTFAMILY} from '../../theme/theme';
+import {COLORS, FONTFAMILY} from '../../theme/theme';
 import Construction from '../../components/Construction';
 import CustomButton from '../../components/CustomButton';
 import {ScrollView} from 'react-native-gesture-handler';
-import {useNavigation, useRoute, RouteProp} from '@react-navigation/native';
-import {
-  AppStackNavigationProp,
-  AppStackParamList,
-} from '../../types/TypeScreen';
-import {
-  constructionScreenMap,
-  priceAreaMap,
-  priceAreaMapping,
-} from '../../types/screens/Contruction/ContructionScreenMap';
+import {useNavigation} from '@react-navigation/native';
+import {AppStackNavigationProp} from '../../types/TypeScreen';
+import {constructionScreenMap} from '../../types/screens/Contruction/ContructionScreenMap';
 import {getConstructionOption} from '../../api/Contruction/Contruction';
 import {Item} from '../../types/screens/Contruction/ContructionType';
 import Separator from '../../components/Separator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useConstructionState} from '../../hooks/useContructionState';
-import {updatePriceAndArea} from '../../utils/updatePriceAndArea';
-import {loadConstructionData} from '../../utils/updateStateFromStorage';
-
-type ConstructionScreenRouteProp = RouteProp<
-  AppStackParamList,
-  'ConstructionScreen'
->;
+import {useSelector} from 'react-redux';
+import {PackageSelector} from '../../redux/selectors/PackageSelector/PackageSelector';
 
 const ConstructionScreen: React.FC = () => {
   // Navigation
   const navigationApp = useNavigation<AppStackNavigationProp>();
-  const route = useRoute<ConstructionScreenRouteProp>();
 
-  const {totalPrice, setTotalPrice, area, setArea} = useConstructionState();
+  // Lấy dữ liệu từ Redux
+  const constructionData = useSelector((state: any) => state.construction);
+  console.log('constructionData', constructionData);
 
-  // Gói xây dựng
-  const [selectedRough, setSelectedRough] = useState<string>('');
-  const [selectedComplete, setSelectedComplete] = useState<string>('');
-  const [roughPackagePrice, setRoughPackagePrice] = useState<number>(0);
-  const [completePackagePrice, setCompletePackagePrice] = useState<number>(0);
+  const packageData = useSelector(PackageSelector);
+  console.log('packageData', packageData);
 
+  // State để lưu trữ diện tích đất và diện tích xây dựng
   const [landArea, setLandArea] = useState('');
   const [constructionArea, setConstructionArea] = useState('');
+  // State để lưu trữ số tầng lầu đã chọn
   const [selectedFloors, setSelectedFloors] = useState<number | null>(1);
+  // State để lưu trữ ID các mục đã check
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
+  // State để lưu trữ dữ liệu các mục xây dựng
   const [modalVisible, setModalVisible] = useState(false);
+  // State để lưu trữ dữ liệu các mục xây dựng
   const [buildOptionsData, setBuildOptionsData] = useState<Item[]>([]);
-
-  //Load data
-  useEffect(() => {
-    const loadData = async () => {
-      try {
-        await loadConstructionData(setTotalPrice, setArea);
-
-        const storedSelectedRough = await AsyncStorage.getItem('selectedRough');
-        const storedSelectedComplete = await AsyncStorage.getItem(
-          'selectedComplete',
-        );
-        const storedRoughPackagePrice = await AsyncStorage.getItem(
-          'roughPackagePrice',
-        );
-        const storedCompletePackagePrice = await AsyncStorage.getItem(
-          'completePackagePrice',
-        );
-
-        if (storedSelectedRough) {
-          setSelectedRough(storedSelectedRough);
-        }
-        if (storedSelectedComplete) {
-          setSelectedComplete(storedSelectedComplete);
-        }
-        if (storedRoughPackagePrice) {
-          setRoughPackagePrice(parseFloat(storedRoughPackagePrice));
-        }
-        if (storedCompletePackagePrice) {
-          setCompletePackagePrice(parseFloat(storedCompletePackagePrice));
-        }
-      } catch (error) {
-        console.error('Error loading data from AsyncStorage:', error);
-      }
-    };
-
-    loadData();
-  }, []);
-
-  useEffect(() => {
-    const {source} = route.params;
-
-    if (source) {
-      const mapping = priceAreaMapping[source];
-      if (mapping) {
-        const [priceKey, areaKey] = mapping;
-        const priceValue =
-          route.params[priceKey as keyof typeof route.params] ?? undefined;
-        const areaValue =
-          route.params[areaKey as keyof typeof route.params] ?? undefined;
-        updatePriceAndArea(
-          setTotalPrice,
-          setArea,
-          priceKey,
-          areaKey,
-          priceValue as number | undefined,
-          areaValue as number | undefined,
-        );
-      }
-    }
-  }, [route.params]);
+  // State để lưu trữ tổng tiền
+  const [totalPrice, setTotalPrice] = useState<number>(0);
 
   useEffect(() => {
     const fetchConstructionOption = async () => {
@@ -140,7 +72,7 @@ const ConstructionScreen: React.FC = () => {
 
     fetchConstructionOption();
   }, []);
-  
+
   const handleDetailPress = (Name: string) => {
     const screenName = constructionScreenMap[Name];
     if (screenName) {
@@ -153,12 +85,27 @@ const ConstructionScreen: React.FC = () => {
     }
   };
 
-  const handleCheckBoxPress = (id: string) => {
-    setCheckedItems(prevState =>
-      prevState.includes(id)
+  const handleCheckBoxPress = async (id: string, price: number) => {
+    setCheckedItems(prevState => {
+      const isChecked = prevState.includes(id);
+      const newCheckedItems = isChecked
         ? prevState.filter(item => item !== id)
-        : [...prevState, id],
-    );
+        : [...prevState, id];
+
+      // Cập nhật tổng tiền
+      setTotalPrice(prevTotal =>
+        isChecked ? prevTotal - price : prevTotal + price,
+      );
+
+      // Lưu hoặc xóa ID trong AsyncStorage
+      if (isChecked) {
+        AsyncStorage.setItem('checkedItems', JSON.stringify(newCheckedItems));
+      } else {
+        AsyncStorage.removeItem('checkedItems');
+      }
+
+      return newCheckedItems;
+    });
   };
 
   const handleContinuePress = () => {
@@ -180,11 +127,21 @@ const ConstructionScreen: React.FC = () => {
       let displayPrice = 0;
       let displayArea = 0;
 
-      const mapping = priceAreaMap[option.Name as keyof typeof priceAreaMap];
-      if (mapping) {
-        displayPrice = totalPrice[mapping.priceKey as keyof typeof totalPrice];
-        displayArea = area[mapping.areaKey as keyof typeof area];
+      switch (option.Name) {
+        case 'Móng':
+          displayPrice = constructionData.stereobate.totalPriceStereobate;
+          displayArea = parseFloat(constructionData.stereobate.areaStereobate);
+          break;
+        case 'Hầm':
+          displayPrice = constructionData.basement.totalPriceBasement;
+          displayArea = parseFloat(constructionData.basement.areaBasement);
+          break;
+        default:
+          displayPrice = 0;
+          displayArea = 0;
+          break;
       }
+
       return (
         <Construction
           key={index}
@@ -195,7 +152,7 @@ const ConstructionScreen: React.FC = () => {
           unit={option.Unit}
           onDetailPress={() => handleDetailPress(option.Name)}
           isChecked={checkedItems.includes(option.Id)}
-          onCheckBoxPress={handleCheckBoxPress}
+          onCheckBoxPress={() => handleCheckBoxPress(option.Id, displayPrice)}
         />
       );
     });
@@ -253,19 +210,26 @@ const ConstructionScreen: React.FC = () => {
           </View>
 
           <View style={styles.selectedPackages}>
-            {selectedRough && (
+            {packageData.selectedRough && (
               <Text style={styles.packageText}>
-                {roughPackagePrice} - {selectedRough}
+                {packageData.roughPackagePrice} - {packageData.roughPackageName}
               </Text>
             )}
-            {selectedComplete && (
+            {packageData.selectedComplete && (
               <Text style={styles.packageText}>
-                {completePackagePrice} - {selectedComplete}
+                {packageData.completePackagePrice} -{' '}
+                {packageData.completePackageName}
               </Text>
             )}
           </View>
         </View>
         <Separator />
+        <View style={styles.totalPriceContainer}>
+          <Text style={styles.totalPriceText}>Tổng tiền: </Text>
+          <Text style={styles.totalPrice}>
+            {totalPrice.toLocaleString()} VND
+          </Text>
+        </View>
         <CustomButton
           title="Tiếp tục"
           onPress={handleContinuePress}
@@ -324,7 +288,6 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 14,
   },
-
   selectedPackagesContainer: {
     flexDirection: 'row',
     marginBottom: 20,
@@ -393,6 +356,24 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginHorizontal: 20,
     marginBottom: 20,
+  },
+  totalPriceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+  },
+  totalPriceText: {
+    fontFamily: FONTFAMILY.montserat_semibold,
+    fontSize: 14,
+    color: 'black',
+    textAlign: 'right',
+    marginBottom: 10,
+  },
+  totalPrice: {
+    fontFamily: FONTFAMILY.montserat_semibold,
+    fontSize: 14,
+    color: COLORS.primary,
+    textAlign: 'right',
+    marginBottom: 10,
   },
 });
 

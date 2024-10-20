@@ -4,32 +4,78 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Ultilities from '../../components/Ultilities';
 import Separator from '../../components/Separator';
-import {getUltilities} from '../../api/Ultilities/Ultilities';
+import {
+  getAllUltilities,
+  getRoughUltilities,
+  getFinishedUltilities,
+} from '../../api/Ultilities/Ultilities';
 import {Ultilities as UltilitiesType} from '../../types/screens/Ultilities/UltilitiesType';
 import {ScrollView} from 'react-native-gesture-handler';
 import CustomButton from '../../components/CustomButton';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {PackageSelector} from '../../redux/selectors/PackageSelector/PackageSelector';
+import {useSelector} from 'react-redux';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import {UltilitiesScreenMap} from '../../types/screens/Ultilities/UltilitiesScreenMap';
+import {AppStackNavigationProp, UltilitiesStackParamList} from '../../types/TypeScreen';
 
 const UltilitiesScreen: React.FC = () => {
+  const navigationApp = useNavigation<AppStackNavigationProp>();
+  // State để lưu trữ ID các mục đã check
+  const [checkedItems, setCheckedItems] = useState<string[]>([]);
+  // State để lưu trữ dữ liệu các mục tiện ích
   const [ultilities, setUltilities] = useState<UltilitiesType[]>([]);
 
-  const handleContinuePress = () => {};
+  const packageData = useSelector(PackageSelector);
 
   useEffect(() => {
     const fetchUltilities = async () => {
-      const data = await getUltilities();
-      setUltilities(data);
+      const selectedRoughType = packageData.selectedRoughType;
+      const selectedCompleteType = packageData.selectedCompleteType;
+
+      switch (true) {
+        case selectedRoughType === 'ROUGH' &&
+          selectedCompleteType === 'FINISHED':
+          const allData = await getAllUltilities();
+          setUltilities(allData);
+          break;
+        case selectedRoughType === 'ROUGH' &&
+          selectedCompleteType === undefined:
+          const roughData = await getRoughUltilities();
+          setUltilities(roughData);
+          break;
+        case selectedRoughType === undefined &&
+          selectedCompleteType === 'FINISHED':
+          const finishedData = await getFinishedUltilities();
+          setUltilities(finishedData);
+          break;
+        default:
+          break;
+      }
     };
 
     fetchUltilities();
   }, []);
 
-  const handleDetailPress = (id: string) => {
-    console.log('Detail pressed for:', id);
+
+
+  const handleDetailPress = (Id: string) => {
+    const screenId = UltilitiesScreenMap[Id];
+    if (screenId) {
+      navigationApp.navigate('UltilitiesStack', {
+        screen: 'NarrowAlleyConstructionCost',
+        params: {Id: '8d94e702-1a40-4316-815c-1668ab01d7d6'},
+      });
+    } else {
+      console.warn('Không tìm thấy hạn mục:', Id);
+    }
   };
 
   const handleCheckBoxPress = (id: string) => {
     console.log('Checkbox pressed for:', id);
   };
+
+  const handleContinuePress = () => {};
 
   return (
     <View style={styles.container}>

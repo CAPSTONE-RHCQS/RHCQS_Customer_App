@@ -81,11 +81,7 @@ const ElevatorTechnical: React.FC = () => {
     await storage.setItem('totalPriceElevatorTechnical', totalPriceElevatorTechnical.toString());
     await storage.setItem('areaElevatorTechnical', areaElevatorTechnical.toString());
 
-    navigationContruction.navigate('ConstructionScreen', {
-      totalPriceElevatorTechnical,
-      areaElevatorTechnical: Number(areaElevatorTechnical),
-      source: 'Phòng kỹ thuật thang máy',
-    });
+    navigationContruction.navigate('ConstructionScreen');
   };
 
   return (

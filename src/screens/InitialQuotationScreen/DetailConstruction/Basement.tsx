@@ -15,13 +15,19 @@ import {
 import {getConstructionByName} from '../../../api/Contruction/Contruction';
 import {SubConstructionItem} from '../../../types/screens/Contruction/ContructionType';
 import storage from '../../../utils/storage';
+import {pushBasement} from '../../../redux/actions/Contruction/DetailContructionAction';
+import {useDispatch, useSelector} from 'react-redux';
+import {PackageSelector} from '../../../redux/selectors/PackageSelector/PackageSelector';
 
 const Basement: React.FC = () => {
   const navigationContruction = useNavigation<AppStackNavigationProp>();
   const route = useRoute<RouteProp<ConstructionStackParamList, 'Basement'>>();
   const {Name} = route.params;
+  const dispatch = useDispatch();
 
+  // State để lưu trữ diện tích móng
   const [areaBasement, setAreaBasement] = useState('');
+  // State để lưu trữ trạng thái các mục đã check
   const [checkedItems, setCheckedItems] = useState<{[key: string]: boolean}>(
     {},
   );
@@ -30,10 +36,12 @@ const Basement: React.FC = () => {
   const [constructionData, setConstructionData] = useState<
     SubConstructionItem[]
   >([]);
-  const [roughPackagePrice, setRoughPackagePrice] = useState<number>(0);
+  const packageData = useSelector(PackageSelector);
 
-  const constructionArea = areaBasement ? parseFloat(areaBasement) * coefficient : 0;
-  const unitPrice = roughPackagePrice;
+  const constructionArea = areaBasement
+    ? parseFloat(areaBasement) * coefficient
+    : 0;
+  const unitPrice = packageData.roughPackagePrice;
   const totalPriceBasement = constructionArea * unitPrice || 0;
 
   useEffect(() => {
@@ -54,16 +62,6 @@ const Basement: React.FC = () => {
   }, [areaBasement]);
 
   useEffect(() => {
-    const loadRoughPackagePrice = async () => {
-      const price = await storage.getItem('roughPackagePrice');
-      if (price) {
-        setRoughPackagePrice(parseFloat(price));
-      }
-    };
-    loadRoughPackagePrice();
-  }, []);
-
-  useEffect(() => {
     const fetchConstructionOption = async () => {
       const data = await getConstructionByName(Name);
       if (data) {
@@ -74,11 +72,27 @@ const Basement: React.FC = () => {
             return acc;
           }, {} as {[key: string]: number}) || {};
         setCoefficients(initialCoefficients);
-  
-        // Chọn checkbox đầu tiên
-        if (data.SubConstructionItems && data.SubConstructionItems.length > 0) {
+
+        // Kiểm tra xem có checkedItems đã lưu không
+        const savedCheckedItems = await AsyncStorage.getItem('checkedItems');
+        if (savedCheckedItems) {
+          const parsedCheckedItems = JSON.parse(savedCheckedItems);
+          setCheckedItems(parsedCheckedItems);
+
+          // Tìm hệ số đầu tiên được check
+          const checkedId = Object.keys(parsedCheckedItems).find(
+            id => parsedCheckedItems[id],
+          );
+          if (checkedId) {
+            setCoefficient(initialCoefficients[checkedId]);
+          }
+        } else if (
+          data.SubConstructionItems &&
+          data.SubConstructionItems.length > 0
+        ) {
+          // Nếu không có checkedItems đã lưu, chọn checkbox đầu tiên
           const firstItemId = data.SubConstructionItems[0].Id;
-          setCheckedItems({ [firstItemId]: true });
+          setCheckedItems({[firstItemId]: true});
           setCoefficient(initialCoefficients[firstItemId]);
         }
       } else {
@@ -107,25 +121,26 @@ const Basement: React.FC = () => {
     setCheckedItems(newCheckedItems);
     setCoefficient(coefficients[id]);
 
-    const limitedCheckedItems = Object.keys(newCheckedItems).reduce((acc, key) => {
-      if (newCheckedItems[key]) {
-        acc[key] = newCheckedItems[key];
-      }
-      return acc;
-    }, {} as {[key: string]: boolean});
-
-    await storage.setItem('checkedItems', JSON.stringify(limitedCheckedItems));
+    // Lưu các mục đã được check vào storage
+    await AsyncStorage.setItem('checkedItems', JSON.stringify(newCheckedItems));
   };
 
   const handleContinuePress = async () => {
     await storage.setItem('totalPriceBasement', totalPriceBasement.toString());
     await storage.setItem('areaBasement', areaBasement.toString());
 
-    navigationContruction.navigate('ConstructionScreen', {
-      totalPriceBasement,
-      areaBasement: Number(areaBasement),
-      source: 'Hầm',
-    });
+    navigationContruction.navigate('ConstructionScreen');
+
+    dispatch(
+      pushBasement({
+        name: Name,
+        totalPriceBasement: totalPriceBasement,
+        areaBasement: areaBasement,
+        checkedItems:
+          Object.keys(checkedItems).find(id => checkedItems[id]) || null,
+        coefficient: coefficient,
+      }),
+    );
   };
 
   const renderCheckboxOption = () => {
@@ -177,7 +192,9 @@ const Basement: React.FC = () => {
           <Separator />
           <View style={styles.titleGroup}>
             <Text style={styles.title}>Thành tiền</Text>
-            <Text style={styles.total}>{totalPriceBasement.toLocaleString()} VNĐ</Text>
+            <Text style={styles.total}>
+              {totalPriceBasement.toLocaleString()} VNĐ
+            </Text>
           </View>
         </View>
       </View>
