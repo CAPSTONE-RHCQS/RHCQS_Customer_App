@@ -1,22 +1,26 @@
 interface StereobateState {
+    id: string;
     name: string;
-    totalPriceStereobate: number;
-    areaStereobate: string;
+    totalPrice: number;
+    area: string;
+    checkedItemName: string;
     checkedItems: { [key: string]: boolean };
     coefficient: number;
 }
 
 const initialState: StereobateState = {
+    id: '',
     name: '',
-    totalPriceStereobate: 0,
-    areaStereobate: '',
+    totalPrice: 0,
+    area: '',
+    checkedItemName: '',
     checkedItems: {},
     coefficient: 0,
 };
 
 const stereobateSlice = (state: StereobateState = initialState, action: any) => {
     switch (action.type) {
-        case 'construction/stereobate':
+        case 'detailConstruction/stereobate':
             return {
                 ...state,
                 ...action.payload,

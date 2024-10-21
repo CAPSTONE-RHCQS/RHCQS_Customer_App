@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Ultilities } from "../../types/screens/Ultilities/UltilitiesType";
+import { Section, Ultilities } from "../../types/screens/Ultilities/UltilitiesType";
 import axiosInstance, { getHeaders } from "../../utils/axios";
 
 export const getAllUltilities = async (): Promise<Ultilities[]> => {
@@ -63,6 +63,28 @@ export const getUltilitiesById = async (id: string): Promise<Ultilities | null> 
     try {
         const cacheKey = `ultilities_${id}`;
         const cachedData = await AsyncStorage.getItem(cacheKey);
+        console.log('Cached data:', cachedData);
+        if (cachedData) {
+            console.log('Using cached data for id:', id);
+            return JSON.parse(cachedData);
+        }
+        
+        const headers = await getHeaders();
+        const response = await axiosInstance.get(`/utilities/section/id?id=${id}`, { headers });
+        console.log('Response data for id:', id, response.data);
+        await AsyncStorage.setItem(cacheKey, JSON.stringify(response.data));
+        return response.data || null;
+    } catch (error) {
+        console.error('Error fetching ultilities data by id:', id, error);
+        return null;
+    }
+};
+
+export const getUltilitiesSectionById = async (id: string): Promise<Section | null> => {
+    try {
+        const cacheKey = `ultilities_${id}`;
+        const cachedData = await AsyncStorage.getItem(cacheKey);
+        console.log('Cached data:', cachedData);
         if (cachedData) {
             console.log('Using cached data for id:', id);
             return JSON.parse(cachedData);

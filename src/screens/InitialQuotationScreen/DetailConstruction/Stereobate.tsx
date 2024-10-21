@@ -16,14 +16,19 @@ import {getConstructionByName} from '../../../api/Contruction/Contruction';
 import {SubConstructionItem} from '../../../types/screens/Contruction/ContructionType';
 import storage from '../../../utils/storage';
 import {pushStereobate} from '../../../redux/actions/Contruction/DetailContructionAction';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {PackageSelector} from '../../../redux/selectors/PackageSelector/PackageSelector';
 
 const Stereobate: React.FC = () => {
   const navigationContruction = useNavigation<AppStackNavigationProp>();
   const route = useRoute<RouteProp<ConstructionStackParamList, 'Stereobate'>>();
   const {Name} = route.params;
-  
+
   const dispatch = useDispatch();
+
+  const packageData = useSelector(PackageSelector);
+  console.log('packageData', packageData);
+  const [constructionId, setConstructionId] = useState('');
   const [areaStereobate, setAreaStereobate] = useState('');
   const [checkedItems, setCheckedItems] = useState<{[key: string]: boolean}>(
     {},
@@ -33,17 +38,18 @@ const Stereobate: React.FC = () => {
   const [constructionData, setConstructionData] = useState<
     SubConstructionItem[]
   >([]);
-  const [roughPackagePrice, setRoughPackagePrice] = useState<number>(0);
+  const roughPackagePrice = packageData.roughPackagePrice;
 
+  // Tính diện tích và đơn giá
   const constructionArea = areaStereobate
     ? parseFloat(areaStereobate) * coefficient
     : 0;
   const unitPrice = roughPackagePrice;
-  const totalPriceStereobate = constructionArea * unitPrice || 0;
+  const totalPriceStereobate = constructionArea * unitPrice;
 
   useEffect(() => {
     const loadArea = async () => {
-      const savedArea = await storage.getItem('areaSubRoof');
+      const savedArea = await storage.getItem('areaStereobate');
       if (savedArea) {
         setAreaStereobate(savedArea);
       }
@@ -59,20 +65,12 @@ const Stereobate: React.FC = () => {
   }, [areaStereobate]);
 
   useEffect(() => {
-    const loadRoughPackagePrice = async () => {
-      const price = await storage.getItem('roughPackagePrice');
-      if (price) {
-        setRoughPackagePrice(parseFloat(price));
-      }
-    };
-    loadRoughPackagePrice();
-  }, []);
-
-  useEffect(() => {
     const fetchConstructionOption = async () => {
       const data = await getConstructionByName(Name);
       if (data) {
+        setConstructionId(data.Id);
         setConstructionData(data.SubConstructionItems || []);
+        // Lấy hệ số của các item
         const initialCoefficients =
           data.SubConstructionItems?.reduce((acc, item) => {
             acc[item.Id] = item.Coefficient;
@@ -81,7 +79,9 @@ const Stereobate: React.FC = () => {
         setCoefficients(initialCoefficients);
 
         // Kiểm tra xem có checkedItems đã lưu không
-        const savedCheckedItems = await AsyncStorage.getItem('checkedItems');
+        const savedCheckedItems = await AsyncStorage.getItem(
+          'checkedItemsStereobate',
+        );
         if (savedCheckedItems) {
           const parsedCheckedItems = JSON.parse(savedCheckedItems);
           setCheckedItems(parsedCheckedItems);
@@ -111,7 +111,9 @@ const Stereobate: React.FC = () => {
 
   useEffect(() => {
     const loadCheckedItems = async () => {
-      const savedCheckedItems = await AsyncStorage.getItem('checkedItems');
+      const savedCheckedItems = await AsyncStorage.getItem(
+        'checkedItemsStereobate',
+      );
       if (savedCheckedItems) {
         setCheckedItems(JSON.parse(savedCheckedItems));
       }
@@ -129,7 +131,10 @@ const Stereobate: React.FC = () => {
     setCoefficient(coefficients[id]);
 
     // Lưu các mục đã được check vào storage
-    await AsyncStorage.setItem('checkedItems', JSON.stringify(newCheckedItems));
+    await AsyncStorage.setItem(
+      'checkedItemsStereobate',
+      JSON.stringify(newCheckedItems),
+    );
   };
 
   const handleContinuePress = async () => {
@@ -141,13 +146,20 @@ const Stereobate: React.FC = () => {
 
     navigationContruction.navigate('ConstructionScreen');
 
+
+    const selectedItemId = Object.keys(checkedItems).find(id => checkedItems[id]);
+    const checkedItemName = selectedItemId
+      ? constructionData.find(item => item.Id === selectedItemId)?.Name || null
+      : null;
+
     dispatch(
       pushStereobate({
+        id: constructionId,
         name: Name,
-        totalPriceStereobate: totalPriceStereobate,
-        areaStereobate: areaStereobate,
-        checkedItems:
-          Object.keys(checkedItems).find(id => checkedItems[id]) || null,
+        totalPrice: totalPriceStereobate,
+        area: areaStereobate,
+        checkedItemName: checkedItemName,
+        checkedItems: selectedItemId,
         coefficient: coefficient,
       }),
     );

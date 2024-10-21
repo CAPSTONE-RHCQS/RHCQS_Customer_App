@@ -123,11 +123,7 @@ const SixthFloorVoid: React.FC = () => {
     );
     await storage.setItem('areaSixthFloorVoid', areaSixthFloorVoid.toString());
 
-    navigationContruction.navigate('ConstructionScreen', {
-      totalPriceSixthFloorVoid,
-      areaSixthFloorVoid: Number(areaSixthFloorVoid),
-      source: 'Thông Tầng lầu 1',
-    });
+    navigationContruction.navigate('ConstructionScreen');
   };
 
   const renderCheckboxOption = () => {

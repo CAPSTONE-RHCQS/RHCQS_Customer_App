@@ -79,11 +79,7 @@ const Mezzanine: React.FC = () => {
     await storage.setItem('totalPriceMezzanine', totalPriceMezzanine.toString());
     await storage.setItem('areaMezzanine', areaMezzanine.toString());
 
-    navigationContruction.navigate('ConstructionScreen', {
-      totalPriceMezzanine,
-      areaMezzanine: Number(areaMezzanine),
-      source: 'Tầng lửng',
-    });
+    navigationContruction.navigate('ConstructionScreen');
   };
 
   return (

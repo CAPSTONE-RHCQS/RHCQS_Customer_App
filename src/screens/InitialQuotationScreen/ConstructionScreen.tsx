@@ -22,16 +22,20 @@ import {getConstructionOption} from '../../api/Contruction/Contruction';
 import {Item} from '../../types/screens/Contruction/ContructionType';
 import Separator from '../../components/Separator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {PackageSelector} from '../../redux/selectors/PackageSelector/PackageSelector';
+import {pushConstruction} from '../../redux/actions/Contruction/ContructionAction';
 
 const ConstructionScreen: React.FC = () => {
   // Navigation
   const navigationApp = useNavigation<AppStackNavigationProp>();
+  const dispatch = useDispatch();
 
   // Lấy dữ liệu từ Redux
-  const constructionData = useSelector((state: any) => state.construction);
-  console.log('constructionData', constructionData);
+  const detailConstructionData = useSelector(
+    (state: any) => state.detailConstruction,
+  );
+  console.log('detailConstructionData', detailConstructionData);
 
   const packageData = useSelector(PackageSelector);
   console.log('packageData', packageData);
@@ -99,9 +103,12 @@ const ConstructionScreen: React.FC = () => {
 
       // Lưu hoặc xóa ID trong AsyncStorage
       if (isChecked) {
-        AsyncStorage.setItem('checkedItems', JSON.stringify(newCheckedItems));
+        AsyncStorage.setItem(
+          'checkedItemsConstruction',
+          JSON.stringify(newCheckedItems),
+        );
       } else {
-        AsyncStorage.removeItem('checkedItems');
+        AsyncStorage.removeItem('checkedItemsConstruction');
       }
 
       return newCheckedItems;
@@ -110,6 +117,44 @@ const ConstructionScreen: React.FC = () => {
 
   const handleContinuePress = () => {
     navigationApp.navigate('UltilitiesScreen');
+
+    const detailedCheckedItems = checkedItems
+      .map(id =>
+        Object.values(detailConstructionData).find(
+          (detail: any) => detail.id === id,
+        ),
+      )
+      .filter(Boolean);
+
+    dispatch(
+      pushConstruction({
+        constructionArea: constructionArea,
+        checkedItems: detailedCheckedItems,
+        totalPrice: totalPrice,
+      }),
+    );
+  };
+
+  // Hàm để cập nhật diện tích đất và tính toán diện tích xây dựng
+  const handleLandAreaChange = (value: string) => {
+    setLandArea(value);
+
+    const landAreaValue = parseFloat(value);
+    if (!isNaN(landAreaValue)) {
+      let calculatedConstructionArea;
+      if (landAreaValue <= 50) {
+        calculatedConstructionArea = landAreaValue;
+      } else if (landAreaValue > 50) {
+        calculatedConstructionArea = 50 + 0.9 * (landAreaValue - 50);
+      } else if (landAreaValue > 100) {
+        calculatedConstructionArea = landAreaValue * 0.9;
+      } else {
+        calculatedConstructionArea = 0;
+      }
+      setConstructionArea(calculatedConstructionArea.toFixed(2));
+    } else {
+      setConstructionArea('');
+    }
   };
 
   const renderBuildOptions = () => {
@@ -128,27 +173,31 @@ const ConstructionScreen: React.FC = () => {
       let displayArea = 0;
 
       switch (option.Name) {
-        case 'Móng':
-          displayPrice = constructionData.stereobate.totalPriceStereobate;
-          displayArea = parseFloat(constructionData.stereobate.areaStereobate);
-          break;
         case 'Hầm':
-          displayPrice = constructionData.basement.totalPriceBasement;
-          displayArea = parseFloat(constructionData.basement.areaBasement);
+          displayPrice = detailConstructionData.basement?.totalPrice || 0;
+          displayArea = parseFloat(detailConstructionData.basement?.area || '0');
           break;
+        case 'Móng':
+          displayPrice = detailConstructionData.stereobate?.totalPrice || 0;
+          displayArea = parseFloat(detailConstructionData.stereobate?.area || '0');
+          break;
+
         default:
           displayPrice = 0;
           displayArea = 0;
           break;
       }
 
+      const formattedPrice = displayPrice.toLocaleString();
+      const formattedArea = displayArea.toLocaleString();
+
       return (
         <Construction
           key={index}
           id={option.Id}
           title={option.Name}
-          price={displayPrice.toLocaleString()}
-          area={displayArea.toLocaleString()}
+          price={formattedPrice}
+          area={formattedArea}
           unit={option.Unit}
           onDetailPress={() => handleDetailPress(option.Name)}
           isChecked={checkedItems.includes(option.Id)}
@@ -167,7 +216,7 @@ const ConstructionScreen: React.FC = () => {
           <InputField
             name="Diện tích đất"
             value={landArea}
-            onChangeText={setLandArea}
+            onChangeText={handleLandAreaChange}
             placeholder="100"
             keyboardType="numeric"
           />

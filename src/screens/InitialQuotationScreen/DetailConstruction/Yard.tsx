@@ -79,11 +79,7 @@ const Yard: React.FC = () => {
     await storage.setItem('totalPriceYard', totalPriceYard.toString());
     await storage.setItem('areaYard', areaYard.toString());
 
-    navigationContruction.navigate('ConstructionScreen', {
-      totalPriceYard,
-      areaYard: Number(areaYard),
-      source: 'Sân',
-    });
+    navigationContruction.navigate('ConstructionScreen');
   };
 
   return (

@@ -114,11 +114,7 @@ const FourthFloorVoid: React.FC = () => {
     await storage.setItem('totalPriceFourthFloorVoid', totalPriceFourthFloorVoid.toString());
     await storage.setItem('areaFourthFloorVoid', areaFourthFloorVoid.toString());
 
-    navigationContruction.navigate('ConstructionScreen', {
-      totalPriceFourthFloorVoid,
-      areaFourthFloorVoid: Number(areaFourthFloorVoid),
-      source: 'Thông Tầng lầu 1',
-    });
+    navigationContruction.navigate('ConstructionScreen');
   };
 
   const renderCheckboxOption = () => {

@@ -1,13 +1,25 @@
-import basementSlice from "./Detailcontruction/BasementSlice";
-import stereobateSlice from "./Detailcontruction/StereobateSlice";
-import { combineReducers } from 'redux';
+interface ConstructionState {
+    constructionArea: string;
+    checkedItems: string[];
+    totalPrice: number;
+}
 
+const initialState: ConstructionState = {
+    constructionArea: '',
+    checkedItems: [],
+    totalPrice: 0,
+};
 
-const constructionSlice = combineReducers({
-    basement: basementSlice,
-    stereobate: stereobateSlice,
-});
+const constructionSlice = (state: ConstructionState = initialState, action: any) => {
+    switch (action.type) {
+        case 'construction':
+            return {
+                ...state,
+                ...action.payload
+            };
+        default:
+            return state;
+    }
+};
 
 export default constructionSlice;
-
-

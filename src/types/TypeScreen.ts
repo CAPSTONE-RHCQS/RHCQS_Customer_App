@@ -13,6 +13,7 @@ export type AppStackParamList = {
   ConstructionStack: { screen: keyof ConstructionStackParamList; params: { Name: string } };
   Package: undefined;
   HouseLibrary: undefined;
+  ConfirmInformation: undefined;
 };
 
 export type ConstructionStackParamList = {
@@ -47,7 +48,9 @@ export type ConstructionStackParamList = {
 
 export type UltilitiesStackParamList = {
   NarrowAlleyConstructionCost: { Id: string };
+  SmallAreaConstructionCost: { Id: string };
 };
+
 
 export type AuthStackNavigationProp = NativeStackNavigationProp<AuthStackParamList>;
 export type AppStackNavigationProp = NativeStackNavigationProp<AppStackParamList>;

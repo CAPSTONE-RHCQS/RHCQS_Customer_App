@@ -79,11 +79,7 @@ const PIT: React.FC = () => {
     await storage.setItem('totalPricePIT', totalPricePIT.toString());
     await storage.setItem('areaPIT', areaPIT.toString());
 
-    navigationContruction.navigate('ConstructionScreen', {
-      totalPricePIT,
-      areaPIT: Number(areaPIT),
-      source: 'Hố PIT',
-    });
+    navigationContruction.navigate('ConstructionScreen');
   };
 
   return (

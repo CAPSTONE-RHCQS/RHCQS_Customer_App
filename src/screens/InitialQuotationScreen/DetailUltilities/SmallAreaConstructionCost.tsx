@@ -5,7 +5,7 @@ import {AppStackNavigationProp, UltilitiesStackParamList} from '@/types/TypeScre
 import {RouteProp, useRoute, useNavigation} from '@react-navigation/native';
 import {getUltilitiesSectionById} from '../../../api/Ultilities/Ultilities';
 import {Section} from '../../../types/screens/Ultilities/UltilitiesType';
-import Checkbox from '../../../components/Checkbox'; // Import Checkbox component
+import Checkbox from '../../../components/Checkbox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {FONTFAMILY} from '../../../theme/theme';
 import Separator from '../../../components/Separator';
@@ -13,14 +13,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ContructionSelector } from '../../../redux/selectors/ContructionSelector/ContructionSelector';
 import CustomButton from '../../../components/CustomButton';
 import storage from '../../../utils/storage';
-import { pushNarrowAlley } from '../../../redux/actions/Ultilities/DetailUltilitiesAction';
+import { pushSmallArea } from '../../../redux/actions/Ultilities/DetailUltilitiesAction';
 
 
-const NarrowAlleyConstructionCost: React.FC = () => {
+const SmallAreaConstructionCost: React.FC = () => {
   // route
   const route =
     useRoute<
-      RouteProp<UltilitiesStackParamList, 'NarrowAlleyConstructionCost'>
+      RouteProp<UltilitiesStackParamList, 'SmallAreaConstructionCost'>
     >();
   const navigationUltilities = useNavigation<AppStackNavigationProp>();
   const dispatch = useDispatch();
@@ -35,7 +35,7 @@ const NarrowAlleyConstructionCost: React.FC = () => {
     {},
   );
   const totalPriceContact = constructionData.totalPrice;
-  const totalPriceNarrowAlley = totalPriceContact * coefficient;
+  const totalPriceSmallArea = totalPriceContact * coefficient;
   useEffect(() => {
     const fetchUltilitiesOption = async () => {
       const data = await getUltilitiesSectionById(Id);
@@ -49,7 +49,7 @@ const NarrowAlleyConstructionCost: React.FC = () => {
 
       // Lấy checkedItems từ AsyncStorage
       const savedCheckedItems = await AsyncStorage.getItem(
-        'checkedItemsNarrowAlleyConstructionCost',
+        'checkedItemsSmallAreaConstructionCost',
       );
       if (savedCheckedItems) {
         const parsedCheckedItems = JSON.parse(savedCheckedItems);
@@ -82,7 +82,7 @@ const NarrowAlleyConstructionCost: React.FC = () => {
 
     // Lưu các mục đã được check vào storage
     await AsyncStorage.setItem(
-      'checkedItemsNarrowAlleyConstructionCost',
+      'checkedItemsSmallAreaConstructionCost',
       JSON.stringify(newCheckedItems),
     );
   };
@@ -101,8 +101,8 @@ const NarrowAlleyConstructionCost: React.FC = () => {
 
   const handleContinuePress = async () => {
     await storage.setItem(
-          'totalPriceNarrowAlley',
-          totalPriceNarrowAlley.toString(),
+          'totalPriceSmallArea',
+            totalPriceSmallArea.toString(),
         );
 
     navigationUltilities.navigate('UltilitiesScreen');
@@ -113,10 +113,10 @@ const NarrowAlleyConstructionCost: React.FC = () => {
       : null;
 
     dispatch(
-      pushNarrowAlley({
+      pushSmallArea({
         id: Id,
         name: sectionData?.Name,
-        totalPrice: totalPriceNarrowAlley,
+        totalPrice: totalPriceSmallArea,
         checkedItemName: checkedItemName,
         checkedItems: selectedItemId,
       }),
@@ -141,7 +141,7 @@ const NarrowAlleyConstructionCost: React.FC = () => {
           </View>
           <View style={styles.titleGroup}>
             <Text style={styles.title}>Thành tiền</Text>
-            <Text style={styles.totalPrice}>{totalPriceNarrowAlley.toLocaleString()} VNĐ</Text>
+            <Text style={styles.totalPrice}>{totalPriceSmallArea.toLocaleString()} VNĐ</Text>
           </View>
           <Separator />
           <View style={styles.titleGroupDescription}>
@@ -217,4 +217,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NarrowAlleyConstructionCost;
+export default SmallAreaConstructionCost;

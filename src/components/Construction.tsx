@@ -44,7 +44,7 @@ const Construction: React.FC<ConstructionProps> = ({
     <View style={styles.container}>
       <View style={styles.textContainer}>
         <View>
-          <Text style={styles.title}>{formatTitle(title, 35)}</Text>
+          <Text style={styles.title}>{formatTitle(title, 34)}</Text>
           <TouchableOpacity onPress={onDetailPress}>
             <Text style={styles.detailText}>Chi tiết</Text>
           </TouchableOpacity>

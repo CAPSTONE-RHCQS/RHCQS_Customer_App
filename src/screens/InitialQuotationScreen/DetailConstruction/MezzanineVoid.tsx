@@ -135,11 +135,7 @@ const MezzanineVoid: React.FC = () => {
       areaMezzanineVoid.toString(),
     );
 
-    navigationContruction.navigate('ConstructionScreen', {
-      totalPriceMezzanineVoid,
-      areaMezzanineVoid: Number(areaMezzanineVoid),
-      source: 'Thông tầng lửng',
-    });
+    navigationContruction.navigate('ConstructionScreen');
     console.log('totalPriceMezzanineVoid', totalPriceMezzanineVoid);
     console.log('areaMezzanineVoid', areaMezzanineVoid);
   };

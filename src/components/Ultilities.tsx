@@ -5,6 +5,7 @@ import {FONTFAMILY} from '../theme/theme';
 import {ScrollView} from 'react-native-gesture-handler';
 
 interface ExpandableListProps {
+  id: string;
   title: string;
   ultilities: Array<{
     id: string;
@@ -15,10 +16,11 @@ interface ExpandableListProps {
     isChecked: boolean;
   }>;
   onDetailPress: (id: string) => void;
-  onCheckBoxPress: (id: string) => void;
+  onCheckBoxPress: (id: string, price: number) => void;
 }
 
 const Ultilities: React.FC<ExpandableListProps> = ({
+  id,
   title,
   ultilities,
   onDetailPress,
@@ -54,7 +56,7 @@ const Ultilities: React.FC<ExpandableListProps> = ({
                 unit={ultility.unit}
                 isChecked={ultility.isChecked}
                 onDetailPress={() => onDetailPress(ultility.id)}
-                onCheckBoxPress={onCheckBoxPress}
+                onCheckBoxPress={() => onCheckBoxPress(ultility.id, parseFloat(ultility.price.replace(/,/g, '')))}
               />
             ))}
           </View>

@@ -114,11 +114,7 @@ const Roof: React.FC = () => {
     await storage.setItem('totalPriceRoof', totalPrice.toString());
     await storage.setItem('areaRoof', area.toString());
 
-    navigationContruction.navigate('ConstructionScreen', {
-      totalPriceRoof: totalPrice,
-      areaRoof : Number(area),
-      source: 'Mái che',
-    });
+    navigationContruction.navigate('ConstructionScreen');
   };
 
   const renderCheckboxOption = () => {

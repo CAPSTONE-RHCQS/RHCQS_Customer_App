@@ -1,11 +1,10 @@
 export interface Item {
     Id: string;
+    SectionId: string;
     Name: string;
-    Deflag: boolean;
+    Coefficient: number;
     InsDate: string;
     UpsDate: string;
-    Description?: string;
-    Items?: any;
 }
 
 export interface Section {

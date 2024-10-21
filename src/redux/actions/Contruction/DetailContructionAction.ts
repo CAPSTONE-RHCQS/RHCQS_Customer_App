@@ -1,13 +1,13 @@
 export const pushBasement = (dataBasement: any) => {
     return {
-        type: 'construction/basement',
+        type: 'detailConstruction/basement',
         payload: dataBasement,
     };
 };
 
 export const pushStereobate = (dataStereobate: any) => {
     return {
-        type: 'construction/stereobate',
+        type: 'detailConstruction/stereobate',
         payload: dataStereobate,
     };
 };

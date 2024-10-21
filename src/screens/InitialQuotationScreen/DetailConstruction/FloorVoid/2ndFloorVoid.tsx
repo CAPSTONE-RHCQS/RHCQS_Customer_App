@@ -114,11 +114,7 @@ const SecondFloorVoid: React.FC = () => {
     await storage.setItem('totalPriceSecondFloorVoid', totalPriceSecondFloorVoid.toString());
     await storage.setItem('areaSecondFloorVoid', areaSecondFloorVoid.toString());
 
-    navigationContruction.navigate('ConstructionScreen', {
-      totalPriceSecondFloorVoid,
-      areaSecondFloorVoid: Number(areaSecondFloorVoid),
-      source: 'Thông Tầng lầu 1',
-    });
+    navigationContruction.navigate('ConstructionScreen');
   };
 
   const renderCheckboxOption = () => {

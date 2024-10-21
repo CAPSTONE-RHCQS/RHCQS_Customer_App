@@ -79,11 +79,7 @@ const OpenRooftop: React.FC = () => {
     await storage.setItem('totalPriceOpenRooftop', totalPriceOpenRooftop.toString());
     await storage.setItem('areaOpenRooftop', areaOpenRooftop.toString());
 
-    navigationContruction.navigate('ConstructionScreen', {
-      totalPriceOpenRooftop,
-      areaOpenRooftop: Number(areaOpenRooftop),
-      source: 'Sân thượng không có mái che',
-    });
+    navigationContruction.navigate('ConstructionScreen');
   };
 
   return (

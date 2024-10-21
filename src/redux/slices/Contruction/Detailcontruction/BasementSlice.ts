@@ -1,22 +1,24 @@
 interface BasementState {
+    id: string;
     name: string;
-    totalPriceBasement: number;
-    areaBasement: string;
+    totalPrice: number;
+    area: string;
     checkedItems: { [key: string]: number }
     coefficient: number;
 }
 
 const initialState: BasementState = {
+    id: '',
     name: '',
-    totalPriceBasement: 0,
-    areaBasement: '',
+    totalPrice: 0,
+    area: '',
     checkedItems: {},
     coefficient: 0,
 };
 
 const basementSlice = (state: BasementState = initialState, action: any) => {
     switch (action.type) {
-        case 'construction/basement':
+        case 'detailConstruction/basement':
             return {
                 ...state,
                 ...action.payload,

@@ -25,6 +25,7 @@ const Basement: React.FC = () => {
   const {Name} = route.params;
   const dispatch = useDispatch();
 
+  const [constructionId, setConstructionId] = useState('');
   // State để lưu trữ diện tích móng
   const [areaBasement, setAreaBasement] = useState('');
   // State để lưu trữ trạng thái các mục đã check
@@ -65,6 +66,7 @@ const Basement: React.FC = () => {
     const fetchConstructionOption = async () => {
       const data = await getConstructionByName(Name);
       if (data) {
+        setConstructionId(data.Id);
         setConstructionData(data.SubConstructionItems || []);
         const initialCoefficients =
           data.SubConstructionItems?.reduce((acc, item) => {
@@ -131,13 +133,20 @@ const Basement: React.FC = () => {
 
     navigationContruction.navigate('ConstructionScreen');
 
+
+    const selectedItemId = Object.keys(checkedItems).find(id => checkedItems[id]);
+    const checkedItemName = selectedItemId
+      ? constructionData.find(item => item.Id === selectedItemId)?.Name || null
+      : null;
+
     dispatch(
       pushBasement({
+        id: constructionId,
         name: Name,
-        totalPriceBasement: totalPriceBasement,
-        areaBasement: areaBasement,
-        checkedItems:
-          Object.keys(checkedItems).find(id => checkedItems[id]) || null,
+        totalPrice: totalPriceBasement,
+        area: areaBasement,
+        checkedItemName: checkedItemName,
+        checkedItems: selectedItemId,
         coefficient: coefficient,
       }),
     );

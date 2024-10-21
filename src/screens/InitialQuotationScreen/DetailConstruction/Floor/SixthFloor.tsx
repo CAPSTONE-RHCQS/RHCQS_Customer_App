@@ -83,11 +83,7 @@ const SixthFloor: React.FC = () => {
     );
     await storage.setItem('areaSixthFloor', areaSixthFloor.toString());
 
-    navigationContruction.navigate('ConstructionScreen', {
-      totalPriceSixthFloor,
-      areaSixthFloor: Number(areaSixthFloor),
-      source: 'Lầu 6',
-    });
+    navigationContruction.navigate('ConstructionScreen');
   };
 
   return (

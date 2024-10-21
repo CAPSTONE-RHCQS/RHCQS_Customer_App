@@ -17,7 +17,8 @@ import storage from '../../../utils/storage';
 
 const GroundFloor: React.FC = () => {
   const navigationContruction = useNavigation<AppStackNavigationProp>();
-  const route = useRoute<RouteProp<ConstructionStackParamList, 'GroundFloor'>>();
+  const route =
+    useRoute<RouteProp<ConstructionStackParamList, 'GroundFloor'>>();
   const {Name} = route.params;
 
   const [areaGroundFloor, setAreaGroundFloor] = useState('');
@@ -27,7 +28,9 @@ const GroundFloor: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [roughPackagePrice, setRoughPackagePrice] = useState<number>(0);
 
-  const constructionArea = areaGroundFloor ? Number(areaGroundFloor) * coefficient : 0;
+  const constructionArea = areaGroundFloor
+    ? Number(areaGroundFloor) * coefficient
+    : 0;
   const unitPrice = roughPackagePrice;
   const totalPriceGroundFloor = constructionArea * unitPrice || 0;
 
@@ -76,14 +79,13 @@ const GroundFloor: React.FC = () => {
 
   const handleContinuePress = async () => {
     // Lưu giá trị vào AsyncStorage
-    await storage.setItem('totalPriceGroundFloor', totalPriceGroundFloor.toString());
+    await storage.setItem(
+      'totalPriceGroundFloor',
+      totalPriceGroundFloor.toString(),
+    );
     await storage.setItem('areaGroundFloor', areaGroundFloor.toString());
 
-    navigationContruction.navigate('ConstructionScreen', {
-      totalPriceGroundFloor,
-      areaGroundFloor: Number(areaGroundFloor),
-      source: 'Trệt',
-    });
+    navigationContruction.navigate('ConstructionScreen');
   };
 
   return (
@@ -114,7 +116,9 @@ const GroundFloor: React.FC = () => {
         <Separator />
         <View style={styles.titleGroup}>
           <Text style={styles.title}>Thành tiền</Text>
-          <Text style={styles.total}>{totalPriceGroundFloor.toLocaleString()} VNĐ</Text>
+          <Text style={styles.total}>
+            {totalPriceGroundFloor.toLocaleString()} VNĐ
+          </Text>
         </View>
       </View>
       <View style={styles.buttonContainer}>

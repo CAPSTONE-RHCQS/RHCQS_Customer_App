@@ -84,11 +84,7 @@ const FourthFloor: React.FC = () => {
     );
     await storage.setItem('areaFourthFloor', areaFourthFloor.toString());
 
-    navigationContruction.navigate('ConstructionScreen', {
-      totalPriceFourthFloor,
-      areaFourthFloor: Number(areaFourthFloor),
-      source: 'Lầu 4',
-    });
+    navigationContruction.navigate('ConstructionScreen');
   };
 
   return (
