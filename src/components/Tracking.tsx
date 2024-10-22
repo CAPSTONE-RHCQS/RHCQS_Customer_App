@@ -4,16 +4,46 @@ import {FONTFAMILY} from '../theme/theme';
 
 interface SimpleExpandableListProps {
   title: string;
-  date: string;
+  status?: string;
   onPress: () => void;
 }
 
-const Project: React.FC<SimpleExpandableListProps> = ({
+const Tracking: React.FC<SimpleExpandableListProps> = ({
   title,
-  date,
+  status,
   onPress,
 }) => {
   const [expanded, setExpanded] = useState(false);
+
+  const getStatusColor = (status: string | undefined) => {
+    switch (status) {
+      case 'Pending':
+        return '#FFA500';
+      case 'Processing':
+        return '#0000FF';
+      case 'Finalized':
+        return '#008000';
+      case 'Canceled':
+        return '#FF0000';
+      default:
+        return 'black';
+    }
+  };
+
+  const getStatusText = (status: string | undefined) => {
+    switch (status) {
+      case 'Pending':
+        return 'Đang chờ xử lý';
+      case 'Processing':
+        return 'Đang xử lý';
+      case 'Finalized':
+        return 'Đã hoàn tất';
+      case 'Canceled':
+        return 'Đã hủy';
+      default:
+        return '';
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -25,12 +55,12 @@ const Project: React.FC<SimpleExpandableListProps> = ({
         }}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{title}</Text>
-          <Text style={styles.date}>{date}</Text>
+          <Text style={[styles.status, {color: getStatusColor(status)}]}>
+            {getStatusText(status)}
+          </Text>
         </View>
         <Image
-          source={
-           require('../assets/image/icon/chevron/chevron-right.png')
-          }
+          source={require('../assets/image/icon/chevron/chevron-right.png')}
           style={styles.icon}
         />
       </TouchableOpacity>
@@ -52,17 +82,19 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
   },
   titleContainer: {
-    flexDirection: 'column',
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'space-between',
   },
   title: {
     color: 'black',
     fontSize: 16,
     fontFamily: FONTFAMILY.montserat_bold,
   },
-  date: {
-    color: 'black',
-    fontSize: 12,
-    fontFamily: FONTFAMILY.montserat_regular,
+  status: {
+    marginRight: 10,
+    fontSize: 16,
+    fontFamily: FONTFAMILY.montserat_bold,
   },
   icon: {
     width: 18,
@@ -70,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Project;
+export default Tracking;

@@ -18,6 +18,9 @@ export type AppStackParamList = {
   ConfirmInformation: undefined;
   // History
   HistoryScreen: undefined;
+  TrackingScreen: {projectId: string};
+  VersionScreen: {projectId: string};
+  VersionDetail: {projectId: string, version: string};
 };
 
 // Detail Construction

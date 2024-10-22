@@ -6,8 +6,11 @@ import {getProfile} from '../../api/Account/Account';
 import {getProjectByEmail} from '../../api/Project/project';
 import {ProjectHistory} from '../../types/screens/History/HistoryType';
 import {format} from 'date-fns';
+import { useNavigation } from '@react-navigation/native';
+import { AppStackNavigationProp } from '../../types/TypeScreen';
 
 const HistoryScreen: React.FC = () => {
+  const navigationApp = useNavigation<AppStackNavigationProp>();
   const [customerEmail, setCustomerEmail] = useState('');
   const [projectHistory, setProjectHistory] = useState<ProjectHistory[]>([]);
 
@@ -17,8 +20,7 @@ const HistoryScreen: React.FC = () => {
         const profile = await getProfile();
         setCustomerEmail(profile.Email);
         console.log('customerEmail', profile.Email);
-
-        // Gọi hàm getProjectByEmail sau khi có customerEmail
+        // Lấy dự án theo email
         const projects = await getProjectByEmail(profile.Email);
         setProjectHistory(projects);
         console.log('projectHistory', projects);
@@ -29,6 +31,11 @@ const HistoryScreen: React.FC = () => {
     fetchProfile();
   }, []);
 
+  const handleProjectPress = (projectId: string) => {
+    console.log('Project ID:', projectId);
+    navigationApp.navigate('TrackingScreen', {projectId});
+  };
+
   return (
     <View style={styles.container}>
       <AppBar nameScreen="Danh sách dự án" />
@@ -36,7 +43,12 @@ const HistoryScreen: React.FC = () => {
         {projectHistory.map((project, index) => {
           const formattedDate = format(new Date(project.InsDate), 'dd-MM-yyyy');
           return (
-            <Project key={index} date={formattedDate} title={project.Name} />
+            <Project
+              key={index}
+              date={formattedDate}
+              title={project.Name}
+              onPress={() => handleProjectPress(project.Id)}
+            />
           );
         })}
       </View>

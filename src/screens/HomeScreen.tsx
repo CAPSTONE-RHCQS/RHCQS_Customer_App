@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {FONTFAMILY} from '../theme/theme';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -8,22 +8,35 @@ import Carousel from 'react-native-reanimated-carousel';
 import BannerSlider from '../components/BannerSlider';
 import {newsData, sliderData} from '../model/data';
 import {height, width} from '../utils/Dimensions';
-import {profileData} from '../model/data';
 import CustomerOptions from '../components/CustomerOption';
 import NewsItem from '../components/News';
 import BlogItem from '../components/Blog';
+import {getProfile} from '../api/Account/Account';
 
 const viewHeight = height / 6;
 
 const HomeScreen: React.FC = ({}) => {
   // State
   const [currentIndex, setCurrentIndex] = useState(0);
-  const {name, image} = profileData[0];
-
+  const [customerName, setCustomerName] = useState('');
+  const [customerImg, setCustomerImg] = useState('');
   // Render
   const renderBanner = ({item}: {item: any; index: number}) => {
     return <BannerSlider data={item} />;
   };
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const profile = await getProfile();
+        setCustomerName(profile.Username);
+        setCustomerImg(profile.ImageUrl);
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      }
+    };
+    fetchProfile();
+  }, []);
 
 
   // Handle
@@ -40,6 +53,7 @@ const HomeScreen: React.FC = ({}) => {
   return (
     <SafeAreaView>
       <ScrollView>
+
         {/* Linear Gradient Header */}
         <View style={styles.container}>
           <LinearGradient
@@ -49,11 +63,13 @@ const HomeScreen: React.FC = ({}) => {
               source={require('../assets/image/logo_white.png')}
               style={styles.logobg}
             />
+
+            {/* Profile */}
             <View style={styles.profileContainer}>
               <View style={styles.profileImageContainer}>
-                <Image source={image} style={styles.profileImage} />
+                <Image source={{uri: customerImg}} style={styles.profileImage} />
               </View>
-              <Text style={styles.profileName}>{name} </Text>
+              <Text style={styles.profileName}>{customerName} </Text>
               <View style={styles.iconContainer}>
                 <Image
                   source={require('../assets/image/icon/chat_icon.png')}
@@ -65,6 +81,7 @@ const HomeScreen: React.FC = ({}) => {
                 />
               </View>
             </View>
+
           </LinearGradient>
         </View>
 
@@ -93,6 +110,7 @@ const HomeScreen: React.FC = ({}) => {
             ))}
           </View>
         </View>
+
         {/* Customer Option */}
         <CustomerOptions />
 
