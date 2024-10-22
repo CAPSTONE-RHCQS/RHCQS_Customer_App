@@ -9,7 +9,12 @@ import {PackageSelector} from '../../redux/selectors/PackageSelector/PackageSele
 import {createProject} from '../../api/Project/project';
 import axios from 'axios';
 import {getProfile} from '../../api/Account/Account';
-const ConfirmInformation = () => {
+import CustomButton from '../../components/CustomButton';
+import {useNavigation} from '@react-navigation/native';
+import {AppStackNavigationProp} from '../../types/TypeScreen';
+
+const ConfirmInformation: React.FC = () => {
+  const navigationApp = useNavigation<AppStackNavigationProp>();
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
@@ -24,8 +29,6 @@ const ConfirmInformation = () => {
     (state: any) => state.detailUltilities || [],
   );
 
-  console.log('ultilitiesData', ultilitiesData);
-
   useEffect(() => {
     const fetchProfile = async () => {
       try {
@@ -36,7 +39,6 @@ const ConfirmInformation = () => {
         console.error('Failed to fetch profile:', error);
       }
     };
-
     fetchProfile();
   }, []);
 
@@ -46,17 +48,17 @@ const ConfirmInformation = () => {
         constructionItemId: item.id,
         subConstructionId: item.checkedItems,
         area: item.area,
-        pirce : item.totalPrice,
+        pirce: item.totalPrice,
       }),
     );
 
-    console.log('initialQuotationItemRequests', JSON.stringify(initialQuotationItemRequests, null, 2));
-
-    const quotationUtilitiesRequest = ultilitiesData.checkedItems.map((item: any) => ({
-      ultilitiesItemId: item.checkedItems,
-      name: item.checkedItemName,
-      price: item.totalPrice,
-    }));
+    const quotationUtilitiesRequest = ultilitiesData.checkedItems.map(
+      (item: any) => ({
+        ultilitiesItemId: item.checkedItems,
+        name: item.checkedItemName,
+        price: item.totalPrice,
+      }),
+    );
 
     console.log('quotationUtilitiesRequest', quotationUtilitiesRequest);
 
@@ -138,7 +140,13 @@ const ConfirmInformation = () => {
           onChangeText={setProjectName}
           placeholder="Nhập tên dự án"
         />
-        <Button title="Submit" onPress={handleSubmit} />
+      </View>
+      <View style={styles.buttonContainer}>
+        <CustomButton
+          title="Xác nhận thông tin"
+          onPress={handleSubmit}
+          colors={['#53A6A8', '#3C9597', '#1F7F81']}
+        />
       </View>
     </View>
   );
@@ -150,8 +158,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   bodyContainer: {
+    flex: 1,
     paddingTop: 20,
     paddingHorizontal: 20,
+  },
+  buttonContainer: {
+    justifyContent: 'flex-end',
+    marginHorizontal: 20,
+    marginBottom: 20,
   },
 });
 

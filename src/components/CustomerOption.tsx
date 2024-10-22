@@ -67,7 +67,7 @@ const CustomerOptions: React.FC = () => {
       <View style={styles.optionGroup2}>
         {/* Lịch sử báo giá */}
         <TouchableOpacity
-          onPress={() => handlePress('Lịch sử báo giá')}
+          onPress={() => navigationApp.navigate('HistoryScreen')}
           activeOpacity={0.7}>
           <LinearGradient
             colors={['#14787A', '#3C9597', '#5BABAD']}

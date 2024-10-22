@@ -6,7 +6,9 @@ export type AuthStackParamList = {
 };
 
 export type AppStackParamList = {
+  // Home
   HomeScreen: undefined;
+  // Initial Quotation
   ConstructionScreen: undefined;
   UltilitiesScreen: undefined;
   UltilitiesStack: { screen: keyof UltilitiesStackParamList; params: { Id: string } };
@@ -14,8 +16,11 @@ export type AppStackParamList = {
   Package: undefined;
   HouseLibrary: undefined;
   ConfirmInformation: undefined;
+  // History
+  HistoryScreen: undefined;
 };
 
+// Detail Construction
 export type ConstructionStackParamList = {
   // Construction
   ElevatorTechnical: { Name: string };
@@ -46,12 +51,17 @@ export type ConstructionStackParamList = {
   SixthFloorVoid: { Name: string };
 };
 
+// Detail Ultilities
 export type UltilitiesStackParamList = {
   NarrowAlleyConstructionCost: { Id: string };
   SmallAreaConstructionCost: { Id: string };
 };
 
-
+// Auth
 export type AuthStackNavigationProp = NativeStackNavigationProp<AuthStackParamList>;
+// App
 export type AppStackNavigationProp = NativeStackNavigationProp<AppStackParamList>;
+// Detail Construction
 export type ConstructionStackNavigationProp = NativeStackNavigationProp<ConstructionStackParamList>;
+// Detail Ultilities
+export type UltilitiesStackNavigationProp = NativeStackNavigationProp<UltilitiesStackParamList>;

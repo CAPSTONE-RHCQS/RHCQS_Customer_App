@@ -115,6 +115,7 @@ const UltilitiesScreen: React.FC = () => {
     });
   };
   const handleContinuePress = () => {
+    if (checkedItems.length === 0) return;
     navigationApp.navigate('ConfirmInformation');
 
     const detailedCheckedItems = checkedItems
@@ -144,7 +145,7 @@ const UltilitiesScreen: React.FC = () => {
             switch (section.Id) {
               case '8d94e702-1a40-4316-815c-1668ab01d7d6': {
                 // Trường hợp section là narrowAlley (hẻm hẹp)
-                const narrowAlleyData = ultilitiesData.narrowAlley; // Lấy dữ liệu liên quan đ���n hẻm hẹp từ ultilitiesData.
+                const narrowAlleyData = ultilitiesData.narrowAlley; // Lấy dữ liệu liên quan đn hẻm hẹp từ ultilitiesData.
                 price = narrowAlleyData
                   ? narrowAlleyData.totalPrice // Nếu có dữ liệu hẻm hẹp, gán giá trị tổng giá cho price.
                   : '0'; // Nếu không có dữ liệu, giá sẽ là '0'.
@@ -212,7 +213,8 @@ const UltilitiesScreen: React.FC = () => {
         <CustomButton
           title="Tiếp tục"
           onPress={handleContinuePress}
-          colors={['#53A6A8', '#3C9597', '#1F7F81']}
+          colors={checkedItems.length > 0 ? ['#53A6A8', '#3C9597', '#1F7F81'] : ['#d3d3d3', '#d3d3d3', '#d3d3d3']} // Màu xám khi không có hạng mục nào được chọn
+          disabled={checkedItems.length === 0} // Vô hiệu hóa nút khi không có hạng mục nào được chọn
         />
       </View>
     </View>

@@ -9,6 +9,7 @@ interface InputFieldProps {
   placeholder: string;
   secureTextEntry?: boolean;
   keyboardType?: 'default' | 'numeric' | 'email-address' | 'phone-pad';
+  isRequired?: boolean; // Thêm thuộc tính mới
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -17,10 +18,14 @@ const InputField: React.FC<InputFieldProps> = ({
   onChangeText,
   placeholder,
   keyboardType = 'default',
+  isRequired = false,
 }) => {
   return (
     <View>
-      <Text style={styles.title}>{name}</Text>
+      <View style={styles.labelContainer}>
+        <Text style={styles.title}>{name}</Text>
+        {isRequired && <Text style={styles.requiredAsterisk}>*</Text>}
+      </View>
       <TextInput
         style={styles.input}
         placeholder={placeholder}
@@ -34,12 +39,21 @@ const InputField: React.FC<InputFieldProps> = ({
 };
 
 const styles = StyleSheet.create({
+  labelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
   title: {
     fontFamily: FONTFAMILY.montserat_semibold,
     fontSize: 14,
     color: 'black',
     marginBottom: 10,
     textAlign: 'left',
+  },
+  requiredAsterisk: {
+    color: 'red',
+    marginLeft: 4,
+    marginBottom: 10,
   },
   input: {
     fontFamily: FONTFAMILY.montserat_medium,

@@ -9,6 +9,7 @@ import Package from '../screens/Package/Package';
 import HouseLibrary from '../screens/HouseDesginTemplate/HouseLibrary';
 import UltilitiesStack from './UltilitiesDetailStack';
 import ConfirmInformation from '../screens/InitialQuotationScreen/ConfirmInformation';
+import HistoryScreen from '../screens/HistoryScreen/HistoryScreen';
 
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
@@ -24,6 +25,7 @@ const AppStack: React.FC = () => {
       <Stack.Screen name="Package" component={Package} />
       <Stack.Screen name="HouseLibrary" component={HouseLibrary} />
       <Stack.Screen name="ConfirmInformation" component={ConfirmInformation} />
+      <Stack.Screen name="HistoryScreen" component={HistoryScreen} />
     </Stack.Navigator>
   );
 };

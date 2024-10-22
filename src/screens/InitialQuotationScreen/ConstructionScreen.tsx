@@ -207,6 +207,9 @@ const ConstructionScreen: React.FC = () => {
     });
   };
 
+  // Kiểm tra điều kiện để kích hoạt nút "Tiếp tục"
+  const isContinueButtonEnabled = landArea !== '' && constructionArea !== '' && checkedItems.length > 0;
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#E4E1E1FF" />
@@ -219,6 +222,7 @@ const ConstructionScreen: React.FC = () => {
             onChangeText={handleLandAreaChange}
             placeholder="100"
             keyboardType="numeric"
+            isRequired={true}
           />
           <InputField
             name="Diện tích xây dựng"
@@ -226,6 +230,7 @@ const ConstructionScreen: React.FC = () => {
             onChangeText={setConstructionArea}
             placeholder="90"
             keyboardType="numeric"
+            isRequired={true}
           />
           <Text style={styles.noteText}>Đơn vị tính: m²</Text>
         </View>
@@ -282,7 +287,8 @@ const ConstructionScreen: React.FC = () => {
         <CustomButton
           title="Tiếp tục"
           onPress={handleContinuePress}
-          colors={['#53A6A8', '#3C9597', '#1F7F81']}
+          colors={isContinueButtonEnabled ? ['#53A6A8', '#3C9597', '#1F7F81'] : ['#A9A9A9', '#A9A9A9', '#A9A9A9']}
+          disabled={!isContinueButtonEnabled}
         />
       </View>
 
