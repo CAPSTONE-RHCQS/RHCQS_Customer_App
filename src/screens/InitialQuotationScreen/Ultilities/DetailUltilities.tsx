@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import AppBar from '../../../components/Appbar';
-import {AppStackNavigationProp, UltilitiesStackParamList} from '@/types/TypeScreen';
+import {AppStackNavigationProp, AppStackParamList} from '@/types/TypeScreen';
 import {RouteProp, useRoute, useNavigation} from '@react-navigation/native';
 import {getUltilitiesSectionById} from '../../../api/Ultilities/Ultilities';
 import {Section} from '../../../types/screens/Ultilities/UltilitiesType';
@@ -13,14 +13,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { ContructionSelector } from '../../../redux/selectors/ContructionSelector/ContructionSelector';
 import CustomButton from '../../../components/CustomButton';
 import storage from '../../../utils/storage';
-import { pushSmallArea } from '../../../redux/actions/Ultilities/DetailUltilitiesAction';
+import { pushUltilities } from '../../../redux/actions/Ultilities/UltilitiesAction';
+import InputField from '../../../components/InputField';
 
 
-const SmallAreaConstructionCost: React.FC = () => {
+const DetailUltilities: React.FC = () => {
   // route
   const route =
     useRoute<
-      RouteProp<UltilitiesStackParamList, 'SmallAreaConstructionCost'>
+      RouteProp<AppStackParamList, 'DetailUltilities'>
     >();
   const navigationUltilities = useNavigation<AppStackNavigationProp>();
   const dispatch = useDispatch();
@@ -28,6 +29,7 @@ const SmallAreaConstructionCost: React.FC = () => {
 
   const constructionData = useSelector(ContructionSelector);
   console.log('constructionData', constructionData);
+  const [area, setArea] = useState('');
   const [sectionData, setSectionData] = useState<Section | null>(null);
   const [coefficients, setCoefficients] = useState<{[key: string]: number}>({});
   const [coefficient, setCoefficient] = useState(0)
@@ -40,6 +42,7 @@ const SmallAreaConstructionCost: React.FC = () => {
     const fetchUltilitiesOption = async () => {
       const data = await getUltilitiesSectionById(Id);
       setSectionData(data);
+      console.log('data', data);
       const initialCoefficients =
         data?.Items?.reduce((acc, item) => {
           acc[item.Id] = item.Coefficient;
@@ -49,7 +52,7 @@ const SmallAreaConstructionCost: React.FC = () => {
 
       // Lấy checkedItems từ AsyncStorage
       const savedCheckedItems = await AsyncStorage.getItem(
-        'checkedItemsSmallAreaConstructionCost',
+        'checkedItemsDetailUltilities',
       );
       if (savedCheckedItems) {
         const parsedCheckedItems = JSON.parse(savedCheckedItems);
@@ -82,7 +85,7 @@ const SmallAreaConstructionCost: React.FC = () => {
 
     // Lưu các mục đã được check vào storage
     await AsyncStorage.setItem(
-      'checkedItemsSmallAreaConstructionCost',
+      'checkedItemsDetailUltilities',
       JSON.stringify(newCheckedItems),
     );
   };
@@ -113,7 +116,7 @@ const SmallAreaConstructionCost: React.FC = () => {
       : null;
 
     dispatch(
-      pushSmallArea({
+      pushUltilities({
         id: Id,
         name: sectionData?.Name,
         totalPrice: totalPriceSmallArea,
@@ -129,6 +132,12 @@ const SmallAreaConstructionCost: React.FC = () => {
       {sectionData && (
         <View style={styles.bodyContainer}>
           <Text style={styles.titleText}>{sectionData.Name}</Text>
+          <InputField
+            placeholder="Nhập diện tích"
+            value={area}
+            onChangeText={setArea}
+            name=""
+          />
           <View style={styles.checkboxGroup}>{renderCheckboxOption()}</View>
           <Separator />
           <View style={styles.titleGroup}>
@@ -217,4 +226,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SmallAreaConstructionCost;
+export default DetailUltilities;

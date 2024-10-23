@@ -1,15 +1,18 @@
 import { combineReducers } from 'redux';
 import packageSlice from '../slices/Package/PackageSlice';
 import constructionSlice from '../slices/Contruction/ConstructionSlice';
-import DetailUltilitiesSlice from '../slices/Ultilities/DetailUltilities/_DetailUltilitiesSlice';
 import ultitlitiesSlice from '../slices/Ultilities/UltitlitiesSlice';
 import detailContructionReducer from '../slices/Contruction/DetailContructionSlice';
+import detailUltilitiesReducer from '../slices/Ultilities/UltilitiesDetail';
 const rootReducer = combineReducers({
+  // Contruction
   construction: constructionSlice,
-  ultilities: ultitlitiesSlice,
-  package: packageSlice,
-  detailUltilities: DetailUltilitiesSlice,
   detailContruction: detailContructionReducer,
+  // Ultilities
+  ultilities: ultitlitiesSlice,
+  detailUltilities: detailUltilitiesReducer,
+  // Package
+  package: packageSlice,
 });
 
 export default rootReducer;

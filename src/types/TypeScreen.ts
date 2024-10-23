@@ -11,6 +11,7 @@ export type AppStackParamList = {
   // Initial Quotation
   ConstructionScreen: undefined;
   UltilitiesScreen: undefined;
+  DetailUltilities: { Id: string };
   UltilitiesStack: { screen: keyof UltilitiesStackParamList; params: { Id: string } };
   Package: undefined;
   HouseLibrary: undefined;

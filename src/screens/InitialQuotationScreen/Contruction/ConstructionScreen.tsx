@@ -8,23 +8,23 @@ import {
   StatusBar,
   Image,
 } from 'react-native';
-import InputField from '../../components/InputField';
-import AppBar from '../../components/Appbar';
-import FloorSelection from '../../components/FloorSelection';
-import {COLORS, FONTFAMILY} from '../../theme/theme';
-import Construction from '../../components/Construction';
-import CustomButton from '../../components/CustomButton';
+import InputField from '../../../components/InputField';
+import AppBar from '../../../components/Appbar';
+import FloorSelection from '../../../components/FloorSelection';
+import {COLORS, FONTFAMILY} from '../../../theme/theme';
+import Construction from '../../../components/Construction';
+import CustomButton from '../../../components/CustomButton';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
-import {AppStackNavigationProp} from '../../types/TypeScreen';
-import {getConstructionOption} from '../../api/Contruction/Contruction';
-import {Item} from '../../types/screens/Contruction/ContructionType';
-import Separator from '../../components/Separator';
+import {AppStackNavigationProp} from '../../../types/TypeScreen';
+import {getConstructionOption} from '../../../api/Contruction/Contruction';
+import {Item} from '../../../types/screens/Contruction/ContructionType';
+import Separator from '../../../components/Separator';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
-import {PackageSelector} from '../../redux/selectors/PackageSelector/PackageSelector';
-import {pushConstruction} from '../../redux/actions/Contruction/ContructionAction';
-import {DetailContructionSelector} from '../../redux/selectors/ContructionSelector/DetailContructionSelector/DetailContructionSelector';
+import {PackageSelector} from '../../../redux/selectors/PackageSelector/PackageSelector';
+import {pushConstruction} from '../../../redux/actions/Contruction/ContructionAction';
+import {DetailContructionSelector} from '../../../redux/selectors/ContructionSelector/DetailContructionSelector/DetailContructionSelector';
 
 const ConstructionScreen: React.FC = () => {
   // Navigation
@@ -212,7 +212,7 @@ const ConstructionScreen: React.FC = () => {
               {selectedFloors ? `${selectedFloors} tầng lầu` : 'Chọn số tầng'}
             </Text>
             <Image
-              source={require('../../assets/image/icon/chevron/chevron-down.png')}
+              source={require('../../../assets/image/icon/chevron/chevron-down.png')}
               style={{width: 20, height: 20}}
             />
           </TouchableOpacity>

@@ -1,28 +1,28 @@
-import {COLORS, FONTFAMILY} from '../../theme/theme';
-import AppBar from '../../components/Appbar';
+import {COLORS, FONTFAMILY} from '../../../theme/theme';
+import AppBar from '../../../components/Appbar';
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
-import Ultilities from '../../components/Ultilities';
-import Separator from '../../components/Separator';
+import Ultilities from '../../../components/Ultilities';
+import Separator from '../../../components/Separator';
 import {
   getAllUltilities,
   getRoughUltilities,
   getFinishedUltilities,
-} from '../../api/Ultilities/Ultilities';
+} from '../../../api/Ultilities/Ultilities';
 import {
   Section,
   Ultilities as UltilitiesType,
-} from '../../types/screens/Ultilities/UltilitiesType';
+} from '../../../types/screens/Ultilities/UltilitiesType';
 import {ScrollView} from 'react-native-gesture-handler';
-import CustomButton from '../../components/CustomButton';
-import {PackageSelector} from '../../redux/selectors/PackageSelector/PackageSelector';
+import CustomButton from '../../../components/CustomButton';
+import {PackageSelector} from '../../../redux/selectors/PackageSelector/PackageSelector';
 import {useSelector, useDispatch} from 'react-redux';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
-import {UltilitiesScreenMap} from '../../types/screens/Ultilities/UltilitiesScreenMap';
-import {AppStackNavigationProp} from '../../types/TypeScreen';
-import {ContructionSelector} from '../../redux/selectors/ContructionSelector/ContructionSelector';
+import {UltilitiesScreenMap} from '../../../types/screens/Ultilities/UltilitiesScreenMap';
+import {AppStackNavigationProp} from '../../../types/TypeScreen';
+import {ContructionSelector} from '../../../redux/selectors/ContructionSelector/ContructionSelector';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {pushUltilities} from '../../redux/actions/Ultilities/UltilitiesAction';
+import {pushUltilities} from '../../../redux/actions/Ultilities/UltilitiesAction';
 
 const UltilitiesScreen: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
@@ -78,15 +78,7 @@ const UltilitiesScreen: React.FC = () => {
   }, []);
 
   const handleDetailPress = (Id: string) => {
-    const screenId = UltilitiesScreenMap[Id];
-    if (screenId) {
-      navigationApp.navigate('UltilitiesStack', {
-        screen: screenId,
-        params: {Id},
-      });
-    } else {
-      console.warn('Không tìm thấy hạn mục:', Id);
-    }
+    navigationApp.navigate('DetailUltilities', {Id});
   };
 
   const handleCheckBoxPress = async (id: string, price: number) => {

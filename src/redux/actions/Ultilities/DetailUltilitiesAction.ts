@@ -11,3 +11,10 @@ export const pushSmallArea = (dataSmallArea: any) => {
         payload: dataSmallArea,
     };
 };
+
+export const pushDetailUltilities = (dataDetailUltilities: any) => {
+    return {
+        type: 'detailUltilities/detailUltilities',
+        payload: dataDetailUltilities,
+    };
+};

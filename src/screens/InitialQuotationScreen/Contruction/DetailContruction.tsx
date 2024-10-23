@@ -2,21 +2,21 @@ import {View, Text, StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useNavigation, useRoute} from '@react-navigation/native';
 import {RouteProp} from '@react-navigation/native';
-import {AppStackParamList} from '../../types/TypeScreen';
-import {FONTFAMILY} from '../../theme/theme';
-import AppBar from '../../components/Appbar';
-import InputField from '../../components/InputField';
-import Separator from '../../components/Separator';
-import CustomButton from '../../components/CustomButton';
-import {getConstructionByName} from '../../api/Contruction/Contruction';
-import {SubConstructionItem} from '../../types/screens/Contruction/ContructionType';
+import {AppStackParamList} from '../../../types/TypeScreen';
+import {FONTFAMILY} from '../../../theme/theme';
+import AppBar from '../../../components/Appbar';
+import InputField from '../../../components/InputField';
+import Separator from '../../../components/Separator';
+import CustomButton from '../../../components/CustomButton';
+import {getConstructionByName} from '../../../api/Contruction/Contruction';
+import {SubConstructionItem} from '../../../types/screens/Contruction/ContructionType';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Checkbox from '../../components/Checkbox';
+import Checkbox from '../../../components/Checkbox';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 import {useDispatch, useSelector} from 'react-redux';
-import {pushDetailConstruction} from '../../redux/actions/Contruction/DetailContructionAction';
-import {PackageSelector} from '../../redux/selectors/PackageSelector/PackageSelector';
-import {DetailContructionSelector} from '../../redux/selectors/ContructionSelector/DetailContructionSelector/DetailContructionSelector';
+import {pushDetailConstruction} from '../../../redux/actions/Contruction/DetailContructionAction';
+import {PackageSelector} from '../../../redux/selectors/PackageSelector/PackageSelector';
+import {DetailContructionSelector} from '../../../redux/selectors/ContructionSelector/DetailContructionSelector/DetailContructionSelector';
 
 const DetailContruction: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'DetailContruction'>>();
@@ -27,6 +27,7 @@ const DetailContruction: React.FC = () => {
 
   const detailConstructionData = useSelector(DetailContructionSelector);
   const packageData = useSelector(PackageSelector);
+  console.log('packageData', packageData.roughPackagePrice);
   const [area, setArea] = useState('');
   const [coefficient, setCoefficient] = useState(0);
   const [constructionData, setConstructionData] = useState<
@@ -38,10 +39,10 @@ const DetailContruction: React.FC = () => {
   );
   const [constructionId, setConstructionId] = useState('');
 
-  const roughPackagePrice = packageData.RoughPackagePrice || 0;
+  const roughPackagePrice = packageData.roughPackagePrice;
   const hasSubConstructionItems = constructionData.length > 0;
   const constructionArea = area ? parseFloat(area) * coefficient : 0;
-  const unitPrice = hasSubConstructionItems ? 3400000 : roughPackagePrice;
+  const unitPrice = hasSubConstructionItems ? roughPackagePrice : roughPackagePrice;
   const totalPrice = constructionArea * unitPrice || 0;
 
   useEffect(() => {
@@ -162,6 +163,10 @@ const DetailContruction: React.FC = () => {
     );
   };
 
+  const formatCurrency = (value: number | undefined): string => {
+    return value ? value.toLocaleString() : '0';
+  };
+
   return (
     <View style={styles.container}>
       <AppBar nameScreen="Tính chi phí xây dựng thô" />
@@ -192,7 +197,7 @@ const DetailContruction: React.FC = () => {
         </View>
         <View style={styles.titleGroup}>
           <Text style={styles.title}>Đơn giá</Text>
-          <Text style={styles.price}>{roughPackagePrice.toLocaleString()} VNĐ/m²</Text>
+          <Text style={styles.price}>{unitPrice.toLocaleString()} VNĐ/m²</Text>
         </View>
         <Separator />
         <View style={styles.titleGroup}>
