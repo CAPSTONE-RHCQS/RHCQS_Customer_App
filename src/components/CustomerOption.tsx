@@ -8,18 +8,13 @@ import { AppStackNavigationProp, AppStackParamList } from '@/types/TypeScreen';
 const CustomerOptions: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
 
-  const handlePress = (option: string) => {
-    if (option === 'Tính chi phí xây dựng') {
-      navigationApp.navigate('Package');
-    }
-  };
 
   return (
     <View style={styles.optionContainer}>
       <View style={styles.optionGroup1}>
         {/* Tính chi phí xây dựng */}
         <TouchableOpacity
-          onPress={() => handlePress('Tính chi phí xây dựng')}
+          onPress={() => navigationApp.navigate('Package')}
           activeOpacity={0.7}>
           <LinearGradient
             colors={['#5BABAD', '#3C9597', '#14787A']}
@@ -90,7 +85,7 @@ const CustomerOptions: React.FC = () => {
 
         {/* Ưu đãi khách hàng */}
         <TouchableOpacity
-          onPress={() => handlePress('Ưu đãi khách hàng')}
+          onPress={() => navigationApp.navigate('ConstructionScreen')}
           activeOpacity={0.7}>
           <LinearGradient
             colors={['#14787A', '#3C9597', '#5BABAD']}

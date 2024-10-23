@@ -17,7 +17,6 @@ import CustomButton from '../../components/CustomButton';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useNavigation} from '@react-navigation/native';
 import {AppStackNavigationProp} from '../../types/TypeScreen';
-import {constructionScreenMap} from '../../types/screens/Contruction/ContructionScreenMap';
 import {getConstructionOption} from '../../api/Contruction/Contruction';
 import {Item} from '../../types/screens/Contruction/ContructionType';
 import Separator from '../../components/Separator';
@@ -25,6 +24,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useDispatch, useSelector} from 'react-redux';
 import {PackageSelector} from '../../redux/selectors/PackageSelector/PackageSelector';
 import {pushConstruction} from '../../redux/actions/Contruction/ContructionAction';
+import {DetailContructionSelector} from '../../redux/selectors/ContructionSelector/DetailContructionSelector/DetailContructionSelector';
 
 const ConstructionScreen: React.FC = () => {
   // Navigation
@@ -32,9 +32,7 @@ const ConstructionScreen: React.FC = () => {
   const dispatch = useDispatch();
 
   // Lấy dữ liệu từ Redux
-  const detailConstructionData = useSelector(
-    (state: any) => state.detailConstruction,
-  );
+  const detailConstructionData = useSelector(DetailContructionSelector);
   console.log('detailConstructionData', detailConstructionData);
 
   const packageData = useSelector(PackageSelector);
@@ -57,18 +55,8 @@ const ConstructionScreen: React.FC = () => {
   useEffect(() => {
     const fetchConstructionOption = async () => {
       try {
-        const cachedData = await AsyncStorage.getItem('constructionOptions');
-        if (cachedData) {
-          console.log('Using cached construction options');
-          setBuildOptionsData(JSON.parse(cachedData));
-        } else {
-          const data = await getConstructionOption();
-          setBuildOptionsData(data);
-          await AsyncStorage.setItem(
-            'constructionOptions',
-            JSON.stringify(data),
-          );
-        }
+        const data = await getConstructionOption();
+        setBuildOptionsData(data);
       } catch (error) {
         console.error('Error fetching construction options:', error);
       }
@@ -78,15 +66,7 @@ const ConstructionScreen: React.FC = () => {
   }, []);
 
   const handleDetailPress = (Name: string) => {
-    const screenName = constructionScreenMap[Name];
-    if (screenName) {
-      navigationApp.navigate('ConstructionStack', {
-        screen: screenName,
-        params: {Name},
-      });
-    } else {
-      console.warn('Không tìm thấy hạn mục:', Name);
-    }
+    navigationApp.navigate('DetailContruction', {Name});
   };
 
   const handleCheckBoxPress = async (id: string, price: number) => {
@@ -168,25 +148,12 @@ const ConstructionScreen: React.FC = () => {
       if (isFloorOption && selectedFloors && floorNumber > selectedFloors) {
         return null;
       }
+      const detail = detailConstructionData.find(
+        (detail: any) => detail.id === option.Id,
+      );
 
-      let displayPrice = 0;
-      let displayArea = 0;
-
-      switch (option.Name) {
-        case 'Hầm':
-          displayPrice = detailConstructionData.basement?.totalPrice || 0;
-          displayArea = parseFloat(detailConstructionData.basement?.area || '0');
-          break;
-        case 'Móng':
-          displayPrice = detailConstructionData.stereobate?.totalPrice || 0;
-          displayArea = parseFloat(detailConstructionData.stereobate?.area || '0');
-          break;
-
-        default:
-          displayPrice = 0;
-          displayArea = 0;
-          break;
-      }
+      const displayPrice = detail ? detail.totalPrice : 0;
+      const displayArea = detail ? parseFloat(detail.area) : 0;
 
       const formattedPrice = displayPrice.toLocaleString();
       const formattedArea = displayArea.toLocaleString();
@@ -208,7 +175,8 @@ const ConstructionScreen: React.FC = () => {
   };
 
   // Kiểm tra điều kiện để kích hoạt nút "Tiếp tục"
-  const isContinueButtonEnabled = landArea !== '' && constructionArea !== '' && checkedItems.length > 0;
+  const isContinueButtonEnabled =
+    landArea !== '' && constructionArea !== '' && checkedItems.length > 0;
 
   return (
     <View style={styles.container}>
@@ -287,7 +255,11 @@ const ConstructionScreen: React.FC = () => {
         <CustomButton
           title="Tiếp tục"
           onPress={handleContinuePress}
-          colors={isContinueButtonEnabled ? ['#53A6A8', '#3C9597', '#1F7F81'] : ['#A9A9A9', '#A9A9A9', '#A9A9A9']}
+          colors={
+            isContinueButtonEnabled
+              ? ['#53A6A8', '#3C9597', '#1F7F81']
+              : ['#A9A9A9', '#A9A9A9', '#A9A9A9']
+          }
           disabled={!isContinueButtonEnabled}
         />
       </View>

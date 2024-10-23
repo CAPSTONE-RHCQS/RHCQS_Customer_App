@@ -1,8 +1,4 @@
 export interface Construction {
-    Size: number
-    Page: number
-    Total: number
-    TotalPages: number
     Items: Item[]
   }
   

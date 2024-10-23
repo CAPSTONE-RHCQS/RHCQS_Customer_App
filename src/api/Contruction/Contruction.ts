@@ -1,22 +1,20 @@
 import axiosInstance, { getHeaders } from '../../utils/axios';
 import { Construction, Item } from '../../types/screens/Contruction/ContructionType';
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const getConstructionOption = async (): Promise<Construction['Items']> => {
   try {
-    const cachedData = await AsyncStorage.getItem('constructionOptions');
-    if (cachedData) {
-      console.log('Using cached construction options');
-      return JSON.parse(cachedData);
-    }
-
     const headers = await getHeaders();
-    const response = await axiosInstance.get('/construction?page=1&size=24', { headers });
-    const items = response.data.Items;
-
-    await AsyncStorage.setItem('constructionOptions', JSON.stringify(items));
-    return items;
+    const response = await axiosInstance.get('/construction/type?type=ALL', {
+      headers,
+    });
+    const items = response.data;
+    if (Array.isArray(items)) {
+      return items;
+    } else {
+      console.error('Items is not an array:', items);
+      return [];
+    }
   } catch (error) {
     console.error('Error fetching construction data:', error);
     return [];
