@@ -1,10 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, Text, ActivityIndicator, Dimensions, TextInput } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  ActivityIndicator,
+  Dimensions,
+  TextInput,
+  TouchableOpacity,
+} from 'react-native';
 import AppBar from '../../components/Appbar';
-import { RouteProp, useRoute } from '@react-navigation/native';
-import { AppStackParamList } from '../../types/TypeScreen';
-import { VersionType } from '../../types/screens/History/HistoryType';
-import { getVersion } from '../../api/Project/project';
+import {RouteProp, useRoute} from '@react-navigation/native';
+import {AppStackParamList} from '../../types/TypeScreen';
+import {VersionType} from '../../types/screens/History/HistoryType';
+import {getVersion} from '../../api/Project/project';
 import Pdf from 'react-native-pdf';
 import RNFetchBlob from 'react-native-blob-util';
 import CustomButton from '../../components/CustomButton';
@@ -12,9 +20,11 @@ import {FONTFAMILY} from '../../theme/theme';
 
 const VersionDetail: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'VersionDetail'>>();
-  const { version, projectId } = route.params;
+  const {version, projectId} = route.params;
 
-  const [selectedVersion, setSelectedVersion] = useState<VersionType | null>(null);
+  const [selectedVersion, setSelectedVersion] = useState<VersionType | null>(
+    null,
+  );
   const [pdfUri, setPdfUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [inputValue, setInputValue] = useState<string>('');
@@ -39,7 +49,7 @@ const VersionDetail: React.FC = () => {
 
     const downloadPdf = async (url: string): Promise<string> => {
       try {
-        const { path } = await RNFetchBlob.config({
+        const {path} = await RNFetchBlob.config({
           fileCache: true,
           appendExt: 'pdf',
         }).fetch('GET', url);
@@ -77,18 +87,21 @@ const VersionDetail: React.FC = () => {
             multiline={true}
             textAlignVertical="top"
           />
+          <TouchableOpacity>
+            <Text style={styles.buttonText}>Gửi ghi chú</Text>
+          </TouchableOpacity>
         </View>
         {selectedVersion ? (
           pdfUri ? (
             <Pdf
-              source={{ uri: pdfUri }}
-              onLoadComplete={(numberOfPages) => {
+              source={{uri: pdfUri}}
+              onLoadComplete={numberOfPages => {
                 console.log(`Number of pages: ${numberOfPages}`);
               }}
               onPageChanged={(page, numberOfPages) => {
                 console.log(`Current page: ${page}`);
               }}
-              onError={(error) => {
+              onError={error => {
                 console.log(error);
               }}
               style={styles.pdf}
@@ -101,7 +114,7 @@ const VersionDetail: React.FC = () => {
         )}
       </View>
       <CustomButton
-        title="Submit"
+        title="Chấp nhận báo giá sơ bộ"
         colors={['#53A6A8', '#3C9597', '#1F7F81']}
         onPress={() => {
           console.log('Input Value:', inputValue);
@@ -127,6 +140,12 @@ const styles = StyleSheet.create({
     marginLeft: 6,
     marginBottom: 5,
     color: 'black',
+  },
+  buttonText: {
+    marginTop: 10,
+    alignSelf: 'flex-end',
+    fontFamily: FONTFAMILY.montserat_bold,
+    color: '#1F7F81',
   },
   loader: {
     flex: 1,

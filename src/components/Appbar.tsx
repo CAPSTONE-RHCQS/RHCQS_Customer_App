@@ -4,13 +4,18 @@ import { useNavigation } from '@react-navigation/native';
 
 interface AppBarProps {
   nameScreen: string;
+  onBackPress?: () => void;
 }
 
-const AppBar: React.FC<AppBarProps> = ({ nameScreen }) => {
+const AppBar: React.FC<AppBarProps> = ({nameScreen, onBackPress}) => {
   const navigation = useNavigation();
 
   const handleGoBack = () => {
-    navigation.goBack();
+    if (onBackPress) {
+      onBackPress();
+    } else {
+      navigation.goBack();
+    }
   };
 
   return (

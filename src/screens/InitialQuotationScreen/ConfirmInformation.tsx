@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, Button} from 'react-native';
+import {View, Text, StyleSheet, Button, ActivityIndicator} from 'react-native';
 import React, {useState, useCallback, useEffect} from 'react';
 import AppBar from '../../components/Appbar';
 import InputField from '../../components/InputField';
@@ -15,12 +15,14 @@ import {AppStackNavigationProp} from '../../types/TypeScreen';
 
 const ConfirmInformation: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
+
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
   const [projectName, setProjectName] = useState('');
   const [customerId, setCustomerId] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const ultilitiesData = useSelector(UltilitiesSelector);
   const constructionData = useSelector(ContructionSelector);
@@ -43,6 +45,9 @@ const ConfirmInformation: React.FC = () => {
   }, []);
 
   const handleSubmit = useCallback(async () => {
+    setLoading(true);
+    navigationApp.navigate('HistoryScreen');
+
     const initialQuotationItemRequests = constructionData.checkedItems.map(
       (item: any) => ({
         constructionItemId: item.id,
@@ -104,6 +109,16 @@ const ConfirmInformation: React.FC = () => {
     packageData,
     detailUltilities,
   ]);
+
+  if (loading) {
+    return (
+      <ActivityIndicator
+        size="large"
+        color="#1F7F81"
+        style={{flex: 1, justifyContent: 'center', alignItems: 'center', opacity: 0.5}}
+      />
+    );
+  }
 
   return (
     <View style={styles.container}>

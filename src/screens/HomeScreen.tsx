@@ -67,7 +67,14 @@ const HomeScreen: React.FC = ({}) => {
             {/* Profile */}
             <View style={styles.profileContainer}>
               <View style={styles.profileImageContainer}>
-                <Image source={{uri: customerImg}} style={styles.profileImage} />
+                {customerImg ? (
+                  <Image source={{uri: customerImg}} style={styles.profileImage} />
+                ) : (
+                  <Image
+                    source={require('../assets/image/data/avatar.jpeg')}
+                    style={styles.profileImage}
+                  />
+                )}
               </View>
               <Text style={styles.profileName}>{customerName} </Text>
               <View style={styles.iconContainer}>

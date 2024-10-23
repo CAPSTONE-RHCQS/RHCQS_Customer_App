@@ -36,9 +36,14 @@ const HistoryScreen: React.FC = () => {
     navigationApp.navigate('TrackingScreen', {projectId});
   };
 
+  // Hàm xử lý khi nhấn nút quay lại trên AppBar
+  const handleBackToHome = () => {
+    navigationApp.navigate('HomeScreen');
+  };
+
   return (
     <View style={styles.container}>
-      <AppBar nameScreen="Danh sách dự án" />
+      <AppBar nameScreen="Danh sách dự án" onBackPress={handleBackToHome} />
       <View style={styles.content}>
         {projectHistory.map((project, index) => {
           const formattedDate = format(new Date(project.InsDate), 'dd-MM-yyyy');
