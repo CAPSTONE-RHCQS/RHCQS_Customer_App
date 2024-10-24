@@ -1,1 +1,1 @@
-export const API_ROOT = "https://rhcqs-be.onrender.com/api/v1";
+export const API_ROOT = "https://rhcqs-be-wome.onrender.com/api/v1";

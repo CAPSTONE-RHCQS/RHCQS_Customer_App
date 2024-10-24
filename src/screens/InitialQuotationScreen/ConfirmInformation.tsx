@@ -1,5 +1,9 @@
-import {View, Text, StyleSheet, Button, ActivityIndicator} from 'react-native';
-import React, {useState, useCallback, useEffect} from 'react';
+import {
+  View,
+  StyleSheet,
+  Animated,
+} from 'react-native';
+import React, {useState, useCallback, useEffect, useRef} from 'react';
 import AppBar from '../../components/Appbar';
 import InputField from '../../components/InputField';
 import {useSelector} from 'react-redux';
@@ -12,6 +16,8 @@ import {getProfile} from '../../api/Account/Account';
 import CustomButton from '../../components/CustomButton';
 import {useNavigation} from '@react-navigation/native';
 import {AppStackNavigationProp} from '../../types/TypeScreen';
+import Dialog from 'react-native-dialog';
+import {FONTFAMILY} from '../../theme/theme';
 
 const ConfirmInformation: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
@@ -23,6 +29,7 @@ const ConfirmInformation: React.FC = () => {
   const [projectName, setProjectName] = useState('');
   const [customerId, setCustomerId] = useState('');
   const [loading, setLoading] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   const ultilitiesData = useSelector(UltilitiesSelector);
   console.log('ultilitiesData', ultilitiesData);
@@ -47,7 +54,6 @@ const ConfirmInformation: React.FC = () => {
 
   const handleSubmit = useCallback(async () => {
     setLoading(true);
-    navigationApp.navigate('HistoryScreen');
 
     const initialQuotationItemRequests = constructionData.checkedItems.map(
       (item: any) => ({
@@ -65,8 +71,6 @@ const ConfirmInformation: React.FC = () => {
         price: item.totalPrice,
       }),
     );
-
-    console.log('quotationUtilitiesRequest', quotationUtilitiesRequest);
 
     const projectData = {
       customerId: customerId,
@@ -95,6 +99,8 @@ const ConfirmInformation: React.FC = () => {
       await createProject(projectData);
       console.log('Project created successfully');
       console.log('projectData', projectData);
+      setLoading(false);
+      setVisible(true);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('Axios error:', error.response?.data);
@@ -111,15 +117,28 @@ const ConfirmInformation: React.FC = () => {
     detailUltilities,
   ]);
 
-  if (loading) {
-    return (
-      <ActivityIndicator
-        size="large"
-        color="#1F7F81"
-        style={{flex: 1, justifyContent: 'center', alignItems: 'center', opacity: 0.5}}
-      />
-    );
-  }
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (loading) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(fadeAnim, {
+            toValue: 0.3,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ]),
+      ).start();
+    } else {
+      fadeAnim.setValue(1);
+    }
+  }, [loading, fadeAnim]);
 
   return (
     <View style={styles.container}>
@@ -164,6 +183,21 @@ const ConfirmInformation: React.FC = () => {
           colors={['#53A6A8', '#3C9597', '#1F7F81']}
         />
       </View>
+
+      <Dialog.Container contentStyle={styles.dialogContainer} visible={visible}>
+        <Dialog.Title style={styles.dialogTitle}>Thành công</Dialog.Title>
+        <Dialog.Description style={styles.dialogDescription}>
+          Dự án đã được tạo thành công!
+        </Dialog.Description>
+        <Dialog.Button
+          label="Xem danh sách"
+          onPress={() => {
+            setVisible(false);
+            navigationApp.navigate('HistoryScreen');
+          }}
+          style={styles.dialogButton}
+        />
+      </Dialog.Container>
     </View>
   );
 };
@@ -182,6 +216,28 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginHorizontal: 20,
     marginBottom: 20,
+  },
+  dialogContainer: {
+    borderRadius: 12,
+    marginHorizontal: 20,
+  },
+  dialogTitle: {
+    color: '#1F7F81',
+    fontSize: 20,
+    fontFamily: FONTFAMILY.montserat_bold,
+  },
+  dialogDescription: {
+    color: '#333',
+    fontSize: 16,
+    fontFamily: FONTFAMILY.montserat_regular,
+  },
+  dialogButtonLabel: {
+    color: '#1F7F81',
+    fontFamily: FONTFAMILY.montserat_semibold,
+  },
+  dialogButton: {
+    color: '#1F7F81',
+    fontFamily: FONTFAMILY.montserat_semibold,
   },
 });
 

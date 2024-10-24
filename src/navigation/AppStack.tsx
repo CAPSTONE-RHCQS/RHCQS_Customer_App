@@ -13,24 +13,36 @@ import VersionScreen from '../screens/HistoryScreen/VersionScreen';
 import VersionDetail from '../screens/HistoryScreen/VersionDetail';
 import DetailContruction from '../screens/InitialQuotationScreen/Contruction/DetailContruction';
 import DetailUltilities from '../screens/InitialQuotationScreen/Ultilities/DetailUltilities';
+import HouseExternalView from '../screens/HouseDesginTemplate/HouseExternalView';
+import HouseResidentialArea from '../screens/HouseDesginTemplate/HouseResidentialArea';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
 const AppStack: React.FC = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {/* Home */}
       <Stack.Screen name="HomeScreen" component={TabNavigation} />
+      {/* Initial Quotation */}
+      {/* Construction */}  
       <Stack.Screen name="ConstructionScreen" component={ConstructionScreen} />
+      <Stack.Screen name="DetailContruction" component={DetailContruction} />
+      {/* Ultilities */}
       <Stack.Screen name="UltilitiesScreen" component={UltilitiesScreen} />
       <Stack.Screen name="DetailUltilities" component={DetailUltilities} />
-      <Stack.Screen name="Package" component={Package} />
-      <Stack.Screen name="HouseLibrary" component={HouseLibrary} />
       <Stack.Screen name="ConfirmInformation" component={ConfirmInformation} />
+      {/* Package */}
+      <Stack.Screen name="Package" component={Package} />
+      {/* House Library */}
+      <Stack.Screen name="HouseLibrary" component={HouseLibrary} />
+      <Stack.Screen name="HouseExternalView" component={HouseExternalView} />
+      <Stack.Screen name="HouseResidentialArea" component={HouseResidentialArea} />
+      {/* History */}
       <Stack.Screen name="HistoryScreen" component={HistoryScreen} />
       <Stack.Screen name="TrackingScreen" component={TrackingScreen} />
       <Stack.Screen name="VersionScreen" component={VersionScreen} />
       <Stack.Screen name="VersionDetail" component={VersionDetail} />
-      <Stack.Screen name="DetailContruction" component={DetailContruction} />
+
     </Stack.Navigator>
   );
 };

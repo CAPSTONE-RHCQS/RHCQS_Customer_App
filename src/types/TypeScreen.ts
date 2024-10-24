@@ -23,6 +23,8 @@ export type AppStackParamList = {
   VersionDetail: {projectId: string, version: string};
   // House Library
   HouseLibrary: undefined;
+  HouseExternalView: {houseId: string, name: string};
+  HouseResidentialArea: {houseId: string, name: string};
 };
 
 // Auth

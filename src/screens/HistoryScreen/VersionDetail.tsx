@@ -10,13 +10,17 @@ import {
 } from 'react-native';
 import AppBar from '../../components/Appbar';
 import {RouteProp, useRoute} from '@react-navigation/native';
-import {AppStackNavigationProp, AppStackParamList} from '../../types/TypeScreen';
+import {
+  AppStackNavigationProp,
+  AppStackParamList,
+} from '../../types/TypeScreen';
 import {VersionType} from '../../types/screens/History/HistoryType';
 import {getVersion, putComment, putFinalized} from '../../api/Project/project';
 import Pdf from 'react-native-pdf';
 import RNFetchBlob from 'react-native-blob-util';
 import CustomButton from '../../components/CustomButton';
 import {FONTFAMILY} from '../../theme/theme';
+import Dialog from 'react-native-dialog';
 import {useNavigation} from '@react-navigation/native';
 
 const VersionDetail: React.FC = () => {
@@ -28,6 +32,7 @@ const VersionDetail: React.FC = () => {
   const [selectedVersion, setSelectedVersion] = useState<VersionType | null>(
     null,
   );
+  const [visible, setVisible] = useState<boolean>(false);
   const [pdfUri, setPdfUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [inputValue, setInputValue] = useState<string>('');
@@ -77,7 +82,7 @@ const VersionDetail: React.FC = () => {
   }, [inputValue, selectedVersion]);
 
   const handlePutFinalized = useCallback(async () => {
-    navigationApp.navigate('TrackingScreen', {projectId});
+    setVisible(true);
 
     if (selectedVersion && selectedVersion.Id) {
       await putFinalized(selectedVersion.Id);
@@ -142,6 +147,29 @@ const VersionDetail: React.FC = () => {
         onPress={handlePutFinalized}
         style={styles.button}
       />
+      <Dialog.Container contentStyle={styles.dialogContainer} visible={visible}>
+        <Dialog.Title style={styles.dialogTitle}>Xác nhận</Dialog.Title>
+        <Dialog.Description style={styles.dialogDescription}>
+          Bạn có chắc chắn muốn yêu cầu bản thiết kế?
+        </Dialog.Description>
+        <View style={styles.dialogButtonContainer}>
+          <Dialog.Button
+            label="Hủy"
+          onPress={() => {
+            setVisible(false);
+          }}
+          style={styles.dialogButtonCancel}
+        />
+        <Dialog.Button
+          label="Xác nhận"
+          onPress={() => {
+            setVisible(false);
+            navigationApp.navigate('TrackingScreen', {projectId});
+          }}
+          style={styles.dialogButton}
+        />
+        </View>
+      </Dialog.Container>
     </View>
   );
 };
@@ -195,6 +223,36 @@ const styles = StyleSheet.create({
   },
   button: {
     margin: 20,
+  },
+  dialogContainer: {
+    borderRadius: 12,
+    marginHorizontal: 20,
+  },
+  dialogTitle: {
+    color: '#1F7F81',
+    fontSize: 20,
+    fontFamily: FONTFAMILY.montserat_bold,
+  },
+  dialogDescription: {
+    color: '#333',
+    fontSize: 16,
+    fontFamily: FONTFAMILY.montserat_regular,
+  },
+  dialogButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  dialogButtonLabel: {
+    color: '#1F7F81',
+    fontFamily: FONTFAMILY.montserat_semibold,
+  },
+  dialogButtonCancel: {
+    color: 'red',
+    fontFamily: FONTFAMILY.montserat_semibold,
+  },
+  dialogButton: {
+    color: '#1F7F81',
+    fontFamily: FONTFAMILY.montserat_semibold,
   },
 });
 

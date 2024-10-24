@@ -1,12 +1,21 @@
-import {View, Text, Image, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  Image,
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBar from '../../components/Appbar';
 import {getHouseTemplate} from '../../api/HouseTemplate/HouseTemplate';
-import {Item} from '../../types/screens/HouseTemplate/HouseTemplateType';
+import {HouseTemplate} from '../../types/screens/HouseTemplate/HouseTemplateType';
+import {useNavigation} from '@react-navigation/native';
+import {AppStackNavigationProp} from '../../types/TypeScreen';
 
 const HouseLibrary: React.FC = () => {
-  const [images, setImages] = useState<Item[]>([]);
-
+  const [images, setImages] = useState<HouseTemplate[]>([]);
+  const navigationApp = useNavigation<AppStackNavigationProp>();
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
@@ -15,34 +24,36 @@ const HouseLibrary: React.FC = () => {
         setImages(Array.isArray(templates) ? templates : []);
       } catch (error) {
         console.error('Error fetching templates:', error);
-        setImages([]); 
+        setImages([]);
       }
     };
 
     fetchTemplates();
   }, []);
 
-  const handleImagePress = (item: Item) => {
-    console.log('Image pressed:', item);
+  const handleImagePress = (item: HouseTemplate) => {
+    navigationApp.navigate('HouseExternalView', {
+      houseId: item.Id,
+      name: item.Name,
+    });
   };
 
   return (
     <View style={styles.container}>
       <AppBar nameScreen="Thư viện mẫu nhà" />
-      <View style={styles.flatListContent}> 
+      <View style={styles.flatListContent}>
         <FlatList
           data={images}
-        numColumns={2}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({item}) => (
-          <TouchableOpacity onPress={() => handleImagePress(item)}>
-            <Image
-              source={{uri: item.ImgUrl}}
+          numColumns={2}
+          keyExtractor={(item, index) => item.Id}
+          renderItem={({item}) => (
+            <TouchableOpacity
               style={styles.image}
-            />
-          </TouchableOpacity>
-        )}
-        contentContainerStyle={styles.flatListContent}
+              onPress={() => handleImagePress(item)}>
+              <Image source={{uri: item.ImgUrl}} style={styles.image} />
+            </TouchableOpacity>
+          )}
+          contentContainerStyle={styles.flatListContent}
         />
       </View>
     </View>
@@ -57,13 +68,12 @@ const styles = StyleSheet.create({
   flatListContent: {
     flex: 1,
     position: 'relative',
-    paddingHorizontal: 8,
     paddingVertical: 10,
   },
   image: {
     flex: 1,
-    width: '48%',
-    height: 200,
+    width: '100%',
+    height: 150,
     margin: '1%',
     borderRadius: 10,
   },
