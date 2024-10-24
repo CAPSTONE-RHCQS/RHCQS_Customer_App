@@ -1,4 +1,4 @@
-import {View, Text, Image} from 'react-native';
+import {View, Text, Image, FlatList, StyleSheet, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBar from '../../components/Appbar';
 import {getHouseTemplate} from '../../api/HouseTemplate/HouseTemplate';
@@ -11,8 +11,7 @@ const HouseLibrary: React.FC = () => {
     const fetchTemplates = async () => {
       try {
         const response = await getHouseTemplate();
-        // Đảm bảo response có thuộc tính Items và nó là một mảng
-        const templates = response.Items || [];
+        const templates = response || [];
         setImages(Array.isArray(templates) ? templates : []);
       } catch (error) {
         console.error('Error fetching templates:', error);
@@ -23,18 +22,51 @@ const HouseLibrary: React.FC = () => {
     fetchTemplates();
   }, []);
 
+  const handleImagePress = (item: Item) => {
+    console.log('Image pressed:', item);
+  };
+
   return (
-    <View>
+    <View style={styles.container}>
       <AppBar nameScreen="Thư viện mẫu nhà" />
-      {images.map((image, index) => (
-        <Image
-          key={index}
-          source={{ uri: image.ImgUrl }}
-          style={{width: 100, height: 100}}
+      <View style={styles.flatListContent}> 
+        <FlatList
+          data={images}
+        numColumns={2}
+        keyExtractor={(item, index) => index.toString()}
+        renderItem={({item}) => (
+          <TouchableOpacity onPress={() => handleImagePress(item)}>
+            <Image
+              source={{uri: item.ImgUrl}}
+              style={styles.image}
+            />
+          </TouchableOpacity>
+        )}
+        contentContainerStyle={styles.flatListContent}
         />
-      ))}
+      </View>
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  flatListContent: {
+    flex: 1,
+    position: 'relative',
+    paddingHorizontal: 8,
+    paddingVertical: 10,
+  },
+  image: {
+    flex: 1,
+    width: '48%',
+    height: 200,
+    margin: '1%',
+    borderRadius: 10,
+  },
+});
 
 export default HouseLibrary;

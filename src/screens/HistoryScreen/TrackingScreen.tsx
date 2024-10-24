@@ -3,7 +3,7 @@ import React, {useEffect, useState} from 'react';
 import AppBar from '../../components/Appbar';
 import Tracking from '../../components/Tracking';
 import {getTracking} from '../../api/Project/project';
-import {useRoute, RouteProp, useNavigation} from '@react-navigation/native';
+import {useRoute, RouteProp, useNavigation, useFocusEffect} from '@react-navigation/native';
 import {AppStackNavigationProp, AppStackParamList} from '../../types/TypeScreen';
 import {TrackingType} from '../../types/screens/History/HistoryType';
 
@@ -15,18 +15,21 @@ const TrackingScreen: React.FC = () => {
 
   const [tracking, setTracking] = useState<TrackingType | null>(null);
 
-  useEffect(() => {
-    const fetchTracking = async () => {
-      try {
-        const trackingData: TrackingType = await getTracking(projectId);
-        setTracking(trackingData);
-        console.log('Tracking data:', trackingData);
-      } catch (error) {
-        console.error('Error fetching tracking data:', error);
-      }
-    };
-    fetchTracking();
-  }, [projectId]);
+  const fetchTracking = async () => {
+    try {
+      const trackingData: TrackingType = await getTracking(projectId);
+      setTracking(trackingData);
+      console.log('Tracking data:', trackingData);
+    } catch (error) {
+      console.error('Error fetching tracking data:', error);
+    }
+  };
+
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchTracking();
+    }, [projectId])
+  );
 
   const handlePressTracking = (title: string, projectId: string) => {
     switch (title) {

@@ -15,6 +15,7 @@ export interface Section {
     UpsDate: string;
     Description?: string;
     Items?: Item[] | null;
+    UnitPrice?: number;
 }
 
 export interface Ultilities {

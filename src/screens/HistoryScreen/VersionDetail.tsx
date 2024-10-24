@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   View,
   StyleSheet,
@@ -10,15 +10,18 @@ import {
 } from 'react-native';
 import AppBar from '../../components/Appbar';
 import {RouteProp, useRoute} from '@react-navigation/native';
-import {AppStackParamList} from '../../types/TypeScreen';
+import {AppStackNavigationProp, AppStackParamList} from '../../types/TypeScreen';
 import {VersionType} from '../../types/screens/History/HistoryType';
-import {getVersion} from '../../api/Project/project';
+import {getVersion, putComment, putFinalized} from '../../api/Project/project';
 import Pdf from 'react-native-pdf';
 import RNFetchBlob from 'react-native-blob-util';
 import CustomButton from '../../components/CustomButton';
 import {FONTFAMILY} from '../../theme/theme';
+import {useNavigation} from '@react-navigation/native';
 
 const VersionDetail: React.FC = () => {
+  const navigationApp = useNavigation<AppStackNavigationProp>();
+
   const route = useRoute<RouteProp<AppStackParamList, 'VersionDetail'>>();
   const {version, projectId} = route.params;
 
@@ -64,6 +67,26 @@ const VersionDetail: React.FC = () => {
     fetchVersion();
   }, [projectId, version]);
 
+  const handlePutComment = useCallback(async () => {
+    if (selectedVersion && selectedVersion.Id) {
+      await putComment(selectedVersion.Id, inputValue);
+      console.log('Comment sent successfully');
+    } else {
+      console.error('Version ID is missing');
+    }
+  }, [inputValue, selectedVersion]);
+
+  const handlePutFinalized = useCallback(async () => {
+    navigationApp.navigate('TrackingScreen', {projectId});
+
+    if (selectedVersion && selectedVersion.Id) {
+      await putFinalized(selectedVersion.Id);
+      console.log(selectedVersion.Id);
+    } else {
+      console.error('Version ID is missing');
+    }
+  }, [selectedVersion]);
+
   if (loading) {
     return (
       <View style={styles.loader}>
@@ -87,7 +110,7 @@ const VersionDetail: React.FC = () => {
             multiline={true}
             textAlignVertical="top"
           />
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handlePutComment}>
             <Text style={styles.buttonText}>Gửi ghi chú</Text>
           </TouchableOpacity>
         </View>
@@ -116,9 +139,7 @@ const VersionDetail: React.FC = () => {
       <CustomButton
         title="Chấp nhận báo giá sơ bộ"
         colors={['#53A6A8', '#3C9597', '#1F7F81']}
-        onPress={() => {
-          console.log('Input Value:', inputValue);
-        }}
+        onPress={handlePutFinalized}
         style={styles.button}
       />
     </View>

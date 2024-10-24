@@ -25,6 +25,7 @@ const ConfirmInformation: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const ultilitiesData = useSelector(UltilitiesSelector);
+  console.log('ultilitiesData', ultilitiesData);
   const constructionData = useSelector(ContructionSelector);
   const packageData = useSelector(PackageSelector);
   const detailUltilities = useSelector(
@@ -59,8 +60,8 @@ const ConfirmInformation: React.FC = () => {
 
     const quotationUtilitiesRequest = ultilitiesData.checkedItems.map(
       (item: any) => ({
-        ultilitiesItemId: item.checkedItems,
-        name: item.checkedItemName,
+        ultilitiesItemId: item.checkedItems ?? item.id,
+        name: item.checkedItemName ?? item.name,
         price: item.totalPrice,
       }),
     );

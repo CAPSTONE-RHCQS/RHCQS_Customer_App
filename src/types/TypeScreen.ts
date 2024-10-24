@@ -12,9 +12,8 @@ export type AppStackParamList = {
   ConstructionScreen: undefined;
   UltilitiesScreen: undefined;
   DetailUltilities: { Id: string };
-  UltilitiesStack: { screen: keyof UltilitiesStackParamList; params: { Id: string } };
   Package: undefined;
-  HouseLibrary: undefined;
+
   ConfirmInformation: undefined;
   DetailContruction: { Name: string };
   // History
@@ -22,18 +21,11 @@ export type AppStackParamList = {
   TrackingScreen: {projectId: string};
   VersionScreen: {projectId: string};
   VersionDetail: {projectId: string, version: string};
-};
-
-
-// Detail Ultilities
-export type UltilitiesStackParamList = {
-  NarrowAlleyConstructionCost: { Id: string };
-  SmallAreaConstructionCost: { Id: string };
+  // House Library
+  HouseLibrary: undefined;
 };
 
 // Auth
 export type AuthStackNavigationProp = NativeStackNavigationProp<AuthStackParamList>;
 // App
 export type AppStackNavigationProp = NativeStackNavigationProp<AppStackParamList>;
-// Detail Ultilities
-export type UltilitiesStackNavigationProp = NativeStackNavigationProp<UltilitiesStackParamList>;

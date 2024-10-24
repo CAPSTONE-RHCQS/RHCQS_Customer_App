@@ -18,29 +18,26 @@ import CustomButton from '../../../components/CustomButton';
 import {PackageSelector} from '../../../redux/selectors/PackageSelector/PackageSelector';
 import {useSelector, useDispatch} from 'react-redux';
 import {useNavigation, NavigationProp} from '@react-navigation/native';
-import {UltilitiesScreenMap} from '../../../types/screens/Ultilities/UltilitiesScreenMap';
 import {AppStackNavigationProp} from '../../../types/TypeScreen';
 import {ContructionSelector} from '../../../redux/selectors/ContructionSelector/ContructionSelector';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {pushUltilities} from '../../../redux/actions/Ultilities/UltilitiesAction';
+import {DetailUltilitiesSelector} from '../../../redux/selectors/UltilitiesSelector/DetailUltilitiesSelector/DetailUltilitiesSelector';
+import {useFocusEffect} from '@react-navigation/native';
 
 const UltilitiesScreen: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
   const dispatch = useDispatch();
 
-  // Lấy dữ liệu các mục tiện ích
-  const ultilitiesData = useSelector((state: any) => state.detailUltilities);
-  console.log('ultilitiesData', ultilitiesData);
   // Lấy dữ liệu chi tiết các mục tiện ích
-  const detailUltilitiesData = useSelector(
-    (state: any) => state.detailUltilities,
-  );
+  const detailUltilitiesData = useSelector(DetailUltilitiesSelector);
+  console.log('detailUltilitiesData', detailUltilitiesData);
   // Lấy dữ liệu package
   const packageData = useSelector(PackageSelector);
   console.log('packageData', packageData);
   // Lấy dữ liệu construction
   const constructionData = useSelector(ContructionSelector);
-  console.log('constructionData', constructionData);
+  console.log('constructionData', constructionData.totalPrice);
 
   // State để lưu trữ ID các mục đã check
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
@@ -48,34 +45,39 @@ const UltilitiesScreen: React.FC = () => {
   const [ultilities, setUltilities] = useState<UltilitiesType[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
 
-  useEffect(() => {
-    const fetchUltilities = async () => {
-      const selectedRoughType = packageData.selectedRoughType;
-      const selectedCompleteType = packageData.selectedCompleteType;
+  const fetchUltilities = async () => {
+    const selectedRoughType = packageData.selectedRoughType;
+    const selectedCompleteType = packageData.selectedCompleteType;
 
-      switch (true) {
-        case selectedRoughType === 'ROUGH' &&
-          selectedCompleteType === 'FINISHED':
-          const allData = await getAllUltilities();
-          setUltilities(allData);
-          break;
-        case selectedRoughType === 'ROUGH' &&
-          selectedCompleteType === undefined:
-          const roughData = await getRoughUltilities();
-          setUltilities(roughData);
-          break;
-        case selectedRoughType === undefined &&
-          selectedCompleteType === 'FINISHED':
-          const finishedData = await getFinishedUltilities();
-          setUltilities(finishedData);
-          break;
-        default:
-          break;
-      }
-    };
+    switch (true) {
+      case selectedRoughType === 'ROUGH' &&
+        selectedCompleteType === 'FINISHED':
+        const allData = await getAllUltilities();
+        console.log('allData', allData);
+        setUltilities(allData);
+        break;
+      case selectedRoughType === 'ROUGH' &&
+        selectedCompleteType === undefined:
+        const roughData = await getRoughUltilities();
+        console.log('roughData', roughData);
+        setUltilities(roughData);
+        break;
+      case selectedRoughType === undefined &&
+        selectedCompleteType === 'FINISHED':
+        const finishedData = await getFinishedUltilities();
+        console.log('finishedData', finishedData);
+        setUltilities(finishedData);
+        break;
+      default:
+        break;
+    }
+  };
 
-    fetchUltilities();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      fetchUltilities();
+    }, [packageData])
+  );
 
   const handleDetailPress = (Id: string) => {
     navigationApp.navigate('DetailUltilities', {Id});
@@ -130,37 +132,14 @@ const UltilitiesScreen: React.FC = () => {
           title={utility.Name} // Truyền tên tiện ích vào component Ultilities.
           ultilities={utility.Sections.map(section => {
             // Mỗi section của tiện ích sẽ được xử lý.
-            let price = '0'; // Khởi tạo giá trị mặc định cho giá là '0'.
-            let area = ''; // Khởi tạo giá trị mặc định cho area là một chuỗi rỗng.
+            const detail = detailUltilitiesData.find(
+              (detail: any) => detail.id === section.Id,
+            );
 
-            // Sử dụng switch-case thay cho if-else để kiểm tra section.Id
-            switch (section.Id) {
-              case '8d94e702-1a40-4316-815c-1668ab01d7d6': {
-                // Trường hợp section là narrowAlley (hẻm hẹp)
-                const narrowAlleyData = ultilitiesData.narrowAlley; // Lấy dữ liệu liên quan đn hẻm hẹp từ ultilitiesData.
-                price = narrowAlleyData
-                  ? narrowAlleyData.totalPrice // Nếu có dữ liệu hẻm hẹp, gán giá trị tổng giá cho price.
-                  : '0'; // Nếu không có dữ liệu, giá sẽ là '0'.
-                area = narrowAlleyData ? narrowAlleyData.checkedItemName : ''; // Lấy tên item đã chọn (hẻm hẹp) hoặc để trống.
-                break;
-              }
+            const price = detail ? detail.totalPrice : 0;
+            const area = detail ? detail.checkedItemName : '';
 
-              case 'dc3e0910-dae6-4faa-abfd-6e79d2a0a9aa': {
-                // Trường hợp section là smallArea (diện tích nhỏ)
-                const smallAreaData = ultilitiesData.smallArea; // Lấy dữ liệu liên quan đến diện tích nhỏ từ ultilitiesData.
-                price = smallAreaData ? smallAreaData.totalPrice : '0'; // Nếu có dữ liệu diện tích nhỏ, gán giá trị tổng giá cho price.
-                area = smallAreaData ? smallAreaData.checkedItemName : ''; // Lấy tên item đã chọn (diện tích nhỏ) hoặc để trống.
-                break;
-              }
-
-              default:
-                // Trường hợp không khớp với narrowAlley hoặc smallArea
-                price = '0'; // Gán giá trị mặc định cho price nếu không có dữ liệu.
-                area = ''; // Gán giá trị mặc định cho area.
-                break;
-            }
-
-            const formattedPrice = parseFloat(price).toLocaleString();
+            const formattedPrice = price.toLocaleString();
             // Trả về đối tượng section, bao gồm các thông tin và hàm xử lý checkbox cho từng mục trong Ultilities.
             return {
               id: section.Id, // Truyền Id của section.
@@ -205,7 +184,11 @@ const UltilitiesScreen: React.FC = () => {
         <CustomButton
           title="Tiếp tục"
           onPress={handleContinuePress}
-          colors={checkedItems.length > 0 ? ['#53A6A8', '#3C9597', '#1F7F81'] : ['#d3d3d3', '#d3d3d3', '#d3d3d3']} // Màu xám khi không có hạng mục nào được chọn
+          colors={
+            checkedItems.length > 0
+              ? ['#53A6A8', '#3C9597', '#1F7F81']
+              : ['#d3d3d3', '#d3d3d3', '#d3d3d3']
+          } // Màu xám khi không có hạng mục nào được chọn
           disabled={checkedItems.length === 0} // Vô hiệu hóa nút khi không có hạng mục nào được chọn
         />
       </View>

@@ -15,6 +15,8 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
 
+  const isPressable = status !== 'Pending' && status !== 'Finalized';
+
   const getStatusColor = (status: string | undefined) => {
     switch (status) {
       case 'Pending':
@@ -50,9 +52,13 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
       <TouchableOpacity
         style={styles.header}
         onPress={() => {
-          setExpanded(!expanded);
-          onPress();
-        }}>
+          if (isPressable) {
+            setExpanded(!expanded);
+            onPress();
+          }
+        }}
+        disabled={!isPressable}
+      >
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{title}</Text>
           <Text style={[styles.status, {color: getStatusColor(status)}]}>

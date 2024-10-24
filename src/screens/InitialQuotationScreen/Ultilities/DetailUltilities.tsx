@@ -9,57 +9,54 @@ import Checkbox from '../../../components/Checkbox';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {FONTFAMILY} from '../../../theme/theme';
 import Separator from '../../../components/Separator';
-import { useDispatch, useSelector } from 'react-redux';
-import { ContructionSelector } from '../../../redux/selectors/ContructionSelector/ContructionSelector';
+import {useDispatch, useSelector} from 'react-redux';
+import {ContructionSelector} from '../../../redux/selectors/ContructionSelector/ContructionSelector';
 import CustomButton from '../../../components/CustomButton';
 import storage from '../../../utils/storage';
-import { pushUltilities } from '../../../redux/actions/Ultilities/UltilitiesAction';
+import {pushDetailUltilities} from '../../../redux/actions/Ultilities/DetailUltilitiesAction';
 import InputField from '../../../components/InputField';
-
 
 const DetailUltilities: React.FC = () => {
   // route
-  const route =
-    useRoute<
-      RouteProp<AppStackParamList, 'DetailUltilities'>
-    >();
+  const route = useRoute<RouteProp<AppStackParamList, 'DetailUltilities'>>();
   const navigationUltilities = useNavigation<AppStackNavigationProp>();
   const dispatch = useDispatch();
   const {Id} = route.params;
 
   const constructionData = useSelector(ContructionSelector);
-  console.log('constructionData', constructionData);
-  const [area, setArea] = useState('');
+  const [quantity, setQuantity] = useState('');
   const [sectionData, setSectionData] = useState<Section | null>(null);
   const [coefficients, setCoefficients] = useState<{[key: string]: number}>({});
-  const [coefficient, setCoefficient] = useState(0)
+  const [coefficient, setCoefficient] = useState(0);
   const [checkedItems, setCheckedItems] = useState<{[key: string]: boolean}>(
     {},
   );
   const totalPriceContact = constructionData.totalPrice;
-  const totalPriceSmallArea = totalPriceContact * coefficient;
+  const [unitPrice, setUnitPrice] = useState<number | null>(null);
+
   useEffect(() => {
     const fetchUltilitiesOption = async () => {
       const data = await getUltilitiesSectionById(Id);
       setSectionData(data);
-      console.log('data', data);
-      const initialCoefficients =
-        data?.Items?.reduce((acc, item) => {
+      if (data?.Items && data.Items.length > 0) {
+        const initialCoefficients = data.Items.reduce((acc, item) => {
           acc[item.Id] = item.Coefficient;
           return acc;
-        }, {} as {[key: string]: number}) || {};
-      setCoefficients(initialCoefficients);
+        }, {} as {[key: string]: number});
+        setCoefficients(initialCoefficients);
 
-      // Lấy checkedItems từ AsyncStorage
-      const savedCheckedItems = await AsyncStorage.getItem(
-        'checkedItemsDetailUltilities',
-      );
-      if (savedCheckedItems) {
-        const parsedCheckedItems = JSON.parse(savedCheckedItems);
-        setCheckedItems(parsedCheckedItems);
-      } else if (data?.Items && data.Items.length > 0) {
-        const firstItemId = data.Items[0].Id;
-        setCheckedItems({[firstItemId]: true});
+        // Get checked items from AsyncStorage
+        const savedCheckedItems = await AsyncStorage.getItem(
+          'checkedItemsDetailUltilities',
+        );
+        if (savedCheckedItems) {
+          setCheckedItems(JSON.parse(savedCheckedItems));
+        } else {
+          const firstItemId = data.Items[0].Id;
+          setCheckedItems({[firstItemId]: true});
+        }
+      } else {
+        setUnitPrice(data?.UnitPrice || 0);
       }
     };
 
@@ -67,7 +64,7 @@ const DetailUltilities: React.FC = () => {
   }, [Id]);
 
   useEffect(() => {
-    // Cập nhật hệ số khi checkedItems thay đổi
+    // Update coefficient when checkedItems change
     const checkedId = Object.keys(checkedItems).find(id => checkedItems[id]);
     if (checkedId) {
       setCoefficient(coefficients[checkedId]);
@@ -83,43 +80,38 @@ const DetailUltilities: React.FC = () => {
     setCheckedItems(newCheckedItems);
     setCoefficient(coefficients[id]);
 
-    // Lưu các mục đã được check vào storage
+    // Save checked items to storage
     await AsyncStorage.setItem(
       'checkedItemsDetailUltilities',
       JSON.stringify(newCheckedItems),
     );
   };
 
-  const renderCheckboxOption = () => {
-    return sectionData?.Items?.map((item, index) => (
-      <Checkbox
-        key={index}
-        id={item.Id}
-        label={item.Name}
-        isChecked={checkedItems[item.Id]}
-        onCheck={handleCheck}
-      />
-    ));
-  };
-
   const handleContinuePress = async () => {
-    await storage.setItem(
-          'totalPriceSmallArea',
-            totalPriceSmallArea.toString(),
-        );
+    const totalPrice = sectionData?.Items?.length
+      ? totalPriceContact * coefficient
+      : quantity && unitPrice
+      ? parseFloat(quantity) * unitPrice
+      : 0;
+
+    await storage.setItem('totalPrice', totalPrice.toString());
 
     navigationUltilities.navigate('UltilitiesScreen');
 
-    const selectedItemId = Object.keys(checkedItems).find(id => checkedItems[id]);
+    const selectedItemId = Object.keys(checkedItems).find(
+      id => checkedItems[id],
+    );
     const checkedItemName = selectedItemId
-      ? sectionData?.Items?.find((item: any) => item.Id === selectedItemId)?.Name || null
+      ? sectionData?.Items?.find((item: any) => item.Id === selectedItemId)
+          ?.Name || null
       : null;
 
     dispatch(
-      pushUltilities({
+      pushDetailUltilities({
         id: Id,
+        area: quantity,
         name: sectionData?.Name,
-        totalPrice: totalPriceSmallArea,
+        totalPrice: totalPrice,
         checkedItemName: checkedItemName,
         checkedItems: selectedItemId,
       }),
@@ -132,33 +124,77 @@ const DetailUltilities: React.FC = () => {
       {sectionData && (
         <View style={styles.bodyContainer}>
           <Text style={styles.titleText}>{sectionData.Name}</Text>
-          <InputField
-            placeholder="Nhập diện tích"
-            value={area}
-            onChangeText={setArea}
-            name=""
-          />
-          <View style={styles.checkboxGroup}>{renderCheckboxOption()}</View>
-          <Separator />
-          <View style={styles.titleGroup}>
-            <Text style={styles.title}>Hệ số</Text>
-            <Text style={styles.price}>{coefficient}</Text>
-          </View>
-          <View style={styles.titleGroup}>
-            <Text style={styles.title}>Giá trị hợp đồng</Text>
-            <Text style={styles.price}>{totalPriceContact.toLocaleString()} VNĐ</Text>
-          </View>
+
+          {sectionData.Items && sectionData.Items.length > 0 ? (
+            <>
+              {/* Render checkboxes for sections with items */}
+              <View style={styles.checkboxGroup}>
+                {sectionData.Items.map((item, index) => (
+                  <Checkbox
+                    key={index}
+                    id={item.Id}
+                    label={item.Name}
+                    isChecked={checkedItems[item.Id]}
+                    onCheck={handleCheck}
+                  />
+                ))}
+              </View>
+              <Separator />
+              <View style={styles.titleGroup}>
+                <Text style={styles.title}>Hệ số</Text>
+                <Text style={styles.price}>{coefficient}</Text>
+              </View>
+              <View style={styles.titleGroup}>
+                <Text style={styles.title}>Giá trị hợp đồng</Text>
+                <Text style={styles.price}>
+                  {totalPriceContact.toLocaleString()} VNĐ
+                </Text>
+              </View>
+            </>
+          ) : (
+            <>
+              <InputField
+                placeholder="Nhập diện tích"
+                value={quantity}
+                onChangeText={setQuantity}
+                name=""
+              />
+              <View style={styles.titleGroup}>
+                <Text style={styles.title}>Đơn giá</Text>
+                <Text style={styles.price}>
+                  {unitPrice?.toLocaleString()} VNĐ
+                </Text>
+              </View>
+              <View style={styles.titleGroup}>
+                <Text style={styles.title}>Số lượng</Text>
+                <Text style={styles.price}>{quantity}</Text>
+              </View>
+            </>
+          )}
+
           <View style={styles.titleGroup}>
             <Text style={styles.title}>Thành tiền</Text>
-            <Text style={styles.totalPrice}>{totalPriceSmallArea.toLocaleString()} VNĐ</Text>
+            <Text style={styles.totalPrice}>
+              {(sectionData.Items?.length
+                ? totalPriceContact * coefficient
+                : quantity && unitPrice
+                ? parseFloat(quantity) * unitPrice
+                : 0
+              ).toLocaleString()}{' '}
+              VNĐ
+            </Text>
           </View>
+
           <Separator />
           <View style={styles.titleGroupDescription}>
-            <Text style={styles.title}>Mô tả</Text>
-            <Text style={styles.descriptionText}>{sectionData.Description}</Text>
+            <Text style={styles.titleDescription}>Mô tả</Text>
+            <Text style={styles.descriptionText}>
+              {sectionData.Description}
+            </Text>
           </View>
         </View>
       )}
+
       <View style={styles.buttonContainer}>
         <CustomButton
           title="Tiếp tục"
@@ -177,7 +213,7 @@ const styles = StyleSheet.create({
   },
   titleText: {
     marginTop: 20,
-    marginBottom : 10,
+    marginBottom: 10,
     fontFamily: FONTFAMILY.montserat_bold,
     fontSize: 16,
     color: 'black',
@@ -202,6 +238,10 @@ const styles = StyleSheet.create({
   title: {
     fontFamily: FONTFAMILY.montserat_medium,
   },
+  titleDescription: {
+    fontFamily: FONTFAMILY.montserat_bold,
+    color: 'black',
+  },
   price: {
     fontFamily: FONTFAMILY.montserat_semibold,
     position: 'absolute',
@@ -222,7 +262,7 @@ const styles = StyleSheet.create({
   buttonContainer: {
     justifyContent: 'flex-end',
     marginHorizontal: 20,
-    marginBottom: 20,
+    marginBottom: 30,
   },
 });
 

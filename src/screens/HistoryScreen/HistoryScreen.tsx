@@ -19,11 +19,9 @@ const HistoryScreen: React.FC = () => {
       try {
         const profile = await getProfile();
         setCustomerEmail(profile.Email);
-        console.log('customerEmail', profile.Email);
         // Lấy dự án theo email
         const projects = await getProjectByEmail(profile.Email);
         setProjectHistory(projects);
-        console.log('projectHistory', projects);
       } catch (error) {
         console.error('Failed to fetch profile:', error);
       }

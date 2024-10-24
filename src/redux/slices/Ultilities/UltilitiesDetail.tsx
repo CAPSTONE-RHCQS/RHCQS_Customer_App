@@ -1,4 +1,4 @@
-interface DetailConstruction {
+interface DetailUltilities {
   id: string;
   name: string;
   totalPrice: number;
@@ -9,7 +9,7 @@ interface DetailConstruction {
 }
 
 const initialState = {
-  detailUltilities: [] as DetailConstruction[],
+  detailUltilities: [] as DetailUltilities[],
 };
 
 const detailUltilitiesReducer = (state = initialState, action: any) => {
