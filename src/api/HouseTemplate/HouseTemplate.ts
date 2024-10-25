@@ -19,7 +19,7 @@ export const getHouseTemplateById = async (
   try {
     const headers = await getHeaders();
     const response = await axiosInstance.get(`/housetemplate/id?id=${houseId}`, { headers });
-    return response.data; // Trả về đối tượng HouseTemplate
+    return response.data;
   } catch (error) {
     console.error('Error fetching house template data:', error);
     throw error; // Ném lỗi để xử lý bên ngoài

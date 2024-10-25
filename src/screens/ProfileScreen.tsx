@@ -2,9 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {
   Text,
   View,
-  Button,
   StyleSheet,
-  Dimensions,
   Image,
   TouchableOpacity,
   TextInput,
@@ -13,10 +11,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import {AuthContext} from '../context/AuthContext';
 import storage from '../utils/storage';
 import {getProfile} from '../api/Account/Account';
-import {useSelector} from 'react-redux';
 import {height} from '../utils/Dimensions';
 import {FONTFAMILY} from '../theme/theme';
 import InputField from '../components/InputField';
+import Dialog from 'react-native-dialog'; // Import Dialog
 
 const ProfileScreen: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -26,6 +24,7 @@ const ProfileScreen: React.FC = () => {
   const [address, setAddress] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [reload, setReload] = useState(false);
+  const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const {logout} = useContext(AuthContext)!;
 
   useEffect(() => {
@@ -126,12 +125,32 @@ const ProfileScreen: React.FC = () => {
           </View>
         ) : (
           <View style={styles.button}>
-            <TouchableOpacity onPress={handleLogout}>
+            <TouchableOpacity onPress={() => setShowLogoutDialog(true)}>
               <Text style={styles.buttonText}>Đăng xuất</Text>
             </TouchableOpacity>
           </View>
         )}
       </View>
+
+      {/* Dialog xác nhận đăng xuất */}
+      <Dialog.Container visible={showLogoutDialog}>
+        <Dialog.Title style={styles.dialogTitle}>
+          Xác nhận đăng xuất
+        </Dialog.Title>
+        <Dialog.Description style={styles.dialogDescription}>
+          Bạn có chắc chắn muốn đăng xuất không?
+        </Dialog.Description>
+        <Dialog.Button
+          label="Hủy"
+          onPress={() => setShowLogoutDialog(false)}
+          style={styles.dialogButtonCancel}
+        />
+        <Dialog.Button
+          label="Đăng xuất"
+          onPress={handleLogout}
+          style={styles.dialogButtonAccept}
+        />
+      </Dialog.Container>
     </View>
   );
 };
@@ -234,6 +253,27 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.montserat_bold,
     color: '#389294',
     textAlign: 'center',
+  },
+  dialogTitle: {
+    fontFamily: FONTFAMILY.montserat_bold,
+    color: '#389294',
+  },
+  dialogDescription: {
+    fontFamily: FONTFAMILY.montserat_medium,
+    color: 'black',
+  },
+  dialogButtonAccept: {
+    fontSize: 18,
+    fontFamily: FONTFAMILY.montserat_bold,
+    color: 'red',
+    textTransform: 'none',
+  },
+  dialogButtonCancel: {
+    marginRight: 10,
+    fontSize: 18,
+    fontFamily: FONTFAMILY.montserat_bold,
+    color: '#389294',
+    textTransform: 'none',
   },
 });
 

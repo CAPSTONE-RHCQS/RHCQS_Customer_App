@@ -5,22 +5,22 @@ import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 interface BlogItemProps {
   image: any;
   heading: string;
-  id: number;
-  onPress: (id: number) => void;
+  id: string;
+  onPress: (id: string, heading: string) => void;
 }
 
 const BlogItem: React.FC<BlogItemProps> = ({image, heading, id, onPress}) => {
-    return (
-      <TouchableOpacity onPress={() => onPress(id)}>
-        <View style={styles.container}>
-          <Image source={image} style={styles.image} />
-          <Text style={styles.heading} numberOfLines={2} ellipsizeMode="tail">
-            {heading}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  };
+  return (
+    <TouchableOpacity onPress={() => onPress(id, heading)}>
+      <View style={styles.container}>
+        <Image source={{uri: image}} style={styles.image} />
+        <Text style={styles.heading} numberOfLines={2} ellipsizeMode="tail">
+          {heading}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

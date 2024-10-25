@@ -16,6 +16,8 @@ import DetailUltilities from '../screens/InitialQuotationScreen/Ultilities/Detai
 import HouseExternalView from '../screens/HouseDesginTemplate/HouseExternalView';
 import HouseResidentialArea from '../screens/HouseDesginTemplate/HouseResidentialArea';
 import HousePackageTemplate from '../screens/HouseDesginTemplate/HousePackageTemplate';
+import BlogList from '../screens/Blog/BlogList';
+import BlogDetail from '../screens/Blog/BlogDetail';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -44,6 +46,9 @@ const AppStack: React.FC = () => {
       <Stack.Screen name="TrackingScreen" component={TrackingScreen} />
       <Stack.Screen name="VersionScreen" component={VersionScreen} />
       <Stack.Screen name="VersionDetail" component={VersionDetail} />
+      {/* Blog */}
+      <Stack.Screen name="BlogList" component={BlogList} />
+      <Stack.Screen name="BlogDetail" component={BlogDetail} />
 
     </Stack.Navigator>
   );

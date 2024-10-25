@@ -12,14 +12,20 @@ import CustomerOptions from '../components/CustomerOption';
 import NewsItem from '../components/News';
 import BlogItem from '../components/Blog';
 import {getProfile} from '../api/Account/Account';
+import { getBlog } from '../api/Blog/Blog';
+import { Blog } from '../types/screens/Blog/BlogType';
+import { useNavigation } from '@react-navigation/native';
+import { AppStackNavigationProp } from '../types/TypeScreen';
 
 const viewHeight = height / 6;
 
 const HomeScreen: React.FC = ({}) => {
+  const navigationApp = useNavigation<AppStackNavigationProp>();
   // State
   const [currentIndex, setCurrentIndex] = useState(0);
   const [customerName, setCustomerName] = useState('');
-  const [customerImg, setCustomerImg] = useState('');
+  const [customerImg, setCustomerImg] = useState<string | null>(null);
+  const [blogData, setBlogData] = useState<Blog[]>([]);
   // Render
   const renderBanner = ({item}: {item: any; index: number}) => {
     return <BannerSlider data={item} />;
@@ -38,16 +44,28 @@ const HomeScreen: React.FC = ({}) => {
     fetchProfile();
   }, []);
 
+  useEffect(() => {
+    const fetchBlog = async () => {
+      const blog = await getBlog();
+      setBlogData(blog);
+    }
+    fetchBlog();
+  }, []);
+
+
 
   // Handle
   const handlePress = (option: string) => {
     console.log(`${option} pressed`);
   };
+  const handleBlogListPress = () => {
+    navigationApp.navigate('BlogList');
+  };
   const handleNewsPress = (id: number) => {
     console.log(`News ID: ${id} pressed`);
   };
-  const handleBlogPress = (id: number) => {
-    console.log(`Blog ID: ${id} pressed`);
+  const handleBlogDetailPress = (id: string, heading: string) => {
+    navigationApp.navigate('BlogDetail', {id, heading});
   };
 
   return (
@@ -152,20 +170,20 @@ const HomeScreen: React.FC = ({}) => {
           <View style={styles.newsTextContainer}>
             <Text style={styles.newsText}>Kiến thức xây nhà</Text>
             <TouchableOpacity
-              onPress={() => handlePress('View all')}
+              onPress={handleBlogListPress}
               activeOpacity={0.7}
               style={styles.viewAllButtonText}>
               <Text style={styles.viewAllText}>Xem tất cả</Text>
             </TouchableOpacity>
             <View style={styles.listBlogContainer}>
               <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-                {newsData.map(news => (
+                {blogData.map(blog => (
                   <BlogItem
-                    key={news.id}
-                    id={news.id}
-                    image={news.image}
-                    heading={news.heading}
-                    onPress={handleBlogPress}
+                    key={blog.Id}
+                    id={blog.Id}
+                    image={blog.ImgUrl || ''}
+                    heading={blog.Heading}
+                    onPress={handleBlogDetailPress}
                   />
                 ))}
               </ScrollView>
