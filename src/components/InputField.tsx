@@ -9,7 +9,8 @@ interface InputFieldProps {
   placeholder: string;
   secureTextEntry?: boolean;
   keyboardType?: 'default' | 'numeric' | 'email-address' | 'phone-pad';
-  isRequired?: boolean; // Thêm thuộc tính mới
+  isRequired?: boolean;
+  editable?: boolean;
 }
 
 const InputField: React.FC<InputFieldProps> = ({
@@ -19,6 +20,7 @@ const InputField: React.FC<InputFieldProps> = ({
   placeholder,
   keyboardType = 'default',
   isRequired = false,
+  editable = true,
 }) => {
   return (
     <View>
@@ -33,6 +35,7 @@ const InputField: React.FC<InputFieldProps> = ({
         onChangeText={onChangeText}
         placeholderTextColor="#B7B3C0"
         keyboardType={keyboardType}
+        editable={editable}
       />
     </View>
   );

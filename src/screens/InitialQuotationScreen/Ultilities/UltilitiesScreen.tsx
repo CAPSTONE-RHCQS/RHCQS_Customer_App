@@ -129,7 +129,7 @@ const UltilitiesScreen: React.FC = () => {
         <Ultilities
           key={index} // Mỗi tiện ích được lặp qua sẽ có một key là index để React xác định các phần tử một cách duy nhất.
           id={utility.Id} // Truyền Id của tiện ích vào component Ultilities.
-          title={utility.Name} // Truyền tên tiện ích vào component Ultilities.
+          title={`${index + 1} - ${utility.Name}`} // Truyền tên tiện ích vào component Ultilities.
           ultilities={utility.Sections.map(section => {
             // Mỗi section của tiện ích sẽ được xử lý.
             const detail = detailUltilitiesData.find(
