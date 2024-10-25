@@ -15,6 +15,7 @@ import DetailContruction from '../screens/InitialQuotationScreen/Contruction/Det
 import DetailUltilities from '../screens/InitialQuotationScreen/Ultilities/DetailUltilities';
 import HouseExternalView from '../screens/HouseDesginTemplate/HouseExternalView';
 import HouseResidentialArea from '../screens/HouseDesginTemplate/HouseResidentialArea';
+import HousePackageTemplate from '../screens/HouseDesginTemplate/HousePackageTemplate';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -37,6 +38,7 @@ const AppStack: React.FC = () => {
       <Stack.Screen name="HouseLibrary" component={HouseLibrary} />
       <Stack.Screen name="HouseExternalView" component={HouseExternalView} />
       <Stack.Screen name="HouseResidentialArea" component={HouseResidentialArea} />
+      <Stack.Screen name="HousePackageTemplate" component={HousePackageTemplate} />
       {/* History */}
       <Stack.Screen name="HistoryScreen" component={HistoryScreen} />
       <Stack.Screen name="TrackingScreen" component={TrackingScreen} />

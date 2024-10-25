@@ -1,7 +1,7 @@
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {RouteProp, useRoute} from '@react-navigation/native';
-import {AppStackParamList} from '../../types/TypeScreen';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {AppStackNavigationProp, AppStackParamList} from '../../types/TypeScreen';
 import {getHouseTemplateById} from '../../api/HouseTemplate/HouseTemplate';
 import AppBar from '../../components/Appbar';
 import {FONTFAMILY} from '../../theme/theme';
@@ -10,6 +10,8 @@ const HouseResidentialArea: React.FC = () => {
   const route =
     useRoute<RouteProp<AppStackParamList, 'HouseResidentialArea'>>();
   const {houseId, name} = route.params;
+
+  const navigationApp = useNavigation<AppStackNavigationProp>();
   const [subTemplates, setSubTemplates] = useState<any[]>([]);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
 
@@ -23,6 +25,10 @@ const HouseResidentialArea: React.FC = () => {
     };
     fetchHouseTemplate();
   }, [houseId]);
+
+  const handleContinue = () => {
+    navigationApp.navigate('HousePackageTemplate', {houseId});
+  };
 
   return (
     <View style={styles.container}>
@@ -58,7 +64,7 @@ const HouseResidentialArea: React.FC = () => {
         <CustomButton
           title="Tiếp tục"
           colors={['#53A6A8', '#3C9597', '#1F7F81']}
-          onPress={() => {}}
+          onPress={handleContinue}
         />
       </View>
     </View>
@@ -71,6 +77,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   content: {
+    flex: 1,
     paddingHorizontal: 20,
   },
   ImageSize: {

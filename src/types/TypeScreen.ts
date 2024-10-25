@@ -25,6 +25,7 @@ export type AppStackParamList = {
   HouseLibrary: undefined;
   HouseExternalView: {houseId: string, name: string};
   HouseResidentialArea: {houseId: string, name: string};
+  HousePackageTemplate: {houseId: string};
 };
 
 // Auth
