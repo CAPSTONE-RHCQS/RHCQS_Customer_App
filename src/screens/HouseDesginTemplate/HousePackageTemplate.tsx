@@ -32,7 +32,7 @@ const HousePackageTemplate: React.FC = () => {
         setPackageHouse(data.PackageHouses);
         setPackageName(data.PackageHouses[0].PackageName);
         setDescription(data.PackageHouses[0].Description);
-        setSelectedPackageId(data.PackageHouses[0].Id);
+        setSelectedPackageId(data.PackageHouses[0].PackageId);
       }
     };
     fetchHouseTemplate();
@@ -77,7 +77,7 @@ const HousePackageTemplate: React.FC = () => {
               onPress={() => {
                 setCurrentImage(pkg.ImgUrl);
                 setPackageName(pkg.PackageName);
-                setSelectedPackageId(pkg.Id); // Cập nhật Id khi chọn gói
+                setSelectedPackageId(pkg.PackageId);
               }}>
               <Text
                 style={[

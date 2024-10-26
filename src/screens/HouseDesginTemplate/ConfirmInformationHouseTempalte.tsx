@@ -55,7 +55,7 @@ import {
 
       const quotationUtilitiesRequest = ultilitiesData.checkedItems.map(
         (item: any) => ({
-          ultilitiesItemId: item.checkedItems ?? item.id,
+          utilitiesItemId: item.checkedItems ?? item.id,
           name: item.checkedItemName ?? item.name,
           price: item.totalPrice,
         }),
