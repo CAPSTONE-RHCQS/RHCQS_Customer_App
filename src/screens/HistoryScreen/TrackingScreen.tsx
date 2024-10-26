@@ -3,14 +3,22 @@ import React, {useEffect, useState} from 'react';
 import AppBar from '../../components/Appbar';
 import Tracking from '../../components/Tracking';
 import {getTracking} from '../../api/Project/project';
-import {useRoute, RouteProp, useNavigation, useFocusEffect} from '@react-navigation/native';
-import {AppStackNavigationProp, AppStackParamList} from '../../types/TypeScreen';
+import {
+  useRoute,
+  RouteProp,
+  useNavigation,
+  useFocusEffect,
+} from '@react-navigation/native';
+import {
+  AppStackNavigationProp,
+  AppStackParamList,
+} from '../../types/TypeScreen';
 import {TrackingType} from '../../types/screens/History/HistoryType';
 
 const TrackingScreen: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'TrackingScreen'>>();
   const {projectId} = route.params;
-  
+
   const navigationApp = useNavigation<AppStackNavigationProp>();
 
   const [tracking, setTracking] = useState<TrackingType | null>(null);
@@ -28,13 +36,16 @@ const TrackingScreen: React.FC = () => {
   useFocusEffect(
     React.useCallback(() => {
       fetchTracking();
-    }, [projectId])
+    }, [projectId]),
   );
 
   const handlePressTracking = (title: string, projectId: string) => {
     switch (title) {
       case 'Báo giá sơ bộ':
         navigationApp.navigate('VersionScreen', {projectId: projectId});
+        break;
+      case 'Hợp đồng thiết kế':
+        navigationApp.navigate('TrackingDesignContact', {projectId: projectId});
         break;
       default:
         console.log('Title:', title);
@@ -72,7 +83,7 @@ const TrackingScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <AppBar nameScreen="Lịch sử báo giá sơ bộ" />
-      <View >
+      <View>
         <View style={styles.content}>{renderTrackingItems()}</View>
       </View>
     </View>

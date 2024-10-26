@@ -17,12 +17,17 @@ const HouseExternalView: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'HouseExternalView'>>();
   const {houseId, name} = route.params;
   const [exteriorImages, setExteriorImages] = useState<string[]>([]);
+  const [designDrawings, setDesignDrawings] = useState<string[]>([]);
   const [description, setDescription] = useState('');
 
   useEffect(() => {
     const fetchHouseTemplate = async () => {
       const data = await getHouseTemplateById(houseId);
+      console.log('data', houseId);
       setExteriorImages(data.ExteriorsUrls.map((item: any) => item.Url));
+      setDesignDrawings(
+        data.SubTemplates[0].Designdrawings.map((item: any) => item.Url),
+      );
       setDescription(data.Description);
       console.log('description', data.Description);
     };
@@ -49,6 +54,19 @@ const HouseExternalView: React.FC = () => {
             loop={true}
           />
         </View>
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>Bản vẽ</Text>
+        </View>
+        <View style={styles.carouselContainer}>
+          <Carousel
+            data={designDrawings}
+            renderItem={renderItem}
+            width={width}
+            height={220}
+            loop={true}
+          />
+        </View>
+        
         <View style={styles.titleContainer}>
           <Text style={styles.title}>Ý tưởng thiết kế</Text>
         </View>
@@ -90,7 +108,7 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   carouselContainer: {
-    flex: 0.5,
+    flex: 1,
     marginTop: 10,
     marginHorizontal: 24,
   },

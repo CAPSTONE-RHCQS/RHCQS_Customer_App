@@ -2,11 +2,11 @@ import {View, Text, StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
-import {AppStackParamList} from '../../types/TypeScreen';
-import {getVersion} from '../../api/Project/project';
-import AppBar from '../../components/Appbar';
-import Tracking from '../../components/Tracking';
-import {VersionType} from '../../types/screens/History/HistoryType';
+import {AppStackParamList} from '../../../types/TypeScreen';
+import {getVersion} from '../../../api/Project/project';
+import AppBar from '../../../components/Appbar';
+import Tracking from '../../../components/Tracking';
+import {VersionType} from '../../../types/screens/History/HistoryType';
 
 const VersionScreen: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'VersionScreen'>>();

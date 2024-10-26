@@ -1,4 +1,4 @@
-import { ProjectHistory, TrackingType, VersionType } from '../../types/screens/History/HistoryType';
+import { ContactDesignType, ProjectHistory, TrackingType, TrackingVersionDesignType, VersionType } from '../../types/screens/History/HistoryType';
 import axiosInstance, { getHeaders } from '../../utils/axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -40,7 +40,7 @@ export const getTracking = async (projectId: string): Promise<TrackingType> => {
   }
 };
 
-// Get version
+// Get version initial quotation
 export const getVersion = async (projectId: string): Promise<VersionType[]> => {
   try {
     const headers = await getHeaders();
@@ -48,6 +48,30 @@ export const getVersion = async (projectId: string): Promise<VersionType[]> => {
     return response.data;
   } catch (error) {
     console.error('Error getting version:', error);
+    throw error;
+  }
+};
+
+// Get contact design
+export const getContactDesign = async (projectId: string): Promise<ContactDesignType> => {
+  try {
+    const headers = await getHeaders();
+    const response = await axiosInstance.get(`/contract/file?projectId=${encodeURIComponent(projectId)}&type=Design`, { headers });
+    return response.data;
+  } catch (error) {
+    console.error('Error getting contact design:', error);
+    throw error;
+  }
+};
+
+// Get version design detail
+export const getVersionDesignDetail = async (projectId: string): Promise<TrackingVersionDesignType[]> => {
+  try {
+    const headers = await getHeaders();
+    const response = await axiosInstance.get(`/housedesign/list?projectId=${encodeURIComponent(projectId)}`, { headers });
+    return response.data;
+  } catch (error) {
+    console.error('Error getting version design detail:', error);
     throw error;
   }
 };
@@ -73,7 +97,7 @@ export const putFinalized = async (id: string): Promise<any> => {
   try {
     const headers = await getHeaders();
     const response = await axiosInstance.put(
-      `/quotation/initial/finalized?initialId=${encodeURIComponent(id)}`,
+      `/quotation/finalized?quotationId=${encodeURIComponent(id)}`,
       null,
       { headers }
     );

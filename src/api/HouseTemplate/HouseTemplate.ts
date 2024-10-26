@@ -1,6 +1,19 @@
 import {HouseTemplate} from '../../types/screens/HouseTemplate/HouseTemplateType';
 import axiosInstance, {getHeaders} from '../../utils/axios';
 
+// Create project
+export const createProjectHouseTemplate = async (projectData: any) => {
+  try {
+    const headers = await getHeaders();
+    const response = await axiosInstance.post('/project/template-house', projectData, { headers });
+    return response.data;
+  } catch (error) {
+    console.error('Error creating project:', error);
+    throw error;
+  }
+};
+
+
 export const getHouseTemplate = async (): Promise<HouseTemplate[]> => {
   try {
     const headers = await getHeaders();
@@ -22,6 +35,6 @@ export const getHouseTemplateById = async (
     return response.data;
   } catch (error) {
     console.error('Error fetching house template data:', error);
-    throw error; // Ném lỗi để xử lý bên ngoài
+    throw error;
   }
 };

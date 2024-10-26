@@ -15,7 +15,7 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
 
-  const isPressable = status !== 'Pending' && status !== 'Finalized';
+  const isPressable = status !== 'Pending';
 
   const getStatusColor = (status: string | undefined) => {
     switch (status) {
@@ -23,6 +23,8 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
         return '#FFA500';
       case 'Processing':
         return '#0000FF';
+      case 'Approved':
+        return '#00FF00';
       case 'Finalized':
         return '#008000';
       case 'Canceled':
@@ -38,6 +40,8 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
         return 'Đang chờ xử lý';
       case 'Processing':
         return 'Đang xử lý';
+      case 'Approved':
+        return 'Đã được duyệt';
       case 'Finalized':
         return 'Đã hoàn tất';
       case 'Canceled':

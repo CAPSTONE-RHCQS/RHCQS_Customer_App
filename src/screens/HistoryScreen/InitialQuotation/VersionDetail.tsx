@@ -8,18 +8,22 @@ import {
   TextInput,
   TouchableOpacity,
 } from 'react-native';
-import AppBar from '../../components/Appbar';
+import AppBar from '../../../components/Appbar';
 import {RouteProp, useRoute} from '@react-navigation/native';
 import {
   AppStackNavigationProp,
   AppStackParamList,
-} from '../../types/TypeScreen';
-import {VersionType} from '../../types/screens/History/HistoryType';
-import {getVersion, putComment, putFinalized} from '../../api/Project/project';
+} from '../../../types/TypeScreen';
+import {VersionType} from '../../../types/screens/History/HistoryType';
+import {
+  getVersion,
+  putComment,
+  putFinalized,
+} from '../../../api/Project/project';
 import Pdf from 'react-native-pdf';
 import RNFetchBlob from 'react-native-blob-util';
-import CustomButton from '../../components/CustomButton';
-import {FONTFAMILY} from '../../theme/theme';
+import CustomButton from '../../../components/CustomButton';
+import {FONTFAMILY} from '../../../theme/theme';
 import Dialog from 'react-native-dialog';
 import {useNavigation} from '@react-navigation/native';
 
@@ -36,11 +40,14 @@ const VersionDetail: React.FC = () => {
   const [pdfUri, setPdfUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [inputValue, setInputValue] = useState<string>('');
+  const [responseStatus, setResponseStatus] = useState<string>('');
 
   useEffect(() => {
     const fetchVersion = async () => {
       try {
         const versions = await getVersion(projectId);
+        const status = versions.find(v => v.Version === version)?.Status;
+        setResponseStatus(status || '');
         const matchedVersion = versions.find(v => v.Version === version);
         setSelectedVersion(matchedVersion || null);
 
@@ -104,57 +111,57 @@ const VersionDetail: React.FC = () => {
     <View style={styles.container}>
       <AppBar nameScreen={`Báo giá sơ bộ phiên bản ${version}`} />
       <View style={styles.content}>
-        <View style={styles.inputContainer}>
-          <Text style={styles.title}>Ghi chú</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Nhập ghi chú..."
-            placeholderTextColor="gray"
-            value={inputValue}
-            onChangeText={setInputValue}
-            multiline={true}
-            textAlignVertical="top"
-          />
-          <TouchableOpacity onPress={handlePutComment}>
-            <Text style={styles.buttonText}>Gửi ghi chú</Text>
-          </TouchableOpacity>
-        </View>
+        {responseStatus !== 'Finalized' && responseStatus !== 'Processing' && (
+          <View style={styles.inputContainer}>
+            <Text style={styles.title}>Ghi chú</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Nhập ghi chú..."
+              placeholderTextColor="gray"
+              value={inputValue}
+              onChangeText={setInputValue}
+              multiline={true}
+              textAlignVertical="top"
+            />
+            <TouchableOpacity onPress={handlePutComment}>
+              <Text style={styles.buttonText}>Gửi ghi chú</Text>
+            </TouchableOpacity>
+          </View>
+        )}
         {selectedVersion ? (
           pdfUri ? (
             <Pdf
               source={{uri: pdfUri}}
-              onLoadComplete={numberOfPages => {
-                console.log(`Number of pages: ${numberOfPages}`);
-              }}
-              onPageChanged={(page, numberOfPages) => {
-                console.log(`Current page: ${page}`);
-              }}
+              onLoadComplete={numberOfPages => {}}
+              onPageChanged={(page, numberOfPages) => {}}
               onError={error => {
                 console.log(error);
               }}
               style={styles.pdf}
             />
           ) : (
-            <Text>No file available for this version.</Text>
+            <Text style={styles.text}>Báo giá sơ bộ đang được tạo...</Text>
           )
         ) : (
           <Text>Version not found.</Text>
         )}
       </View>
-      <CustomButton
-        title="Chấp nhận báo giá sơ bộ"
-        colors={['#53A6A8', '#3C9597', '#1F7F81']}
-        onPress={handlePutFinalized}
-        style={styles.button}
-      />
+      {responseStatus !== 'Finalized' && responseStatus !== 'Processing' && (
+        <CustomButton
+          title="Chấp nhận báo giá sơ bộ"
+          colors={['#53A6A8', '#3C9597', '#1F7F81']}
+          onPress={handlePutFinalized}
+          style={styles.button}
+        />
+      )}
       <Dialog.Container contentStyle={styles.dialogContainer} visible={visible}>
         <Dialog.Title style={styles.dialogTitle}>Xác nhận</Dialog.Title>
         <Dialog.Description style={styles.dialogDescription}>
           Bạn có chắc chắn muốn yêu cầu bản thiết kế?
         </Dialog.Description>
-        <View style={styles.dialogButtonContainer}>
-          <Dialog.Button
-            label="Hủy"
+
+        <Dialog.Button
+          label="Hủy"
           onPress={() => {
             setVisible(false);
           }}
@@ -168,7 +175,6 @@ const VersionDetail: React.FC = () => {
           }}
           style={styles.dialogButton}
         />
-        </View>
       </Dialog.Container>
     </View>
   );
@@ -238,10 +244,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: FONTFAMILY.montserat_regular,
   },
-  dialogButtonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+
   dialogButtonLabel: {
     color: '#1F7F81',
     fontFamily: FONTFAMILY.montserat_semibold,
@@ -249,10 +252,18 @@ const styles = StyleSheet.create({
   dialogButtonCancel: {
     color: 'red',
     fontFamily: FONTFAMILY.montserat_semibold,
+    textTransform: 'none',
   },
   dialogButton: {
     color: '#1F7F81',
     fontFamily: FONTFAMILY.montserat_semibold,
+    textTransform: 'none',
+  },
+  text: {
+    fontFamily: FONTFAMILY.montserat_regular,
+    color: 'gray',
+    fontSize: 16,
+    padding: 20,
   },
 });
 

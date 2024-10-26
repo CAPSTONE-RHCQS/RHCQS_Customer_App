@@ -1,35 +1,56 @@
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {RouteProp, useRoute} from '@react-navigation/native';
-import {AppStackParamList} from '../../types/TypeScreen';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {
+  AppStackNavigationProp,
+  AppStackParamList,
+} from '../../types/TypeScreen';
 import AppBar from '../../components/Appbar';
 import {getHouseTemplateById} from '../../api/HouseTemplate/HouseTemplate';
 import {FONTFAMILY} from '../../theme/theme';
 import CustomButton from '../../components/CustomButton';
+import {useDispatch} from 'react-redux';
+import {pushPackage} from '../../redux/actions/Package/PackageAction';
 
 const HousePackageTemplate: React.FC = () => {
   const route =
     useRoute<RouteProp<AppStackParamList, 'HousePackageTemplate'>>();
   const {houseId} = route.params;
-
+  const dispatch = useDispatch();
+  const navigationApp = useNavigation<AppStackNavigationProp>();
   const [packageName, setPackageName] = useState<string>('');
   const [packageHouse, setPackageHouse] = useState<any[]>([]);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
+  const [description, setDescription] = useState<string>('');
+  const [selectedPackageId, setSelectedPackageId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchHouseTemplate = async () => {
       const data = await getHouseTemplateById(houseId);
-
       if (data.PackageHouses.length > 0) {
         setCurrentImage(data.PackageHouses[0].ImgUrl);
         setPackageHouse(data.PackageHouses);
         setPackageName(data.PackageHouses[0].PackageName);
+        setDescription(data.PackageHouses[0].Description);
+        setSelectedPackageId(data.PackageHouses[0].Id);
       }
     };
     fetchHouseTemplate();
   }, [houseId]);
 
-  const handleContinue = () => {};
+  const handleContinue = () => {
+    if (selectedPackageId) {
+      navigationApp.navigate('UltilitiesHouse');
+      dispatch(
+        pushPackage({
+          selectedRoughType: undefined,
+          completePackageName: packageName,
+          selectedComplete: selectedPackageId,
+          selectedCompleteType: 'FINISHED',
+        }),
+      );
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -56,6 +77,7 @@ const HousePackageTemplate: React.FC = () => {
               onPress={() => {
                 setCurrentImage(pkg.ImgUrl);
                 setPackageName(pkg.PackageName);
+                setSelectedPackageId(pkg.Id); // Cập nhật Id khi chọn gói
               }}>
               <Text
                 style={[
@@ -67,22 +89,8 @@ const HousePackageTemplate: React.FC = () => {
             </TouchableOpacity>
           ))}
           <View style={styles.packageNoteContainer}>
-          <Text style={styles.packageNoteTitle}>Chú thích</Text>
-          <Text style={styles.packageNote}>
-            - Đơn giá này áp dụng cho công trình nhà phố, biệt thự tiêu chuẩn
-          </Text>
-          <Text style={styles.packageNote}>
-            - Tổng diện tích thi công trên 280m2
-          </Text>
-          <Text style={styles.packageNote}>
-            - Có diện tích mỗi tầng từ 70m2 - 100m2
-          </Text>
-          <Text style={styles.packageNote}>
-            - 2 phòng ngủ + 2 nhà vệ sinh mỗi lầu
-          </Text>
-          <Text style={styles.packageNote}>
-            - Đơn giá trên chưa bao gồm VAT
-          </Text>
+            <Text style={styles.packageNoteTitle}>Chú thích</Text>
+            <Text style={styles.packageNote}>{description}</Text>
           </View>
         </View>
       </View>

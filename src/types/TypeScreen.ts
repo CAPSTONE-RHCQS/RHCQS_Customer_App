@@ -21,14 +21,23 @@ export type AppStackParamList = {
   TrackingScreen: {projectId: string};
   VersionScreen: {projectId: string};
   VersionDetail: {projectId: string, version: string};
+  //Contact
+  ContactDesignScreen: {projectId: string};
+  TrackingDesignContact: {projectId: string};
+  DetailVersionDesign: {projectId: string, version: string};
+  TrackingVersionDesign: {projectId: string};
   // House Library
   HouseLibrary: undefined;
   HouseExternalView: {houseId: string, name: string};
   HouseResidentialArea: {houseId: string, name: string};
   HousePackageTemplate: {houseId: string};
+  UltilitiesHouse: undefined;
+  ConfirmInformationHouseTemplate: undefined;
+  DetailUltilitiesHouse: {Id: string};
   // Blog
   BlogList: undefined;
   BlogDetail: {id: string, heading: string};
+
 };
 
 // Auth

@@ -1,26 +1,39 @@
 import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {AppStackNavigationProp, AppStackParamList} from '../../types/TypeScreen';
+import {
+  AppStackNavigationProp,
+  AppStackParamList,
+} from '../../types/TypeScreen';
 import {getHouseTemplateById} from '../../api/HouseTemplate/HouseTemplate';
 import AppBar from '../../components/Appbar';
 import {FONTFAMILY} from '../../theme/theme';
 import CustomButton from '../../components/CustomButton';
+import {useDispatch} from 'react-redux';
+import {pushSubTemplate} from '../../redux/actions/HouseTemplate/SubTemplate';
+
 const HouseResidentialArea: React.FC = () => {
   const route =
     useRoute<RouteProp<AppStackParamList, 'HouseResidentialArea'>>();
   const {houseId, name} = route.params;
 
+  const dispatch = useDispatch();
   const navigationApp = useNavigation<AppStackNavigationProp>();
   const [subTemplates, setSubTemplates] = useState<any[]>([]);
-  const [currentImage, setCurrentImage] = useState<string | null>(null);
+  const [currentTemplate, setCurrentTemplate] = useState<{
+    id: string;
+    url: string;
+  } | null>(null);
 
   useEffect(() => {
     const fetchHouseTemplate = async () => {
       const data = await getHouseTemplateById(houseId);
       setSubTemplates(data.SubTemplates);
       if (data.SubTemplates.length > 0) {
-        setCurrentImage(data.SubTemplates[0].Url);
+        setCurrentTemplate({
+          id: data.SubTemplates[0].Id,
+          url: data.SubTemplates[0].Url,
+        });
       }
     };
     fetchHouseTemplate();
@@ -28,6 +41,12 @@ const HouseResidentialArea: React.FC = () => {
 
   const handleContinue = () => {
     navigationApp.navigate('HousePackageTemplate', {houseId});
+    dispatch(pushSubTemplate({subTemplateId: currentTemplate?.id}));
+  };
+
+  const handleTemplateSelect = (template: any) => {
+    setCurrentTemplate({id: template.Id, url: template.Url});
+    console.log('Selected SubTemplate Id:', template.Id);
   };
 
   return (
@@ -35,8 +54,8 @@ const HouseResidentialArea: React.FC = () => {
       <AppBar nameScreen={name} />
       <View style={styles.content}>
         <View style={styles.ImageSize}>
-          {currentImage && (
-            <Image source={{uri: currentImage}} style={styles.image} />
+          {currentTemplate?.url && (
+            <Image source={{uri: currentTemplate.url}} style={styles.image} />
           )}
         </View>
         <Text style={styles.sectionTitle}>Diện tích</Text>
@@ -46,13 +65,15 @@ const HouseResidentialArea: React.FC = () => {
               key={index}
               style={[
                 styles.sizeButton,
-                currentImage === template.Url && styles.activeSizeButton,
+                currentTemplate?.url === template.Url &&
+                  styles.activeSizeButton,
               ]}
-              onPress={() => setCurrentImage(template.Url)}>
+              onPress={() => handleTemplateSelect(template)}>
               <Text
                 style={[
                   styles.sizeText,
-                  currentImage === template.Url && styles.activeSizeText,
+                  currentTemplate?.url === template.Url &&
+                    styles.activeSizeText,
                 ]}>
                 {template.Size}
               </Text>

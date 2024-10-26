@@ -1,8 +1,4 @@
-import {
-  View,
-  StyleSheet,
-  Animated,
-} from 'react-native';
+import {View, StyleSheet, Animated} from 'react-native';
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import AppBar from '../../components/Appbar';
 import InputField from '../../components/InputField';
@@ -44,7 +40,9 @@ const ConfirmInformation: React.FC = () => {
       try {
         const profile = await getProfile();
         setCustomerId(profile.Id);
-        console.log('customerId', profile.Id);
+        setName(profile.Username);
+        setPhone(profile.PhoneNumber);
+        setEmail(profile.Email);
       } catch (error) {
         console.error('Failed to fetch profile:', error);
       }
@@ -234,10 +232,12 @@ const styles = StyleSheet.create({
   dialogButtonLabel: {
     color: '#1F7F81',
     fontFamily: FONTFAMILY.montserat_semibold,
+    textTransform: 'none',
   },
   dialogButton: {
     color: '#1F7F81',
     fontFamily: FONTFAMILY.montserat_semibold,
+    textTransform: 'none',
   },
 });
 

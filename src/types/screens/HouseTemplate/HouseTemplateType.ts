@@ -47,6 +47,7 @@ export interface PackageHouse {
   PackageId: string
   PackageName: string
   ImgUrl: string
+  Description: string
   InsDate: string
 }
 
