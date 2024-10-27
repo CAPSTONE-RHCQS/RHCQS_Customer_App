@@ -52,11 +52,33 @@ export const getVersion = async (projectId: string): Promise<VersionType[]> => {
   }
 };
 
+export const getVersionFinal = async (projectId: string): Promise<VersionType[]> => {
+  try {
+    const headers = await getHeaders();
+    const response = await axiosInstance.get(`/quotation/final/list?projectId=${encodeURIComponent(projectId)}`, {headers});
+    return response.data;
+  } catch (error) {
+    console.error('Error getting version:', error);
+    throw error;
+  }
+};
+
 // Get contact design
 export const getContactDesign = async (projectId: string): Promise<ContactDesignType> => {
   try {
     const headers = await getHeaders();
     const response = await axiosInstance.get(`/contract/file?projectId=${encodeURIComponent(projectId)}&type=Design`, { headers });
+    return response.data;
+  } catch (error) {
+    console.error('Error getting contact design:', error);
+    throw error;
+  }
+};
+
+export const getContactContruction = async (projectId: string): Promise<ContactDesignType> => {
+  try {
+    const headers = await getHeaders();
+    const response = await axiosInstance.get(`/contract/file?projectId=${encodeURIComponent(projectId)}&type=Construction`, { headers });
     return response.data;
   } catch (error) {
     console.error('Error getting contact design:', error);

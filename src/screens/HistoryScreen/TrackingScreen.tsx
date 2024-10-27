@@ -47,6 +47,12 @@ const TrackingScreen: React.FC = () => {
       case 'Hợp đồng thiết kế':
         navigationApp.navigate('TrackingDesignContact', {projectId: projectId});
         break;
+      case 'Báo giá chi tiết':
+        navigationApp.navigate('VersionFinalScreen', {projectId: projectId});
+        break;
+      case 'Hợp đồng thi công':
+        navigationApp.navigate('ContactContructionScreen', {projectId: projectId});
+        break;
       default:
         console.log('Title:', title);
         break;

@@ -16,7 +16,7 @@ import {
 } from '../../../types/TypeScreen';
 import {VersionType} from '../../../types/screens/History/HistoryType';
 import {
-  getVersion,
+  getVersionFinal,
   putComment,
   putFinalized,
 } from '../../../api/Project/project';
@@ -27,10 +27,10 @@ import {FONTFAMILY} from '../../../theme/theme';
 import Dialog from 'react-native-dialog';
 import {useNavigation} from '@react-navigation/native';
 
-const VersionDetail: React.FC = () => {
+const VersionFinalDetail: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
 
-  const route = useRoute<RouteProp<AppStackParamList, 'VersionDetail'>>();
+  const route = useRoute<RouteProp<AppStackParamList, 'VersionFinalDetail'>>();
   const {version, projectId} = route.params;
 
   const [selectedVersion, setSelectedVersion] = useState<VersionType | null>(
@@ -45,7 +45,7 @@ const VersionDetail: React.FC = () => {
   useEffect(() => {
     const fetchVersion = async () => {
       try {
-        const versions = await getVersion(projectId);
+        const versions = await getVersionFinal(projectId);
         const status = versions.find(v => v.Version === version)?.Status;
         setResponseStatus(status || '');
         const matchedVersion = versions.find(v => v.Version === version);
@@ -267,4 +267,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VersionDetail;
+export default VersionFinalDetail;
