@@ -67,7 +67,7 @@ export const getVersion = async (projectId: string): Promise<VersionType[]> => {
 export const getVersionFinal = async (projectId: string): Promise<VersionType[]> => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.get(`/quotation/final/list?projectId=${encodeURIComponent(projectId)}`, {headers});
+    const response = await axiosInstance.get(`/quotation/final/list?projectId=${encodeURIComponent(projectId)}`, { headers });
     return response.data;
   } catch (error) {
     console.error('Error getting version:', error);

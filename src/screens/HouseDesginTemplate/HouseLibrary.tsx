@@ -16,6 +16,7 @@ import {AppStackNavigationProp} from '../../types/TypeScreen';
 const HouseLibrary: React.FC = () => {
   const [images, setImages] = useState<HouseTemplate[]>([]);
   const navigationApp = useNavigation<AppStackNavigationProp>();
+
   useEffect(() => {
     const fetchTemplates = async () => {
       try {
@@ -45,7 +46,7 @@ const HouseLibrary: React.FC = () => {
         <FlatList
           data={images}
           numColumns={2}
-          keyExtractor={(item, index) => item.Id}
+          keyExtractor={(item) => item.Id}
           renderItem={({item}) => (
             <TouchableOpacity
               style={styles.image}
@@ -68,7 +69,8 @@ const styles = StyleSheet.create({
   flatListContent: {
     flex: 1,
     position: 'relative',
-    paddingVertical: 10,
+    marginVertical: '1%',
+    marginHorizontal: '0.3%',
   },
   image: {
     flex: 1,
