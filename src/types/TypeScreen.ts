@@ -29,6 +29,7 @@ export type AppStackParamList = {
   DetailVersionDesign: {projectId: string, version: string};
   TrackingVersionDesign: {projectId: string};
   ContactContructionScreen: {projectId: string};
+  TrackingContruction: {projectId: string};
   // House Library
   HouseLibrary: undefined;
   HouseExternalView: {houseId: string, name: string};

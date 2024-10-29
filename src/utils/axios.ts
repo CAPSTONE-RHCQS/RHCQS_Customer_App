@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_ROOT } from "./constants";
+import { API_ROOT, API_UPLOAD } from "./constants";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const axiosInstance = axios.create({
@@ -8,7 +8,6 @@ const axiosInstance = axios.create({
     "Content-Type": "application/json",
   },
 });
-
 
 export const getHeaders = async () => {
   const token = await AsyncStorage.getItem('accessToken');

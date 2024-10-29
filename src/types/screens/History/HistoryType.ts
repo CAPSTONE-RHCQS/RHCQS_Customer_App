@@ -64,4 +64,18 @@ export interface Version {
   Note?: string
 }
 
+export interface TrackingContructionType {
+  Id: string
+  Type: string
+  InsDate: string
+  UpsDate: string
+  TotalPrice: number
+  PaymentDate: string
+  PaymentPhase: string
+  Unit: string
+  Percents: string
+  Description: string
+}
+
+
 

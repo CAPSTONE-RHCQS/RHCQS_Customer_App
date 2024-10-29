@@ -33,6 +33,7 @@ const DetailUltilitiesHouse: React.FC = () => {
   );
   const totalPriceContact = constructionData.totalPrice;
   const [unitPrice, setUnitPrice] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchUltilitiesOption = async () => {
@@ -200,6 +201,7 @@ const DetailUltilitiesHouse: React.FC = () => {
           title="Tiếp tục"
           onPress={handleContinuePress}
           colors={['#53A6A8', '#3C9597', '#1F7F81']}
+          loading={loading}
         />
       </View>
     </View>

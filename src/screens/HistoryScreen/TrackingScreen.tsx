@@ -1,8 +1,8 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBar from '../../components/Appbar';
 import Tracking from '../../components/Tracking';
-import {getTracking} from '../../api/Project/project';
+import {cancelInitialQuotation, getTracking} from '../../api/Project/project';
 import {
   useRoute,
   RouteProp,
@@ -13,6 +13,7 @@ import {
   AppStackNavigationProp,
   AppStackParamList,
 } from '../../types/TypeScreen';
+import {FONTFAMILY} from '../../theme/theme';
 import {TrackingType} from '../../types/screens/History/HistoryType';
 
 const TrackingScreen: React.FC = () => {
@@ -33,6 +34,11 @@ const TrackingScreen: React.FC = () => {
     }
   };
 
+  const handleCancelInitialQuotation = async () => {
+    await cancelInitialQuotation(projectId);
+    navigationApp.navigate('HistoryScreen');
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       fetchTracking();
@@ -51,7 +57,7 @@ const TrackingScreen: React.FC = () => {
         navigationApp.navigate('VersionFinalScreen', {projectId: projectId});
         break;
       case 'Hợp đồng thi công':
-        navigationApp.navigate('ContactContructionScreen', {projectId: projectId});
+        navigationApp.navigate('TrackingContruction', {projectId: projectId});
         break;
       default:
         console.log('Title:', title);
@@ -92,6 +98,15 @@ const TrackingScreen: React.FC = () => {
       <View>
         <View style={styles.content}>{renderTrackingItems()}</View>
       </View>
+      {tracking?.InitialResponse?.Status !== 'Finalized' && (
+        <View style={styles.buttonContainer}>
+          <View style={styles.button}>
+            <TouchableOpacity onPress={handleCancelInitialQuotation}>
+              <Text style={styles.buttonText}>Hủy báo giá sơ bộ</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      )}
     </View>
   );
 };
@@ -104,6 +119,26 @@ const styles = StyleSheet.create({
   content: {
     marginTop: 10,
     marginHorizontal: 20,
+  },
+  buttonContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    marginHorizontal: 20,
+    marginBottom: 20,
+  },
+  button: {
+    height: 60,
+    borderRadius: 15,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'red',
+  },
+  buttonText: {
+    fontFamily: FONTFAMILY.montserat_medium,
+    color: 'red',
+    fontSize: 18,
   },
 });
 

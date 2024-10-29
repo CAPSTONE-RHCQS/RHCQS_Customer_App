@@ -19,7 +19,7 @@ const HouseExternalView: React.FC = () => {
   const [exteriorImages, setExteriorImages] = useState<string[]>([]);
   const [designDrawings, setDesignDrawings] = useState<string[]>([]);
   const [description, setDescription] = useState('');
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchHouseTemplate = async () => {
       const data = await getHouseTemplateById(houseId);
@@ -84,6 +84,7 @@ const HouseExternalView: React.FC = () => {
               name: name,
             });
           }}
+          loading={loading}
         />
       </View>
     </View>

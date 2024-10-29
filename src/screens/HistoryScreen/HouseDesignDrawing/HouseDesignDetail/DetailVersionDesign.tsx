@@ -29,7 +29,7 @@ const DetailVersionDesign: React.FC = () => {
 
   const [inputValue, setInputValue] = useState('');
   const [visible, setVisible] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchVersionDetail = async () => {
       try {
@@ -106,6 +106,7 @@ const DetailVersionDesign: React.FC = () => {
             title="Chấp nhận báo giá sơ bộ"
             colors={['#53A6A8', '#3C9597', '#1F7F81']}
             onPress={handlePutFinalized}
+            loading={loading}
           />
         </View>
       )}

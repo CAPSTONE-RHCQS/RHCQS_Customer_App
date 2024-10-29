@@ -7,4 +7,12 @@ export interface Profile {
     DateOfBirth: any
   }
 
+  export interface UpdateProfile {
+    username: string
+    imageUrl: string
+    email: string
+    phoneNumber: string
+    dateOfBirth: string
+  }
+  
   

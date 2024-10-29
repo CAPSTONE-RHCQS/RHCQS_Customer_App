@@ -1,6 +1,6 @@
 // CustomButton.tsx
 import React from 'react';
-import { TouchableOpacity, Text, StyleSheet, ViewStyle} from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ViewStyle, ActivityIndicator } from 'react-native';
 import { LinearGradient } from 'react-native-linear-gradient';
 import { FONTFAMILY } from '../theme/theme';
 
@@ -10,17 +10,22 @@ interface CustomButtonProps {
   colors: string[];
   style?: ViewStyle | ViewStyle[];
   disabled?: boolean;
+  loading: boolean;
 }
 
-const CustomButton: React.FC<CustomButtonProps> = ({ title, onPress, colors, style, disabled }) => {
+const CustomButton: React.FC<CustomButtonProps> = ({ title, onPress, colors, style, disabled, loading }) => {
   return (
-    <TouchableOpacity onPress={disabled ? undefined : onPress} style={[styles.buttonContainer, style]} disabled={disabled}>
+    <TouchableOpacity onPress={disabled || loading ? undefined : onPress} style={[styles.buttonContainer, style]} disabled={disabled || loading}>
       <LinearGradient
         colors={colors}
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 0 }}
         style={styles.gradientButton}>
-        <Text style={styles.buttonText}>{title}</Text>
+        {loading ? (
+          <ActivityIndicator size="small" color="#ffffff" />
+        ) : (
+          <Text style={styles.buttonText}>{title}</Text>
+        )}
       </LinearGradient>
     </TouchableOpacity>
   );

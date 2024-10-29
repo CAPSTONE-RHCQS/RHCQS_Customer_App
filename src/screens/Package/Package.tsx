@@ -27,7 +27,7 @@ const Package: React.FC = () => {
   }>({});
   const [selectedRough, setSelectedRough] = useState<string | null>(null);
   const [selectedComplete, setSelectedComplete] = useState<string | null>(null);
-
+  const [loading, setLoading] = useState(false);
   // Hàm fetch dữ liệu gói thi công từ API và lấy dữ liệu từ AsynStorage
   useEffect(() => {
     const fetchPackages = async () => {
@@ -227,6 +227,7 @@ const Package: React.FC = () => {
               : ['#53A6A8', '#3C9597', '#1F7F81']
           }
           disabled={isButtonDisabled}
+          loading={loading}
         />
       </View>
     </View>

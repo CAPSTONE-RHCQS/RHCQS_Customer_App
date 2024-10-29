@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
@@ -7,11 +7,13 @@ import {getVersion} from '../../../api/Project/project';
 import AppBar from '../../../components/Appbar';
 import Tracking from '../../../components/Tracking';
 import {VersionType} from '../../../types/screens/History/HistoryType';
+import {FONTFAMILY} from '../../../theme/theme';
 
 const VersionScreen: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'VersionScreen'>>();
   const {projectId} = route.params;
-  const navigationApp = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
+  const navigationApp =
+    useNavigation<NativeStackNavigationProp<AppStackParamList>>();
 
   const [versions, setVersions] = useState<VersionType[]>([]);
 
@@ -25,7 +27,10 @@ const VersionScreen: React.FC = () => {
   }, [projectId]);
 
   const handlePressTracking = (version: string, projectId: string) => {
-    navigationApp.navigate('VersionDetail', {version: version, projectId: projectId});
+    navigationApp.navigate('VersionDetail', {
+      version: version,
+      projectId: projectId,
+    });
   };
 
   return (
@@ -52,7 +57,7 @@ const styles = StyleSheet.create({
   content: {
     marginTop: 10,
     marginHorizontal: 20,
-  },
+  }
 });
 
 export default VersionScreen;

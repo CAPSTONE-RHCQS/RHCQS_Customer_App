@@ -74,7 +74,8 @@ const styles = StyleSheet.create({
     flex: 1,
     width: '100%',
     height: 150,
-    margin: '1%',
+    marginTop: '1%',
+    marginHorizontal: '1%',
     borderRadius: 10,
   },
 });

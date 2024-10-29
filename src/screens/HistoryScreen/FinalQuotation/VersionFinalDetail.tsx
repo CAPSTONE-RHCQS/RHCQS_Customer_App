@@ -151,6 +151,7 @@ const VersionFinalDetail: React.FC = () => {
           title="Chấp nhận báo giá sơ bộ"
           colors={['#53A6A8', '#3C9597', '#1F7F81']}
           onPress={handlePutFinalized}
+          loading={loading}
           style={styles.button}
         />
       )}

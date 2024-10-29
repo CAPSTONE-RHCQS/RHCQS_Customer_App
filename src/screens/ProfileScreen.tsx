@@ -10,31 +10,40 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import {AuthContext} from '../context/AuthContext';
 import storage from '../utils/storage';
-import {getProfile} from '../api/Account/Account';
+import {getProfile, updateProfile} from '../api/Account/Account';
 import {height} from '../utils/Dimensions';
 import {FONTFAMILY} from '../theme/theme';
 import InputField from '../components/InputField';
-import Dialog from 'react-native-dialog'; // Import Dialog
+import Dialog from 'react-native-dialog';
+import {launchImageLibrary} from 'react-native-image-picker';
+import {UpdateProfile} from '../types/Account/AccountType';
+import {uploadImage} from '../api/Upload/UploadImage';
+import {ActivityIndicator} from 'react-native';
 
 const ProfileScreen: React.FC = () => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [email, setEmail] = useState('');
   const [customerName, setCustomerName] = useState('');
+  const [customerId, setCustomerId] = useState('');
   const [customerImg, setCustomerImg] = useState('');
   const [address, setAddress] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [reload, setReload] = useState(false);
   const [showLogoutDialog, setShowLogoutDialog] = useState(false);
   const {logout} = useContext(AuthContext)!;
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const profile = await getProfile();
+        setCustomerId(profile.Id);
         setCustomerName(profile.Username);
         setCustomerImg(profile.ImageUrl);
         setPhoneNumber(profile.PhoneNumber);
         setEmail(profile.Email);
+        setDateOfBirth(profile.DateOfBirth);
         console.log('profile', profile);
       } catch (error) {
         console.error('Failed to fetch profile:', error);
@@ -48,9 +57,50 @@ const ProfileScreen: React.FC = () => {
     await storage.clear();
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    setReload(!reload);
+  const handleSave = async () => {
+    setIsLoading(true);
+    try {
+      const updatedProfile: UpdateProfile = {
+        username: customerName,
+        phoneNumber: phoneNumber,
+        email: email,
+        imageUrl: customerImg,
+        dateOfBirth: dateOfBirth,
+      };
+
+      const userId = customerId;
+
+      await updateProfile(userId, updatedProfile);
+      setIsEditing(false);
+      setReload(!reload);
+      console.log('Profile updated successfully');
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleChoosePhoto = async () => {
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+      quality: 1,
+    });
+
+    if (result.assets && result.assets.length > 0) {
+      const imageUri = result.assets[0].uri;
+      try {
+        console.log('Uploading image from URI:', imageUri);
+        const uploadResponse = await uploadImage(imageUri || '');
+        const imageUrl = uploadResponse.url;
+        console.log('Image URL:', imageUrl);
+        setCustomerImg(imageUrl);
+      } catch (error) {
+        console.error('Lỗi khi upload ảnh:', error);
+      }
+    } else {
+      console.log('Không có hình ảnh được chọn');
+    }
   };
 
   return (
@@ -91,6 +141,11 @@ const ProfileScreen: React.FC = () => {
         ) : (
           <Text style={styles.profileName}>{customerName}</Text>
         )}
+        {isEditing && (
+          <TouchableOpacity onPress={handleChoosePhoto}>
+            <Text style={styles.saveButtonText}>Chọn ảnh đại diện</Text>
+          </TouchableOpacity>
+        )}
       </View>
       {/* Information */}
       <View style={styles.informationContainer}>
@@ -109,6 +164,13 @@ const ProfileScreen: React.FC = () => {
           editable={isEditing}
         />
         <InputField
+          name="Ngày sinh"
+          value={dateOfBirth}
+          onChangeText={setDateOfBirth}
+          placeholder=""
+          editable={isEditing}
+        />
+        <InputField
           name="Địa chỉ"
           value={address}
           onChangeText={setAddress}
@@ -119,8 +181,12 @@ const ProfileScreen: React.FC = () => {
       <View style={styles.buttonContainer}>
         {isEditing ? (
           <View style={styles.buttonSave}>
-            <TouchableOpacity onPress={handleSave}>
-              <Text style={styles.saveButtonText}>Lưu thông tin</Text>
+            <TouchableOpacity onPress={handleSave} disabled={isLoading}>
+              {isLoading ? (
+                <ActivityIndicator size="small" color="green" />
+              ) : (
+                <Text style={styles.saveButtonText}>Lưu thông tin</Text>
+              )}
             </TouchableOpacity>
           </View>
         ) : (

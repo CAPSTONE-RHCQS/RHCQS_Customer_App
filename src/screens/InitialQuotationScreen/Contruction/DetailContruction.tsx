@@ -38,7 +38,7 @@ const DetailContruction: React.FC = () => {
     {},
   );
   const [constructionId, setConstructionId] = useState('');
-
+  const [loading, setLoading] = useState(false);
   const roughPackagePrice = packageData.roughPackagePrice;
   const hasSubConstructionItems = constructionData.length > 0;
   const constructionArea = area ? parseFloat(area) * coefficient : 0;
@@ -210,6 +210,7 @@ const DetailContruction: React.FC = () => {
           title="Tiếp tục"
           onPress={handleContinuePress}
           colors={['#53A6A8', '#3C9597', '#1F7F81']}
+          loading={loading}
         />
       </View>
     </View>

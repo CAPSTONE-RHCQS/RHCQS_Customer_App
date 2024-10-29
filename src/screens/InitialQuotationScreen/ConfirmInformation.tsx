@@ -30,7 +30,9 @@ const ConfirmInformation: React.FC = () => {
   const ultilitiesData = useSelector(UltilitiesSelector);
   console.log('ultilitiesData', ultilitiesData);
   const constructionData = useSelector(ContructionSelector);
+  console.log('constructionData', constructionData);
   const packageData = useSelector(PackageSelector);
+  console.log('packageData', packageData);
   const detailUltilities = useSelector(
     (state: any) => state.detailUltilities || [],
   );
@@ -40,6 +42,7 @@ const ConfirmInformation: React.FC = () => {
       try {
         const profile = await getProfile();
         setCustomerId(profile.Id);
+        console.log('profile', profile.Id);
         setName(profile.Username);
         setPhone(profile.PhoneNumber);
         setEmail(profile.Email);
@@ -64,7 +67,7 @@ const ConfirmInformation: React.FC = () => {
 
     const quotationUtilitiesRequest = ultilitiesData.checkedItems.map(
       (item: any) => ({
-        ultilitiesItemId: item.checkedItems ?? item.id,
+        utilitiesItemId: item.checkedItems ?? item.id,
         name: item.checkedItemName ?? item.name,
         price: item.totalPrice,
       }),
@@ -93,10 +96,19 @@ const ConfirmInformation: React.FC = () => {
       quotationUtilitiesRequest,
     };
 
+    console.log('projectData', JSON.stringify(projectData, null, 2));
+
+    projectData.initialQuotation.initialQuotationItemRequests.forEach(
+      (item: any, index: number) => {
+        console.log(
+          `initialQuotationItemRequests[${index}]`,
+          JSON.stringify(item, null, 2),
+        );
+    });
+
     try {
       await createProject(projectData);
       console.log('Project created successfully');
-      console.log('projectData', projectData);
       setLoading(false);
       setVisible(true);
     } catch (error) {
@@ -179,6 +191,7 @@ const ConfirmInformation: React.FC = () => {
           title="Xác nhận thông tin"
           onPress={handleSubmit}
           colors={['#53A6A8', '#3C9597', '#1F7F81']}
+          loading={loading}
         />
       </View>
 

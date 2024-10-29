@@ -40,7 +40,7 @@ const UltilitiesHouse: React.FC = () => {
   // State để lưu trữ dữ liệu các mục tiện ích
   const [ultilities, setUltilities] = useState<UltilitiesType[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
-
+  const [loading, setLoading] = useState(false);
   const fetchUltilities = async () => {
     const selectedCompleteType = packageData.selectedCompleteType;
 
@@ -161,6 +161,7 @@ const UltilitiesHouse: React.FC = () => {
               : ['#d3d3d3', '#d3d3d3', '#d3d3d3']
           }
           disabled={checkedItems.length === 0}
+          loading={loading}
         />
       </View>
     </View>

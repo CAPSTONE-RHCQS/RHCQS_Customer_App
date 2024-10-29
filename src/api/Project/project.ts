@@ -1,4 +1,4 @@
-import { ContactDesignType, ProjectHistory, TrackingType, TrackingVersionDesignType, VersionType } from '../../types/screens/History/HistoryType';
+import { ContactDesignType, ProjectHistory, TrackingContructionType, TrackingType, TrackingVersionDesignType, VersionType } from '../../types/screens/History/HistoryType';
 import axiosInstance, { getHeaders } from '../../utils/axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -36,6 +36,18 @@ export const getTracking = async (projectId: string): Promise<TrackingType> => {
     return response.data;
   } catch (error) {
     console.error('Error getting tracking:', error);
+    throw error;
+  }
+};
+
+// Get tracking payment construction
+export const getTrackingPaymentContruction = async (projectId: string): Promise<TrackingContructionType> => {
+  try {
+    const headers = await getHeaders();
+    const response = await axiosInstance.get(`/payment/list/app?projectId=${encodeURIComponent(projectId)}`, { headers });
+    return response.data;
+  } catch (error) {
+    console.error('Error getting tracking payment construction :', error);
     throw error;
   }
 };
@@ -126,6 +138,18 @@ export const putFinalized = async (id: string): Promise<any> => {
     return response.data;
   } catch (error) {
     console.error('Error put finalized:', error);
+    throw error;
+  }
+};
+
+// Cancel initial quotation
+export const cancelInitialQuotation = async (id: string): Promise<any> => {
+  try {
+    const headers = await getHeaders();
+    const response = await axiosInstance.put(`/project/cancel?projectId=${encodeURIComponent(id)}`, null, { headers });
+    return response.data;
+  } catch (error) {
+    console.error('Error cancel initial quotation:', error);
     throw error;
   }
 };

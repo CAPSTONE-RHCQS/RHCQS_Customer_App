@@ -28,6 +28,7 @@ import DetailUltilitiesHouse from '../screens/HouseDesginTemplate/DetailUltiliti
 import VersionFinalScreen from '../screens/HistoryScreen/FinalQuotation/VersionFinalScreen';
 import VersionFinalDetail from '../screens/HistoryScreen/FinalQuotation/VersionFinalDetail';
 import ContactContruction from '../screens/HistoryScreen/ContactContruction/ContactContruction';
+import TrackingContruction from '../screens/HistoryScreen/ContactContruction/TrackingContruction';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -66,7 +67,7 @@ const AppStack: React.FC = () => {
       <Stack.Screen name="VersionFinalScreen" component={VersionFinalScreen} />
       <Stack.Screen name="VersionFinalDetail" component={VersionFinalDetail} />
       <Stack.Screen name="ContactContructionScreen" component={ContactContruction} />
-
+      <Stack.Screen name="TrackingContruction" component={TrackingContruction} />
       {/* Blog */}
       <Stack.Screen name="BlogList" component={BlogList} />
       <Stack.Screen name="BlogDetail" component={BlogDetail} />

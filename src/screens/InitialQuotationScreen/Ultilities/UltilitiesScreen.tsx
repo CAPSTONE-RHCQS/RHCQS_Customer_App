@@ -44,7 +44,7 @@ const UltilitiesScreen: React.FC = () => {
   // State để lưu trữ dữ liệu các mục tiện ích
   const [ultilities, setUltilities] = useState<UltilitiesType[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
-
+  const [loading, setLoading] = useState(false);
   const fetchUltilities = async () => {
     const selectedRoughType = packageData.selectedRoughType;
     const selectedCompleteType = packageData.selectedCompleteType;
@@ -190,6 +190,7 @@ const UltilitiesScreen: React.FC = () => {
               : ['#d3d3d3', '#d3d3d3', '#d3d3d3']
           } // Màu xám khi không có hạng mục nào được chọn
           disabled={checkedItems.length === 0} // Vô hiệu hóa nút khi không có hạng mục nào được chọn
+          loading={loading}
         />
       </View>
     </View>

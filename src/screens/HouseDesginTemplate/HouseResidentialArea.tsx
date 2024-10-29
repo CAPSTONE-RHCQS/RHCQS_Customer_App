@@ -20,6 +20,7 @@ const HouseResidentialArea: React.FC = () => {
   const dispatch = useDispatch();
   const navigationApp = useNavigation<AppStackNavigationProp>();
   const [subTemplates, setSubTemplates] = useState<any[]>([]);
+  const [loading, setLoading] = useState(false);
   const [currentTemplate, setCurrentTemplate] = useState<{
     id: string;
     url: string;
@@ -86,6 +87,7 @@ const HouseResidentialArea: React.FC = () => {
           title="Tiếp tục"
           colors={['#53A6A8', '#3C9597', '#1F7F81']}
           onPress={handleContinue}
+          loading={loading}
         />
       </View>
     </View>

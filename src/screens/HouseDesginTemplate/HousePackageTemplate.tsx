@@ -23,6 +23,7 @@ const HousePackageTemplate: React.FC = () => {
   const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [description, setDescription] = useState<string>('');
   const [selectedPackageId, setSelectedPackageId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const fetchHouseTemplate = async () => {
@@ -99,6 +100,7 @@ const HousePackageTemplate: React.FC = () => {
           title="Tiếp tục"
           colors={['#53A6A8', '#3C9597', '#1F7F81']}
           onPress={handleContinue}
+          loading={loading}
         />
       </View>
     </View>

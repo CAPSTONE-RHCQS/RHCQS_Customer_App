@@ -150,6 +150,7 @@ import {
             title="Xác nhận thông tin"
             onPress={handleSubmit}
             colors={['#53A6A8', '#3C9597', '#1F7F81']}
+            loading={loading}
           />
         </View>
   

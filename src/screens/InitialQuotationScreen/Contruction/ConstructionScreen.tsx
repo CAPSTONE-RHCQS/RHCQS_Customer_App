@@ -51,7 +51,7 @@ const ConstructionScreen: React.FC = () => {
   const [buildOptionsData, setBuildOptionsData] = useState<Item[]>([]);
   // State để lưu trữ tổng tiền
   const [totalPrice, setTotalPrice] = useState<number>(0);
-
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchConstructionOption = async () => {
       try {
@@ -261,6 +261,7 @@ const ConstructionScreen: React.FC = () => {
               : ['#A9A9A9', '#A9A9A9', '#A9A9A9']
           }
           disabled={!isContinueButtonEnabled}
+          loading={loading}
         />
       </View>
 
