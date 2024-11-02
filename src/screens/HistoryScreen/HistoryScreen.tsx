@@ -53,6 +53,7 @@ const HistoryScreen: React.FC = () => {
               key={index}
               date={formattedDate}
               title={project.Name}
+              projectCode={project.ProjectCode}
               onPress={() => handleProjectPress(project.Id)}
             />
           );

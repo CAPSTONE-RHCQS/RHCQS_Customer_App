@@ -73,21 +73,28 @@ const ConfirmInformation: React.FC = () => {
       }),
     );
 
+    let projectType = 'ROUGH';
+    if (packageData.selectedRough && packageData.selectedComplete) {
+      projectType = 'ALL';
+    } else if (packageData.selectedComplete) {
+      projectType = 'FINISHED';
+    }
+
     const projectData = {
       customerId: customerId,
       name: projectName,
-      type: 'ALL',
+      type: projectType,
       address: address,
       area: constructionData.constructionArea,
       packageQuotations: [
-        {
+        ...(packageData.selectedRough ? [{
           packageId: packageData.selectedRough,
           type: packageData.selectedRoughType,
-        },
-        {
+        }] : []),
+        ...(packageData.selectedComplete ? [{
           packageId: packageData.selectedComplete,
           type: packageData.selectedCompleteType,
-        },
+        }] : []),
       ],
       initialQuotation: {
         promotionId: null,
