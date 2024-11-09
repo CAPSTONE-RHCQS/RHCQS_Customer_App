@@ -50,8 +50,17 @@ const TrackingContruction: React.FC = () => {
     return price.toLocaleString('vi-VN');
   };
 
+  const insertLineBreak = (text: string, maxLength: number) => {
+    if (text.length > maxLength) {
+      const lastSpaceIndex = text.lastIndexOf(' ', maxLength);
+      const breakIndex = lastSpaceIndex > -1 ? lastSpaceIndex : maxLength;
+      return text.slice(0, breakIndex) + '\n' + text.slice(breakIndex).trim();
+    }
+    return text;
+  };
+
   const subItems = trackingPayment.map(item => ({
-    subTitle: 'Thanh toán',
+    subTitle: insertLineBreak(item.Description, 20),
     price: formatPrice(item.TotalPrice),
     date: formatDate(item.InsDate),
     subStatus: 'Pending',

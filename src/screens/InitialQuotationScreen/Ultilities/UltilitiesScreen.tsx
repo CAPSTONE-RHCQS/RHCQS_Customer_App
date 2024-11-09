@@ -31,13 +31,10 @@ const UltilitiesScreen: React.FC = () => {
 
   // Lấy dữ liệu chi tiết các mục tiện ích
   const detailUltilitiesData = useSelector(DetailUltilitiesSelector);
-  console.log('detailUltilitiesData', detailUltilitiesData);
   // Lấy dữ liệu package
   const packageData = useSelector(PackageSelector);
-  console.log('packageData', packageData);
   // Lấy dữ liệu construction
   const constructionData = useSelector(ContructionSelector);
-  console.log('constructionData', constructionData.totalPrice);
 
   // State để lưu trữ ID các mục đã check
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
@@ -50,22 +47,17 @@ const UltilitiesScreen: React.FC = () => {
     const selectedCompleteType = packageData.selectedCompleteType;
 
     switch (true) {
-      case selectedRoughType === 'ROUGH' &&
-        selectedCompleteType === 'FINISHED':
+      case selectedRoughType === 'ROUGH' && selectedCompleteType === 'FINISHED':
         const allData = await getAllUltilities();
-        console.log('allData', allData);
         setUltilities(allData);
         break;
-      case selectedRoughType === 'ROUGH' &&
-        selectedCompleteType === undefined:
+      case selectedRoughType === 'ROUGH' && selectedCompleteType === undefined:
         const roughData = await getRoughUltilities();
-        console.log('roughData', roughData);
         setUltilities(roughData);
         break;
       case selectedRoughType === undefined &&
         selectedCompleteType === 'FINISHED':
         const finishedData = await getFinishedUltilities();
-        console.log('finishedData', finishedData);
         setUltilities(finishedData);
         break;
       default:
@@ -76,7 +68,7 @@ const UltilitiesScreen: React.FC = () => {
   useFocusEffect(
     React.useCallback(() => {
       fetchUltilities();
-    }, [packageData])
+    }, [packageData]),
   );
 
   const handleDetailPress = (Id: string) => {

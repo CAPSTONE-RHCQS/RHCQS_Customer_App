@@ -5,7 +5,6 @@ export const getAllUltilities = async (): Promise<Ultilities[]> => {
     try {
         const headers = await getHeaders();
         const response = await axiosInstance.get('/utilities/type?type=ALL', { headers });
-        console.log('Response data:', response.data);
         return response.data || [];
     } catch (error) {
         console.error('Error fetching ultilities data:', error);
@@ -17,7 +16,6 @@ export const getRoughUltilities = async (): Promise<Ultilities[]> => {
     try {
         const headers = await getHeaders();
         const response = await axiosInstance.get('/utilities/type?type=ROUGH', { headers });
-        console.log('Response data:', response.data);
         return response.data || [];
     } catch (error) {
         console.error('Error fetching ultilities data:', error);
@@ -29,7 +27,6 @@ export const getFinishedUltilities = async (): Promise<Ultilities[]> => {
     try {
         const headers = await getHeaders();
         const response = await axiosInstance.get('/utilities/type?type=FINISHED', { headers });
-        console.log('Response data:', response.data);
         return response.data || [];
     } catch (error) {
         console.error('Error fetching ultilities data:', error);
@@ -41,7 +38,6 @@ export const getUltilitiesById = async (id: string): Promise<Ultilities | null> 
     try {
         const headers = await getHeaders();
         const response = await axiosInstance.get(`/utilities/section/id?id=${id}`, { headers });
-        console.log('Response data for id:', id, response.data);
         return response.data || null;
     } catch (error) {
         console.error('Error fetching ultilities data by id:', id, error);
@@ -53,7 +49,6 @@ export const getUltilitiesSectionById = async (id: string): Promise<Section | nu
     try {
         const headers = await getHeaders();
         const response = await axiosInstance.get(`/utilities/section/id?id=${id}`, { headers });
-        console.log('Response data for id:', id, response.data);
         return response.data || null;
     } catch (error) {
         console.error('Error fetching ultilities data by id:', id, error);

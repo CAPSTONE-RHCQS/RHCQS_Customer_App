@@ -132,8 +132,6 @@ const VersionDetail: React.FC = () => {
           pdfUri ? (
             <Pdf
               source={{uri: pdfUri}}
-              onLoadComplete={numberOfPages => {}}
-              onPageChanged={(page, numberOfPages) => {}}
               onError={error => {
                 console.log(error);
               }}
@@ -146,7 +144,7 @@ const VersionDetail: React.FC = () => {
           <Text>Version not found.</Text>
         )}
       </View>
-      {responseStatus !== 'Finalized' && (
+      {responseStatus !== 'Finalized' && pdfUri && (
         <CustomButton
           title="Chấp nhận báo giá sơ bộ"
           colors={['#53A6A8', '#3C9597', '#1F7F81']}

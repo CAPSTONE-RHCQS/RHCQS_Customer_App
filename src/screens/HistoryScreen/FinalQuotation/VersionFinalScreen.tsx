@@ -32,13 +32,15 @@ const VersionFinalScreen: React.FC = () => {
     <View style={styles.container}>
       <AppBar nameScreen="Lịch sử báo giá chi tiết" />
       <View style={styles.content}>
-        {versions.map((version, index) => (
-          <Tracking
-            key={index}
-            title={`Báo giá chi tiết phiên bản ${version.Version}`}
-            onPress={() => handlePressTracking(version.Version, projectId)}
-          />
-        ))}
+        {versions
+          .filter(version => Number(version.Version) !== 0)
+          .map((version, index) => (
+            <Tracking
+              key={index}
+              title={`Báo giá chi tiết phiên bản ${version.Version}`}
+              onPress={() => handlePressTracking(version.Version, projectId)}
+            />
+          ))}
       </View>
     </View>
   );

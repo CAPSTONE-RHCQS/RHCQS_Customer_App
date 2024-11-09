@@ -7,9 +7,13 @@ import {
   TextInput,
   Image,
 } from 'react-native';
-import {RouteProp, useRoute} from '@react-navigation/native';
+import {RouteProp, useRoute, useNavigation} from '@react-navigation/native';
 import {AppStackParamList} from '../../../../types/TypeScreen';
-import {getVersionDesignDetail} from '../../../../api/Project/project';
+import {
+  getVersionDesignDetail,
+  putCommentVersionDesign,
+  putConfirmVersionDesign,
+} from '../../../../api/Project/project';
 import {
   TrackingVersionDesignType,
   Version,
@@ -19,48 +23,59 @@ import {FONTFAMILY} from '../../../../theme/theme';
 import {width, height} from '../../../../utils/Dimensions';
 import CustomButton from '../../../../components/CustomButton';
 import Dialog from 'react-native-dialog';
+import {AppStackNavigationProp} from '../../../../types/TypeScreen';
 
 const DetailVersionDesign: React.FC = () => {
+  const navigationApp = useNavigation<AppStackNavigationProp>();
   const route = useRoute<RouteProp<AppStackParamList, 'DetailVersionDesign'>>();
-  const {projectId, version} = route.params;
+  const {projectId, versionId} = route.params;
 
   const [versionDetail, setVersionDetail] = useState<Version | null>(null);
   const [drawingType, setDrawingType] = useState<string | null>(null);
-
+  const [status, setStatus] = useState<string | null>(null);
   const [inputValue, setInputValue] = useState('');
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
-  useEffect(() => {
-    const fetchVersionDetail = async () => {
-      try {
-        const data: TrackingVersionDesignType[] = await getVersionDesignDetail(
-          projectId,
-        );
-        // Tìm phiên bản cụ thể dựa trên version được truyền vào
-        for (const item of data) {
-          const foundVersion = item.Versions.find(
-            v => v.Version === Number(version),
-          );
-          if (foundVersion) {
-            setVersionDetail(foundVersion);
-            setDrawingType(item.Name);
-            break;
-          }
+
+  const fetchVersionDetail = async () => {
+    try {
+      setLoading(true);
+      const data: TrackingVersionDesignType[] = await getVersionDesignDetail(
+        projectId,
+      );
+      for (const item of data) {
+        const foundVersion = item.Versions.find(v => v.Id === versionId);
+        if (foundVersion) {
+          setVersionDetail(foundVersion);
+          setDrawingType(item.Name);
+          setStatus(item.Status);
+          break;
         }
-      } catch (error) {
-        console.error('Error fetching version detail:', error);
       }
-    };
-
-    fetchVersionDetail();
-  }, [projectId, version]);
-
-  const handlePutComment = () => {
-    console.log('inputValue', inputValue);
+    } catch (error) {
+      console.error('Error fetching version detail:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handlePutFinalized = () => {
-    setVisible(true);
+  useEffect(() => {
+    fetchVersionDetail();
+    console.log('versionDetail', versionId);
+  }, [projectId, versionId]);
+
+  const handlePutComment = () => {
+    putCommentVersionDesign(versionId, inputValue).then(() => {
+      setInputValue('');
+      fetchVersionDetail();
+    });
+  };
+
+  const handlePutConfirmed = () => {
+    navigationApp.navigate('TrackingVersionDesign', {projectId});
+    putConfirmVersionDesign(versionId).then(() => {
+      setVisible(true);
+    });
   };
 
   return (
@@ -72,8 +87,7 @@ const DetailVersionDesign: React.FC = () => {
             : ''
         }
       />
-
-      {versionDetail?.Status !== 'Finished' && (
+      {status !== 'Finished' && status !== 'Accepted' && (
         <View style={styles.inputContainer}>
           <Text style={styles.title}>Ghi chú</Text>
           <TextInput
@@ -100,12 +114,12 @@ const DetailVersionDesign: React.FC = () => {
         <Image source={{uri: versionDetail?.FileUrl}} style={styles.image} />
       )}
 
-      {versionDetail?.Status !== 'Finished' && (
+      {status !== 'Finished' && status !== 'Accepted' && (
         <View style={styles.buttonContainer}>
           <CustomButton
-            title="Chấp nhận báo giá sơ bộ"
+            title="Chấp nhận thiết kế"
             colors={['#53A6A8', '#3C9597', '#1F7F81']}
-            onPress={handlePutFinalized}
+            onPress={() => setVisible(true)}
             loading={loading}
           />
         </View>
@@ -127,8 +141,7 @@ const DetailVersionDesign: React.FC = () => {
         <Dialog.Button
           label="Xác nhận"
           onPress={() => {
-            setVisible(false);
-            // navigationApp.navigate('TrackingScreen', {projectId});
+            handlePutConfirmed();
           }}
           style={styles.dialogButton}
         />
@@ -156,11 +169,11 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   noteContainer: {
-    flexDirection: 'row',
-    marginHorizontal: 24,
+    flexDirection: 'column',
+    marginHorizontal: 23,
   },
   note: {
-    fontSize: 16,
+    fontSize: 13,
     fontFamily: FONTFAMILY.montserat_bold,
     marginBottom: 5,
     color: 'black',

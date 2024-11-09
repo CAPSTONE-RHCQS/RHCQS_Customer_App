@@ -7,6 +7,7 @@ import {AppStackNavigationProp, AppStackParamList} from '../types/TypeScreen';
 interface SubItemProps {
   subTitle: number;
   subStatus?: string;
+  versionId: string;
 }
 
 interface TrackingHouseDesignVersionProps {
@@ -37,11 +38,15 @@ const TrackingHouseDesignVersion: React.FC<TrackingHouseDesignVersionProps> = ({
       case 'Processing':
         return '#0000FF';
       case 'Approved':
-        return '#00FF00';
+        return '#0000FF';
+      case 'Reviewing':
+        return '#0000FF';
+      case 'Updating':
+        return '#0000FF';
       case 'Finalized':
         return '#008000';
-      case 'Finished':
-        return '#004000';
+      case 'Accepted':
+        return '#008000';
       case 'Canceled':
         return '#FF0000';
       default:
@@ -56,11 +61,15 @@ const TrackingHouseDesignVersion: React.FC<TrackingHouseDesignVersionProps> = ({
       case 'Processing':
         return 'Đang xử lý';
       case 'Approved':
-        return 'Đã được duyệt';
+        return 'Đang xử lý';
+      case 'Reviewing':
+        return 'Đang xử lý';
+      case 'Updating':
+        return 'Đang xử lý';
       case 'Finalized':
         return 'Đã hoàn tất';
-      case 'Finished':
-        return 'Đã hoàn thành';
+      case 'Accepted':
+        return 'Đã chấp nhận';
       case 'Canceled':
         return 'Đã hủy';
       default:
@@ -68,10 +77,10 @@ const TrackingHouseDesignVersion: React.FC<TrackingHouseDesignVersionProps> = ({
     }
   };
 
-  const handleSubItemPress = (subTitle: number) => {
+  const handleSubItemPress = (versionId: string) => {
     navigation.navigate('DetailVersionDesign', {
       projectId: projectId,
-      version: subTitle.toString(),
+      versionId: versionId,
     });
   };
 
@@ -107,7 +116,7 @@ const TrackingHouseDesignVersion: React.FC<TrackingHouseDesignVersionProps> = ({
             <TouchableOpacity
               key={index}
               style={styles.subItem}
-              onPress={() => handleSubItemPress(item.subTitle)}>
+              onPress={() => handleSubItemPress(item.versionId)}>
               <Text style={styles.subItemTitle}>Phiên bản {item.subTitle}</Text>
               <Text
                 style={[

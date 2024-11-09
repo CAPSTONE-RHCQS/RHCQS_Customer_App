@@ -1,4 +1,4 @@
-import { ContactDesignType, ProjectHistory, TrackingContructionType, TrackingType, TrackingVersionDesignType, VersionType } from '../../types/screens/History/HistoryType';
+import { ContactDesignType, ProjectHistory, TrackingContructionType, TrackingType, TrackingVersionDesignType, VersionDetail, VersionType } from '../../types/screens/History/HistoryType';
 import axiosInstance, { getHeaders } from '../../utils/axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -110,6 +110,17 @@ export const getVersionDesignDetail = async (projectId: string): Promise<Trackin
   }
 };
 
+export const getVersionDesignDetailById = async (id: string): Promise<VersionDetail> => {
+  try {
+    const headers = await getHeaders();
+    const response = await axiosInstance.get(`/design/id?versionId=${encodeURIComponent(id)}`, { headers });
+    return response.data;
+  } catch (error) {
+    console.error('Error getting version design detail:', error);
+    throw error;
+  }
+};
+
 // Put comment
 export const putComment = async (id: string, note: string): Promise<any> => {
   try {
@@ -138,6 +149,31 @@ export const putFinalized = async (id: string): Promise<any> => {
     return response.data;
   } catch (error) {
     console.error('Error put finalized:', error);
+    throw error;
+  }
+};
+
+//put comment version design
+export const putCommentVersionDesign = async (id: string, note: string): Promise<any> => {
+  try {
+    const headers = await getHeaders();
+    const response = await axiosInstance.put(`/design/feedback?versionId=${encodeURIComponent(id)}`, { note }, { headers });
+    return response.data;
+  } catch (error) {
+    console.error('Error put comment version design:', error);
+    throw error;
+  }
+};
+
+//put confirmed version design
+export const putConfirmVersionDesign = async (id: string): Promise<any> => {
+  try {
+    const headers = await getHeaders();
+    const response = await axiosInstance.put(`/design/confirm?versionId=${encodeURIComponent(id)}`, null, { headers });
+    console.log('response', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error put confirmed version design:', error);
     throw error;
   }
 };

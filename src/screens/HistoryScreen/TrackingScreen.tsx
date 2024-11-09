@@ -98,15 +98,18 @@ const TrackingScreen: React.FC = () => {
       <View>
         <View style={styles.content}>{renderTrackingItems()}</View>
       </View>
-      {tracking?.InitialResponse?.Status !== 'Finalized' && (
-        <View style={styles.buttonContainer}>
-          <View style={styles.button}>
-            <TouchableOpacity onPress={handleCancelInitialQuotation}>
-              <Text style={styles.buttonText}>Hủy báo giá sơ bộ</Text>
-            </TouchableOpacity>
+      {tracking?.InitialResponse?.Status &&
+        tracking.InitialResponse.Status !== 'Finalized' &&
+        tracking.InitialResponse.Status !== 'Approved' &&
+        tracking.InitialResponse.Status !== 'Reviewing' && (
+          <View style={styles.buttonContainer}>
+            <View style={styles.button}>
+              <TouchableOpacity onPress={handleCancelInitialQuotation}>
+                <Text style={styles.buttonText}>Hủy báo giá sơ bộ</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
-      )}
+        )}
     </View>
   );
 };

@@ -109,7 +109,7 @@ const VersionFinalDetail: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <AppBar nameScreen={`Báo giá sơ bộ phiên bản ${version}`} />
+      <AppBar nameScreen={`Báo giá chi tiết phiên bản ${version}`} />
       <View style={styles.content}>
         {responseStatus !== 'Finalized' && (
           <View style={styles.inputContainer}>
@@ -146,9 +146,9 @@ const VersionFinalDetail: React.FC = () => {
           <Text>Version not found.</Text>
         )}
       </View>
-      {responseStatus !== 'Finalized' && (
+      {responseStatus !== 'Finalized' && pdfUri && (
         <CustomButton
-          title="Chấp nhận báo giá sơ bộ"
+          title="Chấp nhận báo giá chi tiết"
           colors={['#53A6A8', '#3C9597', '#1F7F81']}
           onPress={handlePutFinalized}
           loading={loading}

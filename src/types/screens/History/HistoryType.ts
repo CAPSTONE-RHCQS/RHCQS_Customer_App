@@ -11,7 +11,7 @@ export interface ProjectHistory {
 }
 
 // Response Status
-type ResponseStatus = 'Pending' | 'Processing' | 'Finalized' | 'Canceled';
+type ResponseStatus = 'Pending' | 'Processing' | 'Finalized' | 'Canceled' | 'Approved' | 'Reviewing';
 
 interface Response {
   Status: ResponseStatus;
@@ -75,6 +75,17 @@ export interface TrackingContructionType {
   Unit: string
   Percents: string
   Description: string
+}
+
+export interface VersionDetail {
+  Id: string
+  Name: string
+  Version: number
+  FileUrl: string
+  InsDate: string
+  Note: string
+  RelatedDrawingId: any
+  PreviousDrawingId: any
 }
 
 

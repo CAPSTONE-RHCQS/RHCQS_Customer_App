@@ -24,7 +24,9 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
       case 'Processing':
         return '#0000FF';
       case 'Approved':
-        return '#00FF00';
+        return '#0000FF';
+      case 'Reviewing':
+        return '#0000FF';
       case 'Finalized':
         return '#008000';
       case 'Canceled':
@@ -41,7 +43,9 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
       case 'Processing':
         return 'Đang xử lý';
       case 'Approved':
-        return 'Đã được duyệt';
+        return 'Đang xử lý';
+      case 'Reviewing':
+        return 'Đang xử lý';
       case 'Finalized':
         return 'Đã hoàn tất';
       case 'Canceled':
@@ -50,6 +54,28 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
         return '';
     }
   };
+
+  // return (
+  //   <View style={styles.container}>
+  //     <TouchableOpacity
+  //       style={styles.header}
+  //       onPress={() => {
+  //         setExpanded(!expanded);
+  //         onPress();
+  //       }}>
+  //       <View style={styles.titleContainer}>
+  //         <Text style={styles.title}>{title}</Text>
+  //         <Text style={[styles.status, {color: getStatusColor(status)}]}>
+  //           {getStatusText(status)}
+  //         </Text>
+  //       </View>
+  //       <Image
+  //         source={require('../assets/image/icon/chevron/chevron-right.png')}
+  //         style={styles.icon}
+  //       />
+  //     </TouchableOpacity>
+  //   </View>
+  // );
 
   return (
     <View style={styles.container}>
@@ -61,8 +87,7 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
             onPress();
           }
         }}
-        disabled={!isPressable}
-      >
+        disabled={!isPressable}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{title}</Text>
           <Text style={[styles.status, {color: getStatusColor(status)}]}>

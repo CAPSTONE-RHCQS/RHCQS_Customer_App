@@ -33,10 +33,8 @@ const ConstructionScreen: React.FC = () => {
 
   // Lấy dữ liệu từ Redux
   const detailConstructionData = useSelector(DetailContructionSelector);
-  console.log('detailConstructionData', detailConstructionData);
 
   const packageData = useSelector(PackageSelector);
-  console.log('packageData', packageData);
 
   // State để lưu trữ diện tích đất và diện tích xây dựng
   const [landArea, setLandArea] = useState('');
@@ -115,28 +113,6 @@ const ConstructionScreen: React.FC = () => {
     );
   };
 
-  // Hàm để cập nhật diện tích đất và tính toán diện tích xây dựng
-  const handleLandAreaChange = (value: string) => {
-    setLandArea(value);
-
-    const landAreaValue = parseFloat(value);
-    if (!isNaN(landAreaValue)) {
-      let calculatedConstructionArea;
-      if (landAreaValue <= 50) {
-        calculatedConstructionArea = landAreaValue;
-      } else if (landAreaValue > 50) {
-        calculatedConstructionArea = 50 + 0.9 * (landAreaValue - 50);
-      } else if (landAreaValue > 100) {
-        calculatedConstructionArea = landAreaValue * 0.9;
-      } else {
-        calculatedConstructionArea = 0;
-      }
-      setConstructionArea(calculatedConstructionArea.toFixed(2));
-    } else {
-      setConstructionArea('');
-    }
-  };
-
   const renderBuildOptions = () => {
     return buildOptionsData.map((option, index) => {
       const isFloorOption =
@@ -176,7 +152,7 @@ const ConstructionScreen: React.FC = () => {
 
   // Kiểm tra điều kiện để kích hoạt nút "Tiếp tục"
   const isContinueButtonEnabled =
-    landArea !== '' && constructionArea !== '' && checkedItems.length > 0;
+    constructionArea !== '' && checkedItems.length > 0;
 
   return (
     <View style={styles.container}>
@@ -184,14 +160,6 @@ const ConstructionScreen: React.FC = () => {
       <AppBar nameScreen="Tính chi phí xây dựng thô" />
       <View style={styles.bodyContainer}>
         <View>
-          <InputField
-            name="Diện tích đất"
-            value={landArea}
-            onChangeText={handleLandAreaChange}
-            placeholder="100"
-            keyboardType="numeric"
-            isRequired={true}
-          />
           <InputField
             name="Diện tích xây dựng"
             value={constructionArea}

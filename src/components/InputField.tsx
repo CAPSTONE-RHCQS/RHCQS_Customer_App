@@ -66,6 +66,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 18,
     height: 60,
     marginBottom: 10,
+    color: 'black',
   },
 });
 

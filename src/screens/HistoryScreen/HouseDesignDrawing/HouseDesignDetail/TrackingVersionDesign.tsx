@@ -1,10 +1,10 @@
-import {View, Text, StyleSheet} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {View, StyleSheet} from 'react-native';
+import React, {useEffect, useState, useCallback} from 'react';
 import AppBar from '../../../../components/Appbar';
 import TrackingHouseDesignVersion from '../../../../components/TrackingHouseDesignVersion';
 import {getVersionDesignDetail} from '../../../../api/Project/project';
-import {NavigationProp, RouteProp, useNavigation, useRoute} from '@react-navigation/native';
-import {AppStackParamList} from '@/types/TypeScreen';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {AppStackNavigationProp, AppStackParamList} from '@/types/TypeScreen';
 import {TrackingVersionDesignType} from '@/types/screens/History/HistoryType';
 
 interface FormattedDesignData {
@@ -13,10 +13,14 @@ interface FormattedDesignData {
   subItems: {
     subTitle: number;
     subStatus: string;
+    versionId: string;
+    onPress: () => void;
   }[];
 }
 
 const TrackingVersionDesign: React.FC = () => {
+
+  const navigation = useNavigation<AppStackNavigationProp>();
 
   const route =
     useRoute<RouteProp<AppStackParamList, 'TrackingVersionDesign'>>();
@@ -24,30 +28,36 @@ const TrackingVersionDesign: React.FC = () => {
 
   const [designData, setDesignData] = useState<FormattedDesignData[]>([]);
 
+  const fetchData = useCallback(async () => {
+    try {
+      const data: TrackingVersionDesignType[] = await getVersionDesignDetail(
+        projectId,
+      );
+      console.log(JSON.stringify(data, null, 2));
+      const formattedData = data.map(item => ({
+        title: item.Name,
+        status: item.Status,
+        subItems: item.Versions.map(version => ({
+          subTitle: version.Version,
+          subStatus: version.Status,
+          versionId: version.Id,
+          onPress: () => {
+            navigation.navigate('DetailVersionDesign', {
+              versionId: version.Id,
+              projectId: projectId,
+            });
+          },
+        })),
+      }));
+      setDesignData(formattedData);
+    } catch (error) {
+      console.error('Error fetching design data:', error);
+    }
+  }, [projectId, navigation]);
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data: TrackingVersionDesignType[] = await getVersionDesignDetail(
-          projectId,
-        );
-        const formattedData = data.map(item => ({
-          title: item.Name,
-          status: item.Status,
-          subItems: item.Versions.map(version => ({
-            subTitle: version.Version,
-            subStatus: version.Status,
-          })),
-        }));
-        setDesignData(formattedData);
-      } catch (error) {
-        console.error('Error fetching design data:', error);
-      }
-    };
-
     fetchData();
-  }, [projectId]);
-
-  
+  }, [fetchData]);
 
   return (
     <View style={styles.container}>

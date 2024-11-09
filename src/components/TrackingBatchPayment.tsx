@@ -106,7 +106,9 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
               style={styles.subItem}
               onPress={() => handleSubItemPress(index)}>
               <View >
-                <Text style={styles.subItemTitle}>{item.subTitle}</Text>
+                <Text style={styles.subItemTitle} numberOfLines={2} ellipsizeMode="tail">
+                  {item.subTitle}
+                </Text>
                 <Text style={styles.subItemPrice}>{item.price}</Text>
               </View>
               <View>
@@ -169,12 +171,12 @@ const styles = StyleSheet.create({
   },
   subItemTitle: {
     color: 'black',
-    fontSize: 16,
+    fontSize: 13,
     marginLeft: 10,
     fontFamily: FONTFAMILY.montserat_semibold,
   },
   subItemPrice: {
-    color: 'black',
+    color: '#1F7F81',
     fontSize: 16,
     marginLeft: 10,
     fontFamily: FONTFAMILY.montserat_regular,
@@ -186,7 +188,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.montserat_regular,
   },
   subItemStatus: {
-    fontSize: 16,
+    fontSize: 13,
     fontFamily: FONTFAMILY.montserat_regular,
   },
   subItemDescription: {

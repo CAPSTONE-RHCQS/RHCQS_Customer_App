@@ -28,11 +28,8 @@ const ConfirmInformation: React.FC = () => {
   const [visible, setVisible] = useState(false);
 
   const ultilitiesData = useSelector(UltilitiesSelector);
-  console.log('ultilitiesData', ultilitiesData);
   const constructionData = useSelector(ContructionSelector);
-  console.log('constructionData', constructionData);
   const packageData = useSelector(PackageSelector);
-  console.log('packageData', packageData);
   const detailUltilities = useSelector(
     (state: any) => state.detailUltilities || [],
   );
@@ -42,7 +39,6 @@ const ConfirmInformation: React.FC = () => {
       try {
         const profile = await getProfile();
         setCustomerId(profile.Id);
-        console.log('profile', profile.Id);
         setName(profile.Username);
         setPhone(profile.PhoneNumber);
         setEmail(profile.Email);
@@ -87,14 +83,22 @@ const ConfirmInformation: React.FC = () => {
       address: address,
       area: constructionData.constructionArea,
       packageQuotations: [
-        ...(packageData.selectedRough ? [{
-          packageId: packageData.selectedRough,
-          type: packageData.selectedRoughType,
-        }] : []),
-        ...(packageData.selectedComplete ? [{
-          packageId: packageData.selectedComplete,
-          type: packageData.selectedCompleteType,
-        }] : []),
+        ...(packageData.selectedRough
+          ? [
+              {
+                packageId: packageData.selectedRough,
+                type: packageData.selectedRoughType,
+              },
+            ]
+          : []),
+        ...(packageData.selectedComplete
+          ? [
+              {
+                packageId: packageData.selectedComplete,
+                type: packageData.selectedCompleteType,
+              },
+            ]
+          : []),
       ],
       initialQuotation: {
         promotionId: null,
@@ -111,7 +115,8 @@ const ConfirmInformation: React.FC = () => {
           `initialQuotationItemRequests[${index}]`,
           JSON.stringify(item, null, 2),
         );
-    });
+      },
+    );
 
     try {
       await createProject(projectData);
@@ -195,7 +200,7 @@ const ConfirmInformation: React.FC = () => {
       </View>
       <View style={styles.buttonContainer}>
         <CustomButton
-          title="Xác nhận thông tin"
+          title="Yêu cầu báo giá"
           onPress={handleSubmit}
           colors={['#53A6A8', '#3C9597', '#1F7F81']}
           loading={loading}

@@ -27,7 +27,6 @@ const DetailContruction: React.FC = () => {
 
   const detailConstructionData = useSelector(DetailContructionSelector);
   const packageData = useSelector(PackageSelector);
-  console.log('packageData', packageData.roughPackagePrice);
   const [area, setArea] = useState('');
   const [coefficient, setCoefficient] = useState(0);
   const [constructionData, setConstructionData] = useState<
@@ -243,12 +242,14 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: FONTFAMILY.montserat_medium,
+    color: 'black',
   },
   price: {
     fontFamily: FONTFAMILY.montserat_semibold,
     position: 'absolute',
     right: 0,
     marginRight: 10,
+    color: 'black',
   },
   total: {
     fontFamily: FONTFAMILY.montserat_semibold,
