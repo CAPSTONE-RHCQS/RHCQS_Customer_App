@@ -170,13 +170,6 @@ const ProfileScreen: React.FC = () => {
           placeholder=""
           editable={isEditing}
         />
-        <InputField
-          name="Địa chỉ"
-          value={address}
-          onChangeText={setAddress}
-          placeholder=""
-          editable={isEditing}
-        />
       </View>
       <View style={styles.buttonContainer}>
         {isEditing ? (

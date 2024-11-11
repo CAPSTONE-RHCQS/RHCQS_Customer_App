@@ -74,7 +74,7 @@ const CustomerOptions: React.FC = () => {
                 resizeMode="contain"
               />
             </View>
-            <Text style={styles.optionText}>Lịch sử báo giá</Text>
+            <Text style={styles.optionText}>Danh sách dự án</Text>
             <Image
               source={require('../assets/image/logo_white.png')}
               style={styles.logobgHistoryQuotation}

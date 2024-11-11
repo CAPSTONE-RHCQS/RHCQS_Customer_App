@@ -6,8 +6,9 @@ import {getProfile} from '../../api/Account/Account';
 import {getProjectByEmail} from '../../api/Project/project';
 import {ProjectHistory} from '../../types/screens/History/HistoryType';
 import {format} from 'date-fns';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { AppStackNavigationProp } from '../../types/TypeScreen';
+import {useFocusEffect, useNavigation} from '@react-navigation/native';
+import {AppStackNavigationProp} from '../../types/TypeScreen';
+import {FONTFAMILY} from '../../theme/theme';
 
 const HistoryScreen: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
@@ -20,7 +21,6 @@ const HistoryScreen: React.FC = () => {
         try {
           const profile = await getProfile();
           setCustomerEmail(profile.Email);
-          console.log('Customer Email:', profile.Id);
           const projects = await getProjectByEmail(profile.Email);
           setProjectHistory(projects);
         } catch (error) {
@@ -28,7 +28,7 @@ const HistoryScreen: React.FC = () => {
         }
       };
       fetchProfile();
-    }, [])
+    }, []),
   );
 
   const handleProjectPress = (projectId: string) => {
@@ -36,29 +36,42 @@ const HistoryScreen: React.FC = () => {
     navigationApp.navigate('TrackingScreen', {projectId});
   };
 
-
   const handleBackToHome = () => {
     navigationApp.navigate('HomeScreen');
   };
 
+  const groupProjectsByDate = (projects: ProjectHistory[]) => {
+    return projects.reduce((acc, project) => {
+      const formattedDate = format(new Date(project.InsDate), 'dd-MM-yyyy');
+      if (!acc[formattedDate]) {
+        acc[formattedDate] = [];
+      }
+      acc[formattedDate].push(project);
+      return acc;
+    }, {} as Record<string, ProjectHistory[]>);
+  };
+
+  const groupedProjects = groupProjectsByDate(projectHistory);
+
   return (
     <View style={styles.container}>
       <AppBar nameScreen="Danh sách dự án" onBackPress={handleBackToHome} />
-      <ScrollView >
+      <ScrollView>
         <View style={styles.content}>
-          {projectHistory.map((project, index) => {
-          const formattedDate = format(new Date(project.InsDate), 'dd-MM-yyyy');
-          return (
-            <Project
-              key={index}
-              date={formattedDate}
-              title={project.Name}
-              projectCode={project.ProjectCode}
-              onPress={() => handleProjectPress(project.Id)}
-            />
-          );
-        })}
-      </View>
+          {Object.entries(groupedProjects).map(([date, projects]) => (
+            <View key={date}>
+              <Text style={styles.dateText}>{date}</Text>
+              {projects.map((project, index) => (
+                <Project
+                  key={index}
+                  title={project.Name}
+                  projectCode={project.ProjectCode}
+                  onPress={() => handleProjectPress(project.Id)}
+                />
+              ))}
+            </View>
+          ))}
+        </View>
       </ScrollView>
     </View>
   );
@@ -73,6 +86,12 @@ const styles = StyleSheet.create({
     flex: 1,
     marginTop: 10,
     paddingHorizontal: 20,
+  },
+  dateText: {
+    fontSize: 18,
+    fontFamily: FONTFAMILY.montserat_bold,
+    marginVertical: 10,
+    color: '#1F7F81',
   },
 });
 

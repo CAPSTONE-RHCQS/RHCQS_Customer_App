@@ -37,7 +37,6 @@ const ConstructionScreen: React.FC = () => {
   const packageData = useSelector(PackageSelector);
 
   // State để lưu trữ diện tích đất và diện tích xây dựng
-  const [landArea, setLandArea] = useState('');
   const [constructionArea, setConstructionArea] = useState('');
   // State để lưu trữ số tầng lầu đã chọn
   const [selectedFloors, setSelectedFloors] = useState<number | null>(1);

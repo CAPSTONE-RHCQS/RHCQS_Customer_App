@@ -24,6 +24,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {pushUltilities} from '../../../redux/actions/Ultilities/UltilitiesAction';
 import {DetailUltilitiesSelector} from '../../../redux/selectors/UltilitiesSelector/DetailUltilitiesSelector/DetailUltilitiesSelector';
 import {useFocusEffect} from '@react-navigation/native';
+import InputField from '../../../components/InputField';
+import {pushConstruction} from '../../../redux/actions/Contruction/ContructionAction';
 
 const UltilitiesScreen: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
@@ -38,6 +40,8 @@ const UltilitiesScreen: React.FC = () => {
 
   // State để lưu trữ ID các mục đã check
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
+  // State để lưu trữ diện tích xây dựng
+  const [constructionArea, setConstructionArea] = useState('');
   // State để lưu trữ dữ liệu các mục tiện ích
   const [ultilities, setUltilities] = useState<UltilitiesType[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -112,7 +116,16 @@ const UltilitiesScreen: React.FC = () => {
       )
       .filter(Boolean);
 
-    dispatch(pushUltilities({checkedItems: detailedCheckedItems}));
+    dispatch(
+      pushUltilities({
+        checkedItems: detailedCheckedItems,
+      }),
+    );
+    dispatch(
+      pushConstruction({
+        constructionArea: constructionArea,
+      }),
+    );
   };
 
   const renderUltilities = () => {
@@ -157,12 +170,27 @@ const UltilitiesScreen: React.FC = () => {
   // Tính tổng tiền cuối cùng
   const finalTotalPrice = constructionData.totalPrice + totalPrice;
 
+  const isContinueButtonEnabled =
+    constructionArea !== '' && checkedItems.length > 0;
+
   return (
     <View style={styles.container}>
       <AppBar nameScreen="Tính chi phí xây dựng" />
+      {packageData.selectedRoughType === undefined &&
+        packageData.selectedCompleteType === 'FINISHED' && (
+          <View style={styles.inputContainer}>
+            <InputField
+              name="Diện tích xây dựng"
+              value={constructionArea}
+              onChangeText={setConstructionArea}
+              placeholder="90"
+              keyboardType="numeric"
+              isRequired={true}
+            />
+          </View>
+        )}
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.titleText}>Tùy chọn & tiện ích</Text>
-
         <View style={styles.body}>{renderUltilities()}</View>
       </ScrollView>
       <View style={styles.buttonContainer}>
@@ -181,7 +209,7 @@ const UltilitiesScreen: React.FC = () => {
               ? ['#53A6A8', '#3C9597', '#1F7F81']
               : ['#d3d3d3', '#d3d3d3', '#d3d3d3']
           } // Màu xám khi không có hạng mục nào được chọn
-          disabled={checkedItems.length === 0} // Vô hiệu hóa nút khi không có hạng mục nào được chọn
+          disabled={!isContinueButtonEnabled} // Vô hiệu hóa nút khi không có hạng mục nào được chọn
           loading={loading}
         />
       </View>
@@ -197,6 +225,9 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     marginTop: 10,
+    marginHorizontal: 20,
+  },
+  inputContainer: {
     marginHorizontal: 20,
   },
   titleText: {

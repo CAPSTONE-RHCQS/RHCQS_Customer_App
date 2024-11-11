@@ -4,14 +4,12 @@ import {FONTFAMILY} from '../theme/theme';
 
 interface SimpleExpandableListProps {
   title: string;
-  date: string;
   projectCode: string;
   onPress: () => void;
 }
 
 const Project: React.FC<SimpleExpandableListProps> = ({
   title,
-  date,
   projectCode,
   onPress,
 }) => {
@@ -27,7 +25,6 @@ const Project: React.FC<SimpleExpandableListProps> = ({
         }}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{title}</Text>
-          <Text style={styles.date}>{date}</Text>
           <Text style={styles.projectCode}>{projectCode}</Text>
         </View>
         <Image
