@@ -23,17 +23,23 @@ const HousePackageTemplate: React.FC = () => {
   const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [description, setDescription] = useState<string>('');
   const [selectedPackageId, setSelectedPackageId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchHouseTemplate = async () => {
-      const data = await getHouseTemplateById(houseId);
-      if (data.PackageHouses.length > 0) {
-        setCurrentImage(data.PackageHouses[0].ImgUrl);
-        setPackageHouse(data.PackageHouses);
-        setPackageName(data.PackageHouses[0].PackageName);
-        setDescription(data.PackageHouses[0].Description);
-        setSelectedPackageId(data.PackageHouses[0].PackageId);
+      try {
+        const data = await getHouseTemplateById(houseId);
+        if (data.PackageHouses.length > 0) {
+          setCurrentImage(data.PackageHouses[0].ImgUrl);
+          setPackageHouse(data.PackageHouses);
+          setPackageName(data.PackageHouses[0].PackageName);
+          setDescription(data.PackageHouses[0].Description);
+          setSelectedPackageId(data.PackageHouses[0].PackageId);
+        }
+      } catch (error) {
+        console.error('Error fetching house template:', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchHouseTemplate();
@@ -98,9 +104,10 @@ const HousePackageTemplate: React.FC = () => {
       <View style={styles.buttonContainer}>
         <CustomButton
           title="Tiếp tục"
-          colors={['#53A6A8', '#3C9597', '#1F7F81']}
+          colors={selectedPackageId && !loading ? ['#53A6A8', '#3C9597', '#1F7F81'] : ['#d3d3d3', '#d3d3d3', '#d3d3d3']}
           onPress={handleContinue}
           loading={loading}
+          disabled={!selectedPackageId || loading}
         />
       </View>
     </View>

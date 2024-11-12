@@ -23,7 +23,7 @@ const TrackingDesignContact: React.FC = () => {
 
   const handlePressTracking = (title: string, projectId: string) => {
     switch (title) {
-      case 'Hợp đồng tư vấn và thiết kế kiến trúc':
+      case 'Hợp đồng tư vấn và thiết kế':
         navigationApp.navigate('ContactDesignScreen', {projectId: projectId});
         break;
       case 'Bản vẽ chi tiết':
@@ -37,7 +37,7 @@ const TrackingDesignContact: React.FC = () => {
 
   const renderTrackingItems = () => {
     const items = [
-      {title: 'Hợp đồng tư vấn và thiết kế kiến trúc'},
+      {title: 'Hợp đồng tư vấn và thiết kế'},
       {title: 'Bản vẽ chi tiết'},
     ];
 

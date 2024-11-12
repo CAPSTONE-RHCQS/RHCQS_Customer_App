@@ -19,17 +19,23 @@ const HouseExternalView: React.FC = () => {
   const [exteriorImages, setExteriorImages] = useState<string[]>([]);
   const [designDrawings, setDesignDrawings] = useState<string[]>([]);
   const [description, setDescription] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     const fetchHouseTemplate = async () => {
-      const data = await getHouseTemplateById(houseId);
-      console.log('data', houseId);
-      setExteriorImages(data.ExteriorsUrls.map((item: any) => item.Url));
-      setDesignDrawings(
-        data.SubTemplates[0].Designdrawings.map((item: any) => item.Url),
-      );
-      setDescription(data.Description);
-      console.log('description', data.Description);
+      try {
+        const data = await getHouseTemplateById(houseId);
+        console.log('data', houseId);
+        setExteriorImages(data.ExteriorsUrls.map((item: any) => item.Url));
+        setDesignDrawings(
+          data.SubTemplates[0].Designdrawings.map((item: any) => item.Url),
+        );
+        setDescription(data.Description);
+        console.log('description', data.Description);
+      } catch (error) {
+        console.error('Error fetching house template:', error);
+      } finally {
+        setLoading(false);
+      }
     };
     fetchHouseTemplate();
   }, [houseId]);
@@ -77,14 +83,17 @@ const HouseExternalView: React.FC = () => {
       <View style={styles.buttonContainer}>
         <CustomButton
           title="Tiếp tục"
-          colors={['#53A6A8', '#3C9597', '#1F7F81']}
+          colors={loading ? ['#d3d3d3', '#d3d3d3', '#d3d3d3'] : ['#53A6A8', '#3C9597', '#1F7F81']}
           onPress={() => {
-            navigationApp.navigate('HouseResidentialArea', {
-              houseId: houseId,
-              name: name,
-            });
+            if (!loading) {
+              navigationApp.navigate('HouseResidentialArea', {
+                houseId: houseId,
+                name: name,
+              });
+            }
           }}
           loading={loading}
+          disabled={loading}
         />
       </View>
     </View>

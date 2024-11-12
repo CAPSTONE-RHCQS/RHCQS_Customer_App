@@ -32,18 +32,10 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
 
   const getStatusColor = (status: string | undefined) => {
     switch (status) {
-      case 'Pending':
+      case 'Progress':
         return '#FFA500';
-      case 'Processing':
-        return '#0000FF';
-      case 'Approved':
-        return '#00FF00';
-      case 'Finalized':
+      case 'Paid':
         return '#008000';
-      case 'Finished':
-        return '#004000';
-      case 'Canceled':
-        return '#FF0000';
       default:
         return 'black';
     }
@@ -51,18 +43,10 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
 
   const getStatusText = (status: string | undefined) => {
     switch (status) {
-      case 'Pending':
-        return 'Đang chờ xử lý';
-      case 'Processing':
-        return 'Đang xử lý';
-      case 'Approved':
-        return 'Đã được duyệt';
-      case 'Finalized':
-        return 'Đã hoàn tất';
-      case 'Finished':
-        return 'Đã hoàn thành';
-      case 'Canceled':
-        return 'Đã hủy';
+      case 'Progress':
+        return 'Chờ thanh toán';
+      case 'Paid':
+        return 'Đã thanh toán';
       default:
         return '';
     }

@@ -31,6 +31,10 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
         return '#008000';
       case 'Canceled':
         return '#FF0000';
+      case 'Completed':
+        return '#27C3C9FF';
+      case 'Finished':
+        return '#008000';
       default:
         return 'black';
     }
@@ -48,6 +52,10 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
         return 'Đang xử lý';
       case 'Finalized':
         return 'Đã hoàn tất';
+      case 'Completed':
+        return 'Đã hoàn thành';
+      case 'Finished':
+        return 'Hoàn tất dự án';
       case 'Canceled':
         return 'Đã hủy';
       default:

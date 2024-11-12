@@ -9,16 +9,6 @@ import Appbar from '../../../components/Appbar';
 import Tracking from '../../../components/Tracking';
 import TrackingBatchPayment from '../../../components/TrackingBatchPayment';
 
-interface FormattedDesignData {
-  title: string;
-  status: string;
-  subItems: {
-    subTitle: number;
-    subStatus: string;
-    description?: string;
-  }[];
-}
-
 const TrackingContruction: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'TrackingContruction'>>();
   const {projectId} = route.params;
@@ -61,9 +51,9 @@ const TrackingContruction: React.FC = () => {
 
   const subItems = trackingPayment.map(item => ({
     subTitle: insertLineBreak(item.Description, 20),
-    price: formatPrice(item.TotalPrice),
+    price: formatPrice(item.TotalPrice) + ' VNĐ',
     date: formatDate(item.InsDate),
-    subStatus: 'Pending',
+    subStatus: item.Status,
   }));
 
   return (
@@ -71,7 +61,7 @@ const TrackingContruction: React.FC = () => {
       <Appbar nameScreen="Hợp đồng thi công" />
       <View style={styles.content}>
         <Tracking
-          title="Hợp đồng tư vấn và thiết kế kiến trúc"
+          title="Hợp đồng thi công nhà ở dân dụng"
           onPress={() => {
             navigationApp.navigate('ContactContructionScreen', {
               projectId: projectId,

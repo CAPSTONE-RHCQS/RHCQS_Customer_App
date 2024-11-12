@@ -19,7 +19,7 @@ interface Response {
 
 // Tracking Response
 export interface TrackingType {
-  InitialResponse: Response;
+  InitialResponse: Response | null;
   ContractDesignResponse: Response | null;
   FinalAppResponse: Response | null;
   ContractProcessingResponse: Response | null;
@@ -75,6 +75,7 @@ export interface TrackingContructionType {
   Unit: string
   Percents: string
   Description: string
+  Status: string
 }
 
 export interface VersionDetail {

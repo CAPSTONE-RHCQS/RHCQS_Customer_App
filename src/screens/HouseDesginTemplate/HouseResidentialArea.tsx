@@ -20,7 +20,7 @@ const HouseResidentialArea: React.FC = () => {
   const dispatch = useDispatch();
   const navigationApp = useNavigation<AppStackNavigationProp>();
   const [subTemplates, setSubTemplates] = useState<any[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [currentTemplate, setCurrentTemplate] = useState<{
     id: string;
     url: string;
@@ -28,21 +28,29 @@ const HouseResidentialArea: React.FC = () => {
 
   useEffect(() => {
     const fetchHouseTemplate = async () => {
-      const data = await getHouseTemplateById(houseId);
-      setSubTemplates(data.SubTemplates);
-      if (data.SubTemplates.length > 0) {
-        setCurrentTemplate({
-          id: data.SubTemplates[0].Id,
-          url: data.SubTemplates[0].Url,
-        });
+      try {
+        const data = await getHouseTemplateById(houseId);
+        setSubTemplates(data.SubTemplates);
+        if (data.SubTemplates.length > 0) {
+          setCurrentTemplate({
+            id: data.SubTemplates[0].Id,
+            url: data.SubTemplates[0].Url,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching house template:', error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchHouseTemplate();
   }, [houseId]);
 
   const handleContinue = () => {
-    navigationApp.navigate('HousePackageTemplate', {houseId});
-    dispatch(pushSubTemplate({subTemplateId: currentTemplate?.id}));
+    if (currentTemplate) {
+      navigationApp.navigate('HousePackageTemplate', {houseId});
+      dispatch(pushSubTemplate({subTemplateId: currentTemplate.id}));
+    }
   };
 
   const handleTemplateSelect = (template: any) => {
@@ -85,9 +93,10 @@ const HouseResidentialArea: React.FC = () => {
       <View style={styles.buttonContainer}>
         <CustomButton
           title="Tiếp tục"
-          colors={['#53A6A8', '#3C9597', '#1F7F81']}
+          colors={currentTemplate && !loading ? ['#53A6A8', '#3C9597', '#1F7F81'] : ['#d3d3d3', '#d3d3d3', '#d3d3d3']}
           onPress={handleContinue}
           loading={loading}
+          disabled={!currentTemplate || loading}
         />
       </View>
     </View>

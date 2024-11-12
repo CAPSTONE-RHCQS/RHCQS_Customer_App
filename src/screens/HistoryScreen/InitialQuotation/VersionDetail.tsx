@@ -14,8 +14,12 @@ import {
   AppStackNavigationProp,
   AppStackParamList,
 } from '../../../types/TypeScreen';
-import {VersionType} from '../../../types/screens/History/HistoryType';
 import {
+  TrackingType,
+  VersionType,
+} from '../../../types/screens/History/HistoryType';
+import {
+  getTracking,
   getVersion,
   putComment,
   putFinalized,
@@ -40,14 +44,26 @@ const VersionDetail: React.FC = () => {
   const [pdfUri, setPdfUri] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [inputValue, setInputValue] = useState<string>('');
-  const [responseStatus, setResponseStatus] = useState<string>('');
+  const [responseStatus, setResponseStatus] = useState<TrackingType | null>(
+    null,
+  );
+
+  useEffect(() => {
+    const fetchTracking = async () => {
+      try {
+        const response = await getTracking(projectId);
+        setResponseStatus(response);
+      } catch (error) {
+        console.error('Error fetching tracking data:', error);
+      }
+    };
+    fetchTracking();
+  }, [projectId]);
 
   useEffect(() => {
     const fetchVersion = async () => {
       try {
         const versions = await getVersion(projectId);
-        const status = versions.find(v => v.Version === version)?.Status;
-        setResponseStatus(status || '');
         const matchedVersion = versions.find(v => v.Version === version);
         setSelectedVersion(matchedVersion || null);
 
@@ -111,23 +127,24 @@ const VersionDetail: React.FC = () => {
     <View style={styles.container}>
       <AppBar nameScreen={`Báo giá sơ bộ phiên bản ${version}`} />
       <View style={styles.content}>
-        {responseStatus !== 'Finalized' && (
-          <View style={styles.inputContainer}>
-            <Text style={styles.title}>Ghi chú</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Nhập ghi chú..."
-              placeholderTextColor="gray"
-              value={inputValue}
-              onChangeText={setInputValue}
-              multiline={true}
-              textAlignVertical="top"
-            />
-            <TouchableOpacity onPress={handlePutComment}>
-              <Text style={styles.buttonText}>Gửi ghi chú</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        {responseStatus?.InitialResponse &&
+          responseStatus.InitialResponse.Status !== 'Finalized' && (
+            <View style={styles.inputContainer}>
+              <Text style={styles.title}>Ghi chú</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Nhập ghi chú..."
+                placeholderTextColor="gray"
+                value={inputValue}
+                onChangeText={setInputValue}
+                multiline={true}
+                textAlignVertical="top"
+              />
+              <TouchableOpacity onPress={handlePutComment}>
+                <Text style={styles.buttonText}>Gửi ghi chú</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         {selectedVersion ? (
           pdfUri ? (
             <Pdf
@@ -144,7 +161,7 @@ const VersionDetail: React.FC = () => {
           <Text>Version not found.</Text>
         )}
       </View>
-      {responseStatus !== 'Finalized' && pdfUri && (
+      {responseStatus?.InitialResponse?.Status !== 'Finalized' && pdfUri && (
         <CustomButton
           title="Chấp nhận báo giá sơ bộ"
           colors={['#53A6A8', '#3C9597', '#1F7F81']}

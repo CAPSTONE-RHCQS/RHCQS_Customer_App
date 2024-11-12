@@ -121,11 +121,20 @@ const UltilitiesScreen: React.FC = () => {
         checkedItems: detailedCheckedItems,
       }),
     );
-    dispatch(
-      pushConstruction({
-        constructionArea: constructionArea,
-      }),
-    );
+
+    if (
+      !(
+        packageData.selectedRoughType === 'ROUGH' &&
+        (packageData.selectedCompleteType === 'FINISHED' ||
+          packageData.selectedCompleteType === undefined)
+      )
+    ) {
+      dispatch(
+        pushConstruction({
+          constructionArea: constructionArea,
+        }),
+      );
+    }
   };
 
   const renderUltilities = () => {
@@ -171,7 +180,7 @@ const UltilitiesScreen: React.FC = () => {
   const finalTotalPrice = constructionData.totalPrice + totalPrice;
 
   const isContinueButtonEnabled =
-    constructionArea !== '' && checkedItems.length > 0;
+     checkedItems.length > 0;
 
   return (
     <View style={styles.container}>

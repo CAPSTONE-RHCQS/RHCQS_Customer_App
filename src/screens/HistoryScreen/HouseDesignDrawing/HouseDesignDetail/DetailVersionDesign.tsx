@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   TextInput,
   Image,
+  ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import {RouteProp, useRoute, useNavigation} from '@react-navigation/native';
 import {AppStackParamList} from '../../../../types/TypeScreen';
@@ -24,6 +26,8 @@ import {width, height} from '../../../../utils/Dimensions';
 import CustomButton from '../../../../components/CustomButton';
 import Dialog from 'react-native-dialog';
 import {AppStackNavigationProp} from '../../../../types/TypeScreen';
+import Pdf from 'react-native-pdf';
+import RNFetchBlob from 'react-native-blob-util';
 
 const DetailVersionDesign: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
@@ -36,6 +40,7 @@ const DetailVersionDesign: React.FC = () => {
   const [inputValue, setInputValue] = useState('');
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [pdfUri, setPdfUri] = useState<string | null>(null);
 
   const fetchVersionDetail = async () => {
     try {
@@ -43,12 +48,19 @@ const DetailVersionDesign: React.FC = () => {
       const data: TrackingVersionDesignType[] = await getVersionDesignDetail(
         projectId,
       );
+      console.log('data', projectId);
       for (const item of data) {
         const foundVersion = item.Versions.find(v => v.Id === versionId);
         if (foundVersion) {
           setVersionDetail(foundVersion);
           setDrawingType(item.Name);
           setStatus(item.Status);
+
+          if (foundVersion.FileUrl) {
+            const pdfPath = await downloadPdf(foundVersion.FileUrl);
+            setPdfUri(pdfPath);
+            console.log('pdfPath', pdfPath);
+          }
           break;
         }
       }
@@ -56,6 +68,20 @@ const DetailVersionDesign: React.FC = () => {
       console.error('Error fetching version detail:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const downloadPdf = async (url: string): Promise<string> => {
+    try {
+      const {path} = await RNFetchBlob.config({
+        fileCache: true,
+        appendExt: 'pdf',
+      }).fetch('GET', url);
+
+      return path();
+    } catch (error) {
+      console.error('Error downloading PDF:', error);
+      throw error;
     }
   };
 
@@ -87,6 +113,10 @@ const DetailVersionDesign: React.FC = () => {
             : ''
         }
       />
+      <View style={styles.noteContainer}>
+        <Text style={styles.note}>Điều chỉnh:</Text>
+        <Text style={styles.noteDetail}>{versionDetail?.Note}</Text>
+      </View>
       {status !== 'Finished' && status !== 'Accepted' && (
         <View style={styles.inputContainer}>
           <Text style={styles.title}>Ghi chú</Text>
@@ -104,14 +134,20 @@ const DetailVersionDesign: React.FC = () => {
           </TouchableOpacity>
         </View>
       )}
-
-      <View style={styles.noteContainer}>
-        <Text style={styles.note}>Điều chỉnh:</Text>
-        <Text style={styles.noteDetail}>{versionDetail?.Note}</Text>
-      </View>
-
-      {versionDetail?.FileUrl && (
-        <Image source={{uri: versionDetail?.FileUrl}} style={styles.image} />
+      {loading ? (
+        <View style={styles.loader}>
+          <ActivityIndicator size="large" color="#0000ff" />
+        </View>
+      ) : pdfUri ? (
+        <Pdf
+          source={{uri: pdfUri}}
+          onError={error => {
+            console.log(error);
+          }}
+          style={styles.pdf}
+        />
+      ) : (
+        <Text style={styles.text}>Không tìm thấy file PDF.</Text>
       )}
 
       {status !== 'Finished' && status !== 'Accepted' && (
@@ -236,6 +272,23 @@ const styles = StyleSheet.create({
     color: '#1F7F81',
     fontFamily: FONTFAMILY.montserat_semibold,
     textTransform: 'none',
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  pdf: {
+    flex: 1,
+    backgroundColor: 'white',
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
+  },
+  text: {
+    fontFamily: FONTFAMILY.montserat_regular,
+    color: 'gray',
+    fontSize: 16,
+    padding: 20,
   },
 });
 
