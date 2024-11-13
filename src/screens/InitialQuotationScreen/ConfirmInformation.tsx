@@ -53,12 +53,17 @@ const ConfirmInformation: React.FC = () => {
     setLoading(true);
 
     const initialQuotationItemRequests = constructionData.checkedItems.map(
-      (item: any) => ({
-        constructionItemId: item.id,
-        subConstructionId: item.checkedItems,
-        area: item.area,
-        pirce: item.totalPrice,
-      }),
+      (item: any) => {
+        const requestItem: any = {
+          constructionItemId: item.id,
+          area: item.area,
+          pirce: item.totalPrice,
+        };
+        if (item.checkedItems !== "undefined") {
+          requestItem.subConstructionId = item.checkedItems;
+        }
+        return requestItem;
+      }
     );
 
     const quotationUtilitiesRequest = ultilitiesData.checkedItems.map(
