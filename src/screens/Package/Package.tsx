@@ -9,13 +9,15 @@ import Separator from '../../components/Separator';
 import {AppStackNavigationProp} from '../../types/TypeScreen';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {pushPackage} from '../../redux/actions/Package/PackageAction';
+import {PackageSelector} from '../../redux/selectors/PackageSelector/PackageSelector';
 
 const Package: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
   const dispatch = useDispatch();
 
+  const packageData = useSelector(PackageSelector);
   const [packages, setPackages] = useState<
     {Id: string; PackageType: string; PackageName: string; Price: number}[]
   >([]);
@@ -32,23 +34,16 @@ const Package: React.FC = () => {
   useEffect(() => {
     const fetchPackages = async () => {
       try {
-        const cachedData = await AsyncStorage.getItem('packages');
-        let data;
-        if (cachedData) {
-          data = JSON.parse(cachedData);
-        } else {
-          data = await getPackages();
-          await AsyncStorage.setItem('packages', JSON.stringify(data));
-        }
-        setPackages(data);
+        const data = await getPackages();
+        setPackages(data as any);
 
-        // Kiểm tra và đặt trạng thái cho các mục đã chọn
-        const storedRoughId = await AsyncStorage.getItem('selectedRough');
-        const storedCompleteId = await AsyncStorage.getItem('selectedComplete');
-        // Nếu có dữ liệu trong AsyncStorage thì đặt checkbox dựa theo data trong AsyncStorage
-        if (storedRoughId) {
-          setSelectedRough(storedRoughId);
-          setCheckedRoughItems({[storedRoughId]: true});
+        // Kiểm tra và đặt trạng thái cho các mục đã chọn từ packageData
+        const existingRoughPackage = packageData.selectedRough;
+        const existingCompletePackage = packageData.selectedComplete;
+
+        if (existingRoughPackage) {
+          setSelectedRough(existingRoughPackage);
+          setCheckedRoughItems({[existingRoughPackage]: true});
         } else {
           const firstRough = data.find((pkg: {PackageName: string}) =>
             pkg.PackageName.includes('Gói thô'),
@@ -59,9 +54,9 @@ const Package: React.FC = () => {
           }
         }
 
-        if (storedCompleteId) {
-          setSelectedComplete(storedCompleteId);
-          setCheckedCompleteItems({[storedCompleteId]: true});
+        if (existingCompletePackage) {
+          setSelectedComplete(existingCompletePackage);
+          setCheckedCompleteItems({[existingCompletePackage]: true});
         } else {
           const firstComplete = data.find((pkg: {PackageName: string}) =>
             pkg.PackageName.includes('Gói hoàn thiện'),
@@ -77,7 +72,7 @@ const Package: React.FC = () => {
     };
 
     fetchPackages();
-  }, []);
+  }, [packageData]);
 
   // Hàm xử lý khi chọn gói thô
   const handleRoughCheck = async (id: string) => {

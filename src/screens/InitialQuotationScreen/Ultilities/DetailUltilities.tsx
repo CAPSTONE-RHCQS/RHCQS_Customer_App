@@ -15,6 +15,7 @@ import CustomButton from '../../../components/CustomButton';
 import storage from '../../../utils/storage';
 import {pushDetailUltilities} from '../../../redux/actions/Ultilities/DetailUltilitiesAction';
 import InputField from '../../../components/InputField';
+import { DetailUltilitiesSelector } from '../../../redux/selectors/UltilitiesSelector/DetailUltilitiesSelector/DetailUltilitiesSelector';
 
 const DetailUltilities: React.FC = () => {
   // route
@@ -24,6 +25,7 @@ const DetailUltilities: React.FC = () => {
   const {Id} = route.params;
 
   const constructionData = useSelector(ContructionSelector);
+  const detailUltilitiesData = useSelector(DetailUltilitiesSelector);
   const [quantity, setQuantity] = useState('');
   const [sectionData, setSectionData] = useState<Section | null>(null);
   const [coefficients, setCoefficients] = useState<{[key: string]: number}>({});
@@ -45,15 +47,18 @@ const DetailUltilities: React.FC = () => {
         }, {} as {[key: string]: number});
         setCoefficients(initialCoefficients);
 
-        // Get checked items from AsyncStorage
-        const savedCheckedItems = await AsyncStorage.getItem(
-          'checkedItemsDetailUltilities',
+        // Kiểm tra trong detailUltilitiesData
+        const existingItem = detailUltilitiesData.find(
+          (item: any) => item.id === Id
         );
-        if (savedCheckedItems) {
-          setCheckedItems(JSON.parse(savedCheckedItems));
+
+        if (existingItem) {
+          setCheckedItems({[existingItem.checkedItems]: true});
+          setCoefficient(initialCoefficients[existingItem.checkedItems]);
         } else {
           const firstItemId = data.Items[0].Id;
           setCheckedItems({[firstItemId]: true});
+          setCoefficient(initialCoefficients[firstItemId]);
         }
       } else {
         setUnitPrice(data?.UnitPrice || 0);
@@ -61,7 +66,7 @@ const DetailUltilities: React.FC = () => {
     };
 
     fetchUltilitiesOption();
-  }, [Id]);
+  }, [Id, detailUltilitiesData]);
 
   useEffect(() => {
     // Update coefficient when checkedItems change
@@ -71,7 +76,7 @@ const DetailUltilities: React.FC = () => {
     }
   }, [checkedItems, coefficients]);
 
-  const handleCheck = async (id: string) => {
+  const handleCheck = (id: string) => {
     const newCheckedItems = {...checkedItems};
     Object.keys(newCheckedItems).forEach(key => {
       newCheckedItems[key] = false;
@@ -79,12 +84,6 @@ const DetailUltilities: React.FC = () => {
     newCheckedItems[id] = true;
     setCheckedItems(newCheckedItems);
     setCoefficient(coefficients[id]);
-
-    // Save checked items to storage
-    await AsyncStorage.setItem(
-      'checkedItemsDetailUltilities',
-      JSON.stringify(newCheckedItems),
-    );
   };
 
   const handleContinuePress = async () => {
@@ -117,6 +116,10 @@ const DetailUltilities: React.FC = () => {
       }),
     );
   };
+
+  const isContinueDisabled = sectionData?.Items?.length
+    ? !Object.values(checkedItems).some(isChecked => isChecked)
+    : !quantity;
 
   return (
     <View style={styles.container}>
@@ -199,8 +202,13 @@ const DetailUltilities: React.FC = () => {
         <CustomButton
           title="Tiếp tục"
           onPress={handleContinuePress}
-          colors={['#53A6A8', '#3C9597', '#1F7F81']}
+          colors={
+            isContinueDisabled
+              ? ['#d3d3d3', '#d3d3d3', '#d3d3d3']
+              : ['#53A6A8', '#3C9597', '#1F7F81']
+          }
           loading={loading}
+          disabled={isContinueDisabled}
         />
       </View>
     </View>

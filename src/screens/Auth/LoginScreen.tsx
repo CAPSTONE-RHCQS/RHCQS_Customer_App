@@ -96,6 +96,7 @@ const LoginScreen: React.FC = () => {
         colors={isButtonDisabled || !isFormValid ? ['#CCCCCC','#CCCCCC'] : ['#53A6A8', '#3C9597', '#1F7F81']} // Đổi màu nút khi bị khóa
         style={{ marginHorizontal: 20 }}
         disabled={isButtonDisabled || !isFormValid}
+        loading={isButtonDisabled}
       />
       <View style={styles.registerContainer}>
         <Text style={styles.registertext}>Bạn chưa có tài khoản?</Text>

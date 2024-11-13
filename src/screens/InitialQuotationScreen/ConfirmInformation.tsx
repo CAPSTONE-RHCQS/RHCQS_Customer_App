@@ -1,4 +1,4 @@
-import {View, StyleSheet, Animated} from 'react-native';
+import {View, StyleSheet, Animated, Text} from 'react-native';
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import AppBar from '../../components/Appbar';
 import InputField from '../../components/InputField';
@@ -14,7 +14,13 @@ import {useNavigation} from '@react-navigation/native';
 import {AppStackNavigationProp} from '../../types/TypeScreen';
 import Dialog from 'react-native-dialog';
 import {FONTFAMILY} from '../../theme/theme';
-import { resetDataConstruction, resetDataDetailConstruction, resetDataDetailUltilities, resetDataPackage, resetDataUltilities } from '../../redux/actions/reset/resetData';
+import {
+  resetDataConstruction,
+  resetDataDetailConstruction,
+  resetDataDetailUltilities,
+  resetDataPackage,
+  resetDataUltilities,
+} from '../../redux/actions/reset/resetData';
 
 const ConfirmInformation: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
@@ -28,6 +34,9 @@ const ConfirmInformation: React.FC = () => {
   const [customerId, setCustomerId] = useState('');
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
+  const [addressError, setAddressError] = useState('');
+  const [projectNameError, setProjectNameError] = useState('');
 
   const ultilitiesData = useSelector(UltilitiesSelector);
   const constructionData = useSelector(ContructionSelector);
@@ -53,6 +62,20 @@ const ConfirmInformation: React.FC = () => {
 
   const handleSubmit = useCallback(async () => {
     setLoading(true);
+    setErrorMessage('');
+    setAddressError('');
+    setProjectNameError('');
+
+    if (!address) {
+      setAddressError('Địa chỉ không được để trống');
+    }
+    if (!projectName) {
+      setProjectNameError('Tên dự án không được để trống');
+    }
+    if (!address || !projectName) {
+      setLoading(false);
+      return;
+    }
 
     const initialQuotationItemRequests = constructionData.checkedItems.map(
       (item: any) => {
@@ -61,11 +84,11 @@ const ConfirmInformation: React.FC = () => {
           area: item.area,
           pirce: item.totalPrice,
         };
-        if (item.checkedItems !== "undefined") {
+        if (item.checkedItems !== 'undefined') {
           requestItem.subConstructionId = item.checkedItems;
         }
         return requestItem;
-      }
+      },
     );
 
     const quotationUtilitiesRequest = ultilitiesData.checkedItems.map(
@@ -125,22 +148,30 @@ const ConfirmInformation: React.FC = () => {
       },
     );
 
-    dispatch(resetDataPackage());
-    dispatch(resetDataUltilities());
-    dispatch(resetDataDetailUltilities());
-    dispatch(resetDataConstruction());
-    dispatch(resetDataDetailConstruction());
     try {
       await createProject(projectData);
-      console.log('Project created successfully');
+      dispatch(resetDataPackage());
+      dispatch(resetDataUltilities());
+      dispatch(resetDataDetailUltilities());
+      dispatch(resetDataConstruction());
+      dispatch(resetDataDetailConstruction());
       setLoading(false);
       setVisible(true);
     } catch (error) {
+      setLoading(false);
       if (axios.isAxiosError(error)) {
-        console.error('Axios error:', error.response?.data);
+        const errorData = error.response?.data;
+        console.log('Full error data:', errorData);
+        if (errorData && typeof errorData === 'object') {
+          console.log('error', errorData.Error);
+          setErrorMessage(errorData.Error || 'Đã xảy ra lỗi không xác định');
+        } else {
+          setErrorMessage('Đã xảy ra lỗi không xác định');
+        }
       } else {
-        console.error('Unexpected error:', error);
+        setErrorMessage('Đã xảy ra lỗi không xác định');
       }
+      setVisible(true);
     }
   }, [
     customerId,
@@ -204,12 +235,19 @@ const ConfirmInformation: React.FC = () => {
           onChangeText={setAddress}
           placeholder="Nhập địa chỉ"
         />
+
         <InputField
           name="Tên dự án"
           value={projectName}
           onChangeText={setProjectName}
           placeholder="Nhập tên dự án"
         />
+        {addressError ? (
+          <Text style={styles.errorText}>{addressError}</Text>
+        ) : null}
+        {projectNameError ? (
+          <Text style={styles.errorText}>{projectNameError}</Text>
+        ) : null}
       </View>
       <View style={styles.buttonContainer}>
         <CustomButton
@@ -221,15 +259,19 @@ const ConfirmInformation: React.FC = () => {
       </View>
 
       <Dialog.Container contentStyle={styles.dialogContainer} visible={visible}>
-        <Dialog.Title style={styles.dialogTitle}>Thành công</Dialog.Title>
+        <Dialog.Title style={styles.dialogTitle}>
+          {errorMessage ? 'Lỗi' : 'Thành công'}
+        </Dialog.Title>
         <Dialog.Description style={styles.dialogDescription}>
-          Dự án đã được tạo thành công!
+          {errorMessage || 'Dự án đã được tạo thành công!'}
         </Dialog.Description>
         <Dialog.Button
-          label="Xem danh sách"
+          label="Đóng"
           onPress={() => {
             setVisible(false);
-            navigationApp.navigate('HistoryScreen');
+            if (!errorMessage) {
+              navigationApp.navigate('HistoryScreen');
+            }
           }}
           style={styles.dialogButton}
         />
@@ -276,6 +318,11 @@ const styles = StyleSheet.create({
     color: '#1F7F81',
     fontFamily: FONTFAMILY.montserat_semibold,
     textTransform: 'none',
+  },
+  errorText: {
+    color: 'red',
+    fontFamily: FONTFAMILY.montserat_semibold,
+    marginTop: 5,
   },
 });
 

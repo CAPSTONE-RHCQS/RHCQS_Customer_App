@@ -23,6 +23,7 @@ const RegisterScreen: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confilmPassword, setConfilmPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleRegister = async () => {
@@ -42,6 +43,7 @@ const RegisterScreen: React.FC = () => {
       navigationAuth.navigate('LoginScreen');
     } catch (error: any) {
       setErrorMessage(error.message);
+      setIsButtonDisabled(false);
     }
   };
 
@@ -106,6 +108,7 @@ const RegisterScreen: React.FC = () => {
           title="Đăng kí"
           onPress={handleRegister}
           colors={['#53A6A8', '#3C9597', '#1F7F81']}
+          loading={isButtonDisabled}
         />
       </View>
     </View>

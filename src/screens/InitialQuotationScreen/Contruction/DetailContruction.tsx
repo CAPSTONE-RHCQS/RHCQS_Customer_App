@@ -41,7 +41,9 @@ const DetailContruction: React.FC = () => {
   const roughPackagePrice = packageData.roughPackagePrice;
   const hasSubConstructionItems = constructionData.length > 0;
   const constructionArea = area ? parseFloat(area) * coefficient : 0;
-  const unitPrice = hasSubConstructionItems ? roughPackagePrice : roughPackagePrice;
+  const unitPrice = hasSubConstructionItems
+    ? roughPackagePrice
+    : roughPackagePrice;
   const totalPrice = constructionArea * unitPrice || 0;
 
   useEffect(() => {
@@ -95,7 +97,7 @@ const DetailContruction: React.FC = () => {
       );
       if (existingData) {
         setArea(existingData.area);
-        setCheckedItems({ [existingData.checkedItems]: true });
+        setCheckedItems({[existingData.checkedItems]: true});
         setCoefficient(existingData.coefficient);
       }
     };
@@ -166,6 +168,10 @@ const DetailContruction: React.FC = () => {
     return value ? value.toLocaleString() : '0';
   };
 
+  const isContinueDisabled = hasSubConstructionItems
+    ? !Object.values(checkedItems).some(isChecked => isChecked) || !area
+    : !area;
+
   return (
     <View style={styles.container}>
       <AppBar nameScreen="Tính chi phí xây dựng thô" />
@@ -177,6 +183,7 @@ const DetailContruction: React.FC = () => {
           onChangeText={setArea}
           placeholder="Nhập diện tích"
           keyboardType="numeric"
+          isRequired={true}
         />
         {hasSubConstructionItems && (
           <>
@@ -208,8 +215,13 @@ const DetailContruction: React.FC = () => {
         <CustomButton
           title="Tiếp tục"
           onPress={handleContinuePress}
-          colors={['#53A6A8', '#3C9597', '#1F7F81']}
+          colors={
+            isContinueDisabled
+              ? ['#d3d3d3', '#d3d3d3', '#d3d3d3']
+              : ['#53A6A8', '#3C9597', '#1F7F81']
+          }
           loading={loading}
+          disabled={isContinueDisabled}
         />
       </View>
     </View>

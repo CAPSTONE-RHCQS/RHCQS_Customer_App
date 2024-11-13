@@ -9,7 +9,6 @@ export const createProject = async (projectData: any) => {
     const response = await axiosInstance.post('/project', projectData, { headers });
     return response.data;
   } catch (error) {
-    console.error('Error creating project:', error);
     throw error;
   }
 };
@@ -22,7 +21,6 @@ export const getProjectByEmail = async (email: string): Promise<ProjectHistory[]
     await AsyncStorage.setItem('projectHistory', JSON.stringify(response.data));
     return response.data;
   } catch (error) {
-    console.error('Error getting project history:', error);
     throw error;
   }
 };
