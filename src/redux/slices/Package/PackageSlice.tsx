@@ -27,6 +27,8 @@ const packageSlice = (state: PackageState = initialState, action: any) => {
         ...state,
         ...action.payload,
       };
+    case 'resetDataPackage':
+      return initialState;
     default:
       return state;
   }

@@ -29,6 +29,8 @@ const detailUltilitiesReducer = (state = initialState, action: any) => {
           ? updatedDetailUltilities
           : [...state.detailUltilities, action.payload],
       };
+    case 'resetDataDetailUltilities':
+      return initialState;
     default:
       return state;
   }

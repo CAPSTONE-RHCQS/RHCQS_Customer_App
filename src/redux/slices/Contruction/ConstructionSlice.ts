@@ -17,6 +17,8 @@ const constructionSlice = (state: ConstructionState = initialState, action: any)
                 ...state,
                 ...action.payload
             };
+        case 'resetDataConstruction':
+            return initialState;
         default:
             return state;
     }

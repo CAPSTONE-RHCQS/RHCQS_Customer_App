@@ -29,6 +29,8 @@ const detailContructionReducer = (state = initialState, action: any) => {
           ? updatedDetailConstructions
           : [...state.detailConstructions, action.payload],
       };
+    case 'resetDataDetailConstruction':
+      return initialState;
     default:
       return state;
   }

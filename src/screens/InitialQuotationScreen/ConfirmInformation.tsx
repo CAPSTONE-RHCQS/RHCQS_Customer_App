@@ -2,7 +2,7 @@ import {View, StyleSheet, Animated} from 'react-native';
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import AppBar from '../../components/Appbar';
 import InputField from '../../components/InputField';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {UltilitiesSelector} from '../../redux/selectors/UltilitiesSelector/UltilitiesSelector';
 import {ContructionSelector} from '../../redux/selectors/ContructionSelector/ContructionSelector';
 import {PackageSelector} from '../../redux/selectors/PackageSelector/PackageSelector';
@@ -14,9 +14,11 @@ import {useNavigation} from '@react-navigation/native';
 import {AppStackNavigationProp} from '../../types/TypeScreen';
 import Dialog from 'react-native-dialog';
 import {FONTFAMILY} from '../../theme/theme';
+import { resetDataConstruction, resetDataDetailConstruction, resetDataDetailUltilities, resetDataPackage, resetDataUltilities } from '../../redux/actions/reset/resetData';
 
 const ConfirmInformation: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
+  const dispatch = useDispatch();
 
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -123,6 +125,11 @@ const ConfirmInformation: React.FC = () => {
       },
     );
 
+    dispatch(resetDataPackage());
+    dispatch(resetDataUltilities());
+    dispatch(resetDataDetailUltilities());
+    dispatch(resetDataConstruction());
+    dispatch(resetDataDetailConstruction());
     try {
       await createProject(projectData);
       console.log('Project created successfully');
@@ -142,6 +149,7 @@ const ConfirmInformation: React.FC = () => {
     constructionData,
     packageData,
     detailUltilities,
+    dispatch,
   ]);
 
   const fadeAnim = useRef(new Animated.Value(1)).current;

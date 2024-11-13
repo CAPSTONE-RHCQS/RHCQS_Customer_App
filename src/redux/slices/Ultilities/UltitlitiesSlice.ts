@@ -13,6 +13,8 @@ const ultitlitiesSlice = (state: UltilitiesState = initialState, action: any) =>
                 ...state,
                 ...action.payload
             };
+        case 'resetDataUltilities':
+            return initialState;
         default:
             return state;
     }
