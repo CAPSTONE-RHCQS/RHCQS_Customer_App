@@ -53,6 +53,10 @@ const TrackingScreen: React.FC = () => {
     navigationApp.navigate('HistoryScreen');
   };
 
+  const handleHasDesign = () => {
+    navigationApp.navigate('HasDesignScreen');
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       fetchTracking();
@@ -109,9 +113,8 @@ const TrackingScreen: React.FC = () => {
   const handleIconPress = (event: any) => {
     const {pageX, pageY} = event.nativeEvent;
     const screenWidth = Dimensions.get('window').width;
-    const modalWidth = 200; // Chiều rộng của modal
+    const modalWidth = 200;
 
-    // Điều chỉnh vị trí để modal không bị khuất
     const xPosition =
       pageX + modalWidth > screenWidth ? screenWidth - modalWidth - 10 : pageX;
     setModalPosition({x: xPosition, y: pageY});
@@ -156,7 +159,7 @@ const TrackingScreen: React.FC = () => {
               <Text style={styles.modalText}>Yêu cầu bảng vẽ thiết kế</Text>
             </Pressable>
             <Separator />
-            <Pressable onPress={closeModal}>
+            <Pressable onPress={handleHasDesign}>
               <Text style={styles.modalText}>Đã có bản thiết kế</Text>
             </Pressable>
           </View>

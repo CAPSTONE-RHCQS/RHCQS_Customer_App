@@ -1,6 +1,6 @@
 import React from 'react';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AppStackParamList } from '../types/TypeScreen';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {AppStackParamList} from '../types/TypeScreen';
 import TabNavigation from './TabNavigation';
 import UltilitiesScreen from '../screens/InitialQuotationScreen/Ultilities/UltilitiesScreen';
 import ConstructionScreen from '../screens/InitialQuotationScreen/Contruction/ConstructionScreen';
@@ -29,16 +29,17 @@ import VersionFinalScreen from '../screens/HistoryScreen/FinalQuotation/VersionF
 import VersionFinalDetail from '../screens/HistoryScreen/FinalQuotation/VersionFinalDetail';
 import ContactContruction from '../screens/HistoryScreen/ContactContruction/ContactContruction';
 import TrackingContruction from '../screens/HistoryScreen/ContactContruction/TrackingContruction';
+import Hasdesign from '../screens/HasDesign/Hasdesign';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
 const AppStack: React.FC = () => {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{headerShown: false}}>
       {/* Home */}
       <Stack.Screen name="HomeScreen" component={TabNavigation} />
       {/* Initial Quotation */}
-      {/* Construction */}  
+      {/* Construction */}
       <Stack.Screen name="ConstructionScreen" component={ConstructionScreen} />
       <Stack.Screen name="DetailContruction" component={DetailContruction} />
       {/* Ultilities */}
@@ -47,31 +48,61 @@ const AppStack: React.FC = () => {
       <Stack.Screen name="ConfirmInformation" component={ConfirmInformation} />
       {/* Package */}
       <Stack.Screen name="Package" component={Package} />
+      <Stack.Screen name="HasDesignScreen" component={Hasdesign} />
       {/* House Library */}
       <Stack.Screen name="HouseLibrary" component={HouseLibrary} />
       <Stack.Screen name="HouseExternalView" component={HouseExternalView} />
-      <Stack.Screen name="HouseResidentialArea" component={HouseResidentialArea} />
-      <Stack.Screen name="HousePackageTemplate" component={HousePackageTemplate} />
+      <Stack.Screen
+        name="HouseResidentialArea"
+        component={HouseResidentialArea}
+      />
+      <Stack.Screen
+        name="HousePackageTemplate"
+        component={HousePackageTemplate}
+      />
       <Stack.Screen name="UltilitiesHouse" component={UltilitiesHouse} />
-      <Stack.Screen name="ConfirmInformationHouseTemplate" component={ConfirmInformationHouseTemplate} />
-      <Stack.Screen name="DetailUltilitiesHouse" component={DetailUltilitiesHouse} />
+      <Stack.Screen
+        name="ConfirmInformationHouseTemplate"
+        component={ConfirmInformationHouseTemplate}
+      />
+      <Stack.Screen
+        name="DetailUltilitiesHouse"
+        component={DetailUltilitiesHouse}
+      />
       {/* History */}
       <Stack.Screen name="HistoryScreen" component={HistoryScreen} />
       <Stack.Screen name="TrackingScreen" component={TrackingScreen} />
       <Stack.Screen name="VersionScreen" component={VersionScreen} />
       <Stack.Screen name="VersionDetail" component={VersionDetail} />
-      <Stack.Screen name="TrackingDesignContact" component={TrackingDesignContact} />
-      <Stack.Screen name="ContactDesignScreen" component={ContactDesignScreen} />
-      <Stack.Screen name="DetailVersionDesign" component={DetailVersionDesign} />
-      <Stack.Screen name="TrackingVersionDesign" component={TrackingVersionDesign} />
+      <Stack.Screen
+        name="TrackingDesignContact"
+        component={TrackingDesignContact}
+      />
+      <Stack.Screen
+        name="ContactDesignScreen"
+        component={ContactDesignScreen}
+      />
+      <Stack.Screen
+        name="DetailVersionDesign"
+        component={DetailVersionDesign}
+      />
+      <Stack.Screen
+        name="TrackingVersionDesign"
+        component={TrackingVersionDesign}
+      />
       <Stack.Screen name="VersionFinalScreen" component={VersionFinalScreen} />
       <Stack.Screen name="VersionFinalDetail" component={VersionFinalDetail} />
-      <Stack.Screen name="ContactContructionScreen" component={ContactContruction} />
-      <Stack.Screen name="TrackingContruction" component={TrackingContruction} />
+      <Stack.Screen
+        name="ContactContructionScreen"
+        component={ContactContruction}
+      />
+      <Stack.Screen
+        name="TrackingContruction"
+        component={TrackingContruction}
+      />
       {/* Blog */}
       <Stack.Screen name="BlogList" component={BlogList} />
       <Stack.Screen name="BlogDetail" component={BlogDetail} />
-
     </Stack.Navigator>
   );
 };
