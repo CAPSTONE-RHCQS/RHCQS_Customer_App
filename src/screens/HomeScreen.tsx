@@ -15,7 +15,8 @@ import {getProfile} from '../api/Account/Account';
 import { getBlog } from '../api/Blog/Blog';
 import { Blog } from '../types/screens/Blog/BlogType';
 import { useNavigation } from '@react-navigation/native';
-import { AppStackNavigationProp } from '../types/TypeScreen';
+import {AppStackNavigationProp} from '../types/TypeScreen';
+import messaging from '@react-native-firebase/messaging';
 
 const viewHeight = height / 6;
 
@@ -30,6 +31,19 @@ const HomeScreen: React.FC = ({}) => {
   const renderBanner = ({item}: {item: any; index: number}) => {
     return <BannerSlider data={item} />;
   };
+
+  useEffect(() => {
+    const getToken = async () => {
+      try {
+        const token = await messaging().getToken();
+        console.log('FCM Token:', token);
+      } catch (error) {
+        console.error('Failed to get FCM token:', error);
+      }
+    };
+
+    getToken();
+  }, []);
 
   useEffect(() => {
     const fetchProfile = async () => {

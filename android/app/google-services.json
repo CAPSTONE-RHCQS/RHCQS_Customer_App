@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1019822264699",
+    "project_id": "sep490-101ee",
+    "storage_bucket": "sep490-101ee.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019822264699:android:e27128e8818cf4a760adde",
+        "android_client_info": {
+          "package_name": "com.companyname.MAUIFirebaseNotification"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_EsNESdYGYrWfDCMIKKQ9RpJICXqabj8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1019822264699:android:b38762cc1744673660adde",
+        "android_client_info": {
+          "package_name": "com.rhcqs_customer_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD_EsNESdYGYrWfDCMIKKQ9RpJICXqabj8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

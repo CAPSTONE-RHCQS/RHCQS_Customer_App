@@ -24,6 +24,7 @@ buildscript {
         } else {
             classpath 'org.webkit:android-jsc:+' 
         }
+        classpath("com.google.gms:google-services:4.4.2")
     }
 }
 
