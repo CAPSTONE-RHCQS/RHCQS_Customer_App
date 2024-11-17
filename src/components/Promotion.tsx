@@ -39,6 +39,19 @@ const Promotion: React.FC<ExpandableListProps> = ({
 
   const handleCheckboxPress = (id: string) => {
     setSelectedPromotionId(prevId => (prevId === id ? null : id));
+    const selectedPromotion = promotions.find(promotion => promotion.Id === id);
+    if (selectedPromotion) {
+      console.log('Selected Promotion:', selectedPromotion);
+    }
+    onDetailPress(id);
+  };
+
+  const formatValue = (value: number) => {
+    if (value < 100) {
+      return `${value}%`;
+    } else {
+      return `${value.toLocaleString()}`;
+    }
   };
 
   return (
@@ -64,7 +77,7 @@ const Promotion: React.FC<ExpandableListProps> = ({
                 <Text style={styles.promotionName} numberOfLines={2}>
                   {promotion.Name}
                 </Text>
-                <Text style={styles.promotionValue}>{promotion.Value}</Text>
+                <Text style={styles.promotionValue}>{formatValue(promotion.Value)}</Text>
                 <Checkbox
                   id={promotion.Id}
                   label=""

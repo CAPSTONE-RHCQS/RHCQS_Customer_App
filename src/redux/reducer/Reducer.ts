@@ -6,6 +6,7 @@ import detailContructionReducer from '../slices/Contruction/DetailContructionSli
 import detailUltilitiesReducer from '../slices/Ultilities/UltilitiesDetail';
 import subTemplateSlice from '../slices/HouseTemplate/SubTemplate';
 import { resetDataConstruction, resetDataDetailConstruction, resetDataDetailUltilities, resetDataPackage, resetDataUltilities } from '../actions/reset/resetData';
+import promotionSlice from '../slices/Promotion/Promotion';
 
 const rootReducer = combineReducers({
   // Contruction
@@ -23,6 +24,8 @@ const rootReducer = combineReducers({
   resetDataPackage: resetDataPackage,
   // House Template
   subTemplate: subTemplateSlice,
+  // Promotion
+  promotion: promotionSlice,
 });
 
 export default rootReducer;

@@ -21,6 +21,7 @@ import {
   resetDataPackage,
   resetDataUltilities,
 } from '../../redux/actions/reset/resetData';
+import {PromotionSelector} from '../../redux/selectors/Promotion/PromotionSelector';
 
 const ConfirmInformation: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
@@ -41,6 +42,7 @@ const ConfirmInformation: React.FC = () => {
   const ultilitiesData = useSelector(UltilitiesSelector);
   const constructionData = useSelector(ContructionSelector);
   const packageData = useSelector(PackageSelector);
+  const promotionData = useSelector(PromotionSelector);
   const detailUltilities = useSelector(
     (state: any) => state.detailUltilities || [],
   );
@@ -131,8 +133,11 @@ const ConfirmInformation: React.FC = () => {
           : []),
       ],
       initialQuotation: {
-        promotionId: null,
         initialQuotationItemRequests,
+      },
+      promotion: {
+        id: promotionData.promotionId,
+        discount: promotionData.discount,
       },
       quotationUtilitiesRequest,
     };

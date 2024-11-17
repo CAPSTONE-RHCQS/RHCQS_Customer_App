@@ -29,7 +29,7 @@ import {pushConstruction} from '../../../redux/actions/Contruction/ContructionAc
 import {PromotionType} from '../../../types/screens/Promotion/Promotion';
 import {getPromotion} from '../../../api/Promotion/Promotion';
 import Promotion from '../../../components/Promotion';
-import { pushPromotion } from '@/redux/actions/Promotion/PromotionAction';
+import {pushPromotion} from '../../../redux/actions/Promotion/PromotionAction';
 
 const UltilitiesScreen: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
@@ -45,12 +45,19 @@ const UltilitiesScreen: React.FC = () => {
   // State để lưu trữ ID các mục đã check
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
   // State để lưu trữ diện tích xây dựng
-  const [constructionArea, setConstructionArea] = useState('');
+  const [constructionArea, setConstructionArea] = useState<string>(
+    constructionData.constructionArea,
+  );
   // State để lưu trữ dữ liệu các mục tiện ích
   const [ultilities, setUltilities] = useState<UltilitiesType[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const [promotion, setPromotion] = useState<PromotionType[]>([]);
+  const [selectedPromotionValue, setSelectedPromotionValue] =
+    useState<number>(0);
+  const [selectedPromotionId, setSelectedPromotionId] = useState<string | null>(
+    null,
+  );
 
   const fetchUltilities = async () => {
     const selectedRoughType = packageData.selectedRoughType;
@@ -117,7 +124,7 @@ const UltilitiesScreen: React.FC = () => {
       return newCheckedItems;
     });
   };
-  
+
   const handleContinuePress = () => {
     if (checkedItems.length === 0) return;
     navigationApp.navigate('ConfirmInformation');
@@ -136,6 +143,15 @@ const UltilitiesScreen: React.FC = () => {
       }),
     );
 
+    if (selectedPromotionId) {
+      dispatch(
+        pushPromotion({
+          promotionId: selectedPromotionId,
+          discount: discountAmount,
+        }),
+      );
+    }
+
     if (
       !(
         packageData.selectedRoughType === 'ROUGH' &&
@@ -150,6 +166,23 @@ const UltilitiesScreen: React.FC = () => {
       );
     }
   };
+
+  const handlePromotionSelect = (promotionId: string) => {
+    const selectedPromotion = promotion.find(promo => promo.Id === promotionId);
+    if (selectedPromotion) {
+      setSelectedPromotionValue(selectedPromotion.Value);
+      setSelectedPromotionId(selectedPromotion.Id);
+    }
+  };
+
+  const calculateDiscount = () => {
+    const area = parseFloat(constructionArea) || 0;
+    return area * selectedPromotionValue;
+  };
+
+  const discountAmount = calculateDiscount();
+  const finalTotalPrice =
+    constructionData.totalPrice + totalPrice - discountAmount;
 
   const renderUltilities = () => {
     return ultilities.map((utility, index) => {
@@ -196,15 +229,10 @@ const UltilitiesScreen: React.FC = () => {
         id="promotion-section"
         title="Khuyến mãi"
         promotions={promotion}
-        onDetailPress={(id) => {
-          console.log(`Promotion detail pressed for ID: ${id}`);
-        }}
+        onDetailPress={handlePromotionSelect}
       />
     );
   };
-
-  // Tính tổng tiền cuối cùng
-  const finalTotalPrice = constructionData.totalPrice + totalPrice;
 
   const isContinueButtonEnabled = checkedItems.length > 0;
 
@@ -237,6 +265,12 @@ const UltilitiesScreen: React.FC = () => {
             {finalTotalPrice.toLocaleString()} VND
           </Text>
         </View>
+        <View style={styles.totalPriceContainer}>
+          <Text style={styles.totalPriceText}>Đã giảm: </Text>
+          <Text style={styles.totalPrice}>
+            {discountAmount.toLocaleString()} VND
+          </Text>
+        </View>
         <CustomButton
           title="Tiếp tục"
           onPress={handleContinuePress}
@@ -244,8 +278,8 @@ const UltilitiesScreen: React.FC = () => {
             checkedItems.length > 0
               ? ['#53A6A8', '#3C9597', '#1F7F81']
               : ['#d3d3d3', '#d3d3d3', '#d3d3d3']
-          } // Màu xám khi không có hạng mục nào được chọn
-          disabled={!isContinueButtonEnabled} // Vô hiệu hóa nút khi không có hạng mục nào được chọn
+          }
+          disabled={!isContinueButtonEnabled}
           loading={loading}
         />
       </View>
