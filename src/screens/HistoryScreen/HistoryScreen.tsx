@@ -41,7 +41,7 @@ const HistoryScreen: React.FC = () => {
   };
 
   const groupProjectsByDate = (projects: ProjectHistory[]) => {
-    return projects.reduce((acc, project) => {
+    const grouped = projects.reduce((acc, project) => {
       const formattedDate = format(new Date(project.InsDate), 'dd-MM-yyyy');
       if (!acc[formattedDate]) {
         acc[formattedDate] = [];
@@ -49,6 +49,17 @@ const HistoryScreen: React.FC = () => {
       acc[formattedDate].push(project);
       return acc;
     }, {} as Record<string, ProjectHistory[]>);
+
+    return Object.keys(grouped)
+      .sort((a, b) => {
+        const [dayA, monthA, yearA] = a.split('-').map(Number);
+        const [dayB, monthB, yearB] = b.split('-').map(Number);
+        return new Date(yearB, monthB - 1, dayB).getTime() - new Date(yearA, monthA - 1, dayA).getTime();
+      })
+      .reduce((acc, date) => {
+        acc[date] = grouped[date];
+        return acc;
+      }, {} as Record<string, ProjectHistory[]>);
   };
 
   const groupedProjects = groupProjectsByDate(projectHistory);

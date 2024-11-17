@@ -27,3 +27,9 @@ export const resetDataPackage = () => {
     type: 'resetDataPackage',
   };
 };
+
+export const resetDataPromotion = () => {
+  return {
+    type: 'resetDataPromotion',
+  };
+};

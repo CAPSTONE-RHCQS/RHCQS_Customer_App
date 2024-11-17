@@ -26,6 +26,10 @@ import {DetailUltilitiesSelector} from '../../../redux/selectors/UltilitiesSelec
 import {useFocusEffect} from '@react-navigation/native';
 import InputField from '../../../components/InputField';
 import {pushConstruction} from '../../../redux/actions/Contruction/ContructionAction';
+import {PromotionType} from '../../../types/screens/Promotion/Promotion';
+import {getPromotion} from '../../../api/Promotion/Promotion';
+import Promotion from '../../../components/Promotion';
+import { pushPromotion } from '@/redux/actions/Promotion/PromotionAction';
 
 const UltilitiesScreen: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
@@ -46,6 +50,8 @@ const UltilitiesScreen: React.FC = () => {
   const [ultilities, setUltilities] = useState<UltilitiesType[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [loading, setLoading] = useState(false);
+  const [promotion, setPromotion] = useState<PromotionType[]>([]);
+
   const fetchUltilities = async () => {
     const selectedRoughType = packageData.selectedRoughType;
     const selectedCompleteType = packageData.selectedCompleteType;
@@ -69,9 +75,16 @@ const UltilitiesScreen: React.FC = () => {
     }
   };
 
+  const fetchPromotion = async () => {
+    const promotionData = await getPromotion();
+    console.log('promotionData', JSON.stringify(promotionData, null, 2));
+    setPromotion(promotionData);
+  };
+
   useFocusEffect(
     React.useCallback(() => {
       fetchUltilities();
+      fetchPromotion();
     }, [packageData]),
   );
 
@@ -104,6 +117,7 @@ const UltilitiesScreen: React.FC = () => {
       return newCheckedItems;
     });
   };
+  
   const handleContinuePress = () => {
     if (checkedItems.length === 0) return;
     navigationApp.navigate('ConfirmInformation');
@@ -176,11 +190,23 @@ const UltilitiesScreen: React.FC = () => {
     });
   };
 
+  const renderPromotions = () => {
+    return (
+      <Promotion
+        id="promotion-section"
+        title="Khuyến mãi"
+        promotions={promotion}
+        onDetailPress={(id) => {
+          console.log(`Promotion detail pressed for ID: ${id}`);
+        }}
+      />
+    );
+  };
+
   // Tính tổng tiền cuối cùng
   const finalTotalPrice = constructionData.totalPrice + totalPrice;
 
-  const isContinueButtonEnabled =
-     checkedItems.length > 0;
+  const isContinueButtonEnabled = checkedItems.length > 0;
 
   return (
     <View style={styles.container}>
@@ -201,6 +227,7 @@ const UltilitiesScreen: React.FC = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.titleText}>Tùy chọn & tiện ích</Text>
         <View style={styles.body}>{renderUltilities()}</View>
+        <View style={styles.promotionContainer}>{renderPromotions()}</View>
       </ScrollView>
       <View style={styles.buttonContainer}>
         <Separator />
@@ -234,6 +261,10 @@ const styles = StyleSheet.create({
   body: {
     flex: 1,
     marginTop: 10,
+    marginHorizontal: 20,
+  },
+  promotionContainer: {
+    flex: 1,
     marginHorizontal: 20,
   },
   inputContainer: {

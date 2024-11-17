@@ -144,14 +144,12 @@ const Package: React.FC = () => {
       completePackage?.PackageName || '',
     );
 
-    // Điều hướng màn hình dựa trên ROUGH PACKAGE có được chọn hay ko
     if (selectedRough) {
       navigationApp.navigate('ConstructionScreen');
     } else {
       navigationApp.navigate('UltilitiesScreen');
     }
 
-    // Gửi dữ liệu về redux
     dispatch(
       pushPackage({
         selectedRoughType: roughPackage?.PackageType,
