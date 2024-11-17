@@ -39,9 +39,9 @@ const UltilitiesScreen: React.FC = () => {
   const detailUltilitiesData = useSelector(DetailUltilitiesSelector);
   // Lấy dữ liệu package
   const packageData = useSelector(PackageSelector);
+  console.log('packageData', packageData);
   // Lấy dữ liệu construction
   const constructionData = useSelector(ContructionSelector);
-
   // State để lưu trữ ID các mục đã check
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
   // State để lưu trữ diện tích xây dựng
@@ -85,7 +85,18 @@ const UltilitiesScreen: React.FC = () => {
   const fetchPromotion = async () => {
     const promotionData = await getPromotion();
     console.log('promotionData', JSON.stringify(promotionData, null, 2));
-    setPromotion(promotionData);
+
+    // Lọc khuyến mãi dựa trên tên gói
+    const filteredPromotions = promotionData.filter(promo => {
+      const completePackageName = packageData.completePackageName;
+      const roughPackageName = packageData.roughPackageName;
+      return (
+        (completePackageName && promo.Name.includes(completePackageName)) ||
+        (roughPackageName && promo.Name.includes(roughPackageName))
+      );
+    });
+
+    setPromotion(filteredPromotions);
   };
 
   useFocusEffect(

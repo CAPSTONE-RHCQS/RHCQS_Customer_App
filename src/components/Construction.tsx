@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
   detailText: {
     fontSize: 12,
     fontFamily: FONTFAMILY.montserat_medium,
+    color: '#808080',
   },
   priceGroup: {
     flex: 1,
@@ -116,6 +117,7 @@ const styles = StyleSheet.create({
   area: {
     fontFamily: FONTFAMILY.montserat_medium,
     fontSize: 12,
+    color: '#808080',
   },
   checkbox: {
     justifyContent: 'center',

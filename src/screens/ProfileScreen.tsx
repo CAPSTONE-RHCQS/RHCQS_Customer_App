@@ -26,7 +26,6 @@ const ProfileScreen: React.FC = () => {
   const [customerName, setCustomerName] = useState('');
   const [customerId, setCustomerId] = useState('');
   const [customerImg, setCustomerImg] = useState('');
-  const [address, setAddress] = useState('');
   const [dateOfBirth, setDateOfBirth] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [reload, setReload] = useState(false);
@@ -57,14 +56,40 @@ const ProfileScreen: React.FC = () => {
     await storage.clear();
   };
 
+  const handleChoosePhoto = async () => {
+    const result = await launchImageLibrary({
+      mediaType: 'photo',
+      quality: 1,
+    });
+
+    if (result.assets && result.assets.length > 0) {
+      const imageUri = result.assets[0].uri;
+      if (imageUri) {
+        setCustomerImg(imageUri);
+      } else {
+        console.log('Không có URI cho hình ảnh được chọn');
+      }
+    } else {
+      console.log('Không có hình ảnh được chọn');
+    }
+  };
+
   const handleSave = async () => {
     setIsLoading(true);
     try {
+      let imageUrl = customerImg;
+
+      if (customerImg && customerImg.startsWith('file://')) {
+        console.log('Uploading image from URI:', customerImg);
+        imageUrl = await uploadImage(customerImg);
+        console.log('Image URL:', imageUrl);
+      }
+
       const updatedProfile: UpdateProfile = {
         username: customerName,
         phoneNumber: phoneNumber,
         email: email,
-        imageUrl: customerImg,
+        imageUrl: imageUrl,
         dateOfBirth: dateOfBirth,
       };
 
@@ -78,28 +103,6 @@ const ProfileScreen: React.FC = () => {
       console.error('Failed to update profile:', error);
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleChoosePhoto = async () => {
-    const result = await launchImageLibrary({
-      mediaType: 'photo',
-      quality: 1,
-    });
-
-    if (result.assets && result.assets.length > 0) {
-      const imageUri = result.assets[0].uri;
-      try {
-        console.log('Uploading image from URI:', imageUri);
-        const uploadResponse = await uploadImage(imageUri || '');
-        const imageUrl = uploadResponse.url;
-        console.log('Image URL:', imageUrl);
-        setCustomerImg(imageUrl);
-      } catch (error) {
-        console.error('Lỗi khi upload ảnh:', error);
-      }
-    } else {
-      console.log('Không có hình ảnh được chọn');
     }
   };
 
