@@ -1,5 +1,13 @@
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+  TouchableWithoutFeedback,
+  Dimensions,
+} from 'react-native';
+import React, {useState} from 'react';
 import AppBar from '../../components/Appbar';
 import Tracking from '../../components/Tracking';
 import {cancelInitialQuotation, getTracking} from '../../api/Project/project';
@@ -15,6 +23,7 @@ import {
 } from '../../types/TypeScreen';
 import {FONTFAMILY} from '../../theme/theme';
 import {TrackingType} from '../../types/screens/History/HistoryType';
+import Separator from '../../components/Separator';
 
 const TrackingScreen: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'TrackingScreen'>>();
@@ -23,6 +32,11 @@ const TrackingScreen: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
 
   const [tracking, setTracking] = useState<TrackingType | null>(null);
+
+  const [modalPosition, setModalPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
 
   const fetchTracking = async () => {
     try {
@@ -92,26 +106,63 @@ const TrackingScreen: React.FC = () => {
     });
   };
 
+  const handleIconPress = (event: any) => {
+    const {pageX, pageY} = event.nativeEvent;
+    const screenWidth = Dimensions.get('window').width;
+    const modalWidth = 200; // Chiều rộng của modal
+
+    // Điều chỉnh vị trí để modal không bị khuất
+    const xPosition =
+      pageX + modalWidth > screenWidth ? screenWidth - modalWidth - 10 : pageX;
+    setModalPosition({x: xPosition, y: pageY});
+  };
+
+  const closeModal = () => {
+    setModalPosition(null);
+  };
+
   return (
-    <View style={styles.container}>
-      <AppBar nameScreen="Lịch sử báo giá sơ bộ" icon={require('../../assets/image/icon/plus-icon.png')} />
-      <View>
-        <View style={styles.content}>{renderTrackingItems()}</View>
-      </View>
-      {tracking?.InitialResponse?.Status &&
-        tracking.InitialResponse.Status !== 'Finalized' &&
-        tracking.InitialResponse.Status !== 'Approved' &&
-        tracking.InitialResponse.Status !== 'Reviewing' &&
-        tracking.InitialResponse.Status !== 'Processing' && (
-          <View style={styles.buttonContainer}>
-            <View style={styles.button}>
-              <TouchableOpacity onPress={handleCancelInitialQuotation}>
-                <Text style={styles.buttonText}>Hủy báo giá sơ bộ</Text>
-              </TouchableOpacity>
+    <TouchableWithoutFeedback onPress={closeModal}>
+      <View style={styles.container}>
+        <AppBar
+          nameScreen="Lịch sử báo giá sơ bộ"
+          icon={require('../../assets/image/icon/plus-icon.png')}
+          onIconPress={handleIconPress}
+        />
+        <View>
+          <View style={styles.content}>{renderTrackingItems()}</View>
+        </View>
+        {tracking?.InitialResponse?.Status &&
+          tracking.InitialResponse.Status !== 'Finalized' &&
+          tracking.InitialResponse.Status !== 'Approved' &&
+          tracking.InitialResponse.Status !== 'Reviewing' &&
+          tracking.InitialResponse.Status !== 'Processing' && (
+            <View style={styles.buttonContainer}>
+              <View style={styles.button}>
+                <TouchableOpacity onPress={handleCancelInitialQuotation}>
+                  <Text style={styles.buttonText}>Hủy báo giá sơ bộ</Text>
+                </TouchableOpacity>
+              </View>
             </View>
+          )}
+
+        {modalPosition && (
+          <View
+            style={[
+              styles.customModal,
+              {top: modalPosition.y, left: modalPosition.x},
+            ]}>
+            <Pressable onPress={closeModal}>
+              <Text style={styles.modalText}>Yêu cầu bảng vẽ thiết kế</Text>
+            </Pressable>
+            <Separator />
+            <Pressable onPress={closeModal}>
+              <Text style={styles.modalText}>Đã có bản thiết kế</Text>
+            </Pressable>
           </View>
         )}
-    </View>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
@@ -143,6 +194,21 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.montserat_medium,
     color: 'red',
     fontSize: 18,
+  },
+  customModal: {
+    position: 'absolute',
+    width: 200,
+    backgroundColor: 'white',
+    borderRadius: 10,
+    padding: 10,
+    elevation: 5,
+  },
+  modalText: {
+    fontFamily: FONTFAMILY.montserat_medium,
+    fontSize: 16,
+    marginVertical: 12,
+    marginHorizontal: 10,
+    textAlign: 'center',
   },
 });
 
