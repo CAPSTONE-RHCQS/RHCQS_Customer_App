@@ -94,7 +94,7 @@ const TrackingScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <AppBar nameScreen="Lịch sử báo giá sơ bộ" />
+      <AppBar nameScreen="Lịch sử báo giá sơ bộ" icon={require('../../assets/image/icon/plus-icon.png')} />
       <View>
         <View style={styles.content}>{renderTrackingItems()}</View>
       </View>

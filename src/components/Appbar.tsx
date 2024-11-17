@@ -5,9 +5,10 @@ import { useNavigation } from '@react-navigation/native';
 interface AppBarProps {
   nameScreen: string;
   onBackPress?: () => void;
+  icon?: any;
 }
 
-const AppBar: React.FC<AppBarProps> = ({nameScreen, onBackPress}) => {
+const AppBar: React.FC<AppBarProps> = ({nameScreen, onBackPress, icon}) => {
   const navigation = useNavigation();
 
   const handleGoBack = () => {
@@ -16,6 +17,9 @@ const AppBar: React.FC<AppBarProps> = ({nameScreen, onBackPress}) => {
     } else {
       navigation.goBack();
     }
+  };
+
+  const handleIconPress = () => {
   };
 
   return (
@@ -27,7 +31,11 @@ const AppBar: React.FC<AppBarProps> = ({nameScreen, onBackPress}) => {
         />
       </TouchableOpacity>
       <Text style={styles.title}>{nameScreen}</Text>
-      <View style={styles.rightContainer} />
+      {icon && (
+        <TouchableOpacity onPress={handleIconPress} style={styles.iconButton}>
+          <Image source={icon} style={styles.icon} />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -56,8 +64,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-SemiBold',
     color: 'black',
   },
-  rightContainer: {
-    width: 24,
+  iconButton: {
+    padding: 10,
+  },
+  icon: {
+    width: 20,
+    height: 20,
   },
 });
 
