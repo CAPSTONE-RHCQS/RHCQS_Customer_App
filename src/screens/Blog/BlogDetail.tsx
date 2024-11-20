@@ -1,7 +1,7 @@
 import {RouteProp, useRoute} from '@react-navigation/native';
 import AppBar from '../../components/Appbar';
 import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Image, ScrollView, StatusBar, StyleSheet, Text, View} from 'react-native';
 import {AppStackParamList} from '../../types/TypeScreen';
 import {getBlogDetail} from '../../api/Blog/Blog';
 import {Blog} from '../../types/screens/Blog/BlogType';
@@ -26,6 +26,7 @@ const BlogDetail: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#E4E1E1FF" />
       <AppBar nameScreen="Chia sẻ" />
       <ScrollView>
         {blogDetail && (

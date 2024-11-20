@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, Alert} from 'react-native';
+import {View, Text, StyleSheet, Alert, StatusBar} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {getPackages} from '../../api/Package/Package';
 import Checkbox from '../../components/Checkbox';
@@ -199,6 +199,7 @@ const Package: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#E4E1E1FF" />
       <AppBar nameScreen="Chọn gói thi công" />
       <View style={styles.packageContainer}>
         <View>

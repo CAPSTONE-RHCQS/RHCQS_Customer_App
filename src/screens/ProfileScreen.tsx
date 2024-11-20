@@ -108,7 +108,9 @@ const ProfileScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <LinearGradient colors={['#53A6A8', '#3C9597']} style={styles.gradient}>
+      <LinearGradient
+        colors={['#1F7F81', '#3C9597', '#53A6A8']}
+        style={styles.gradient}>
         <Image
           source={require('../assets/image/logo_white.png')}
           style={styles.logobg}

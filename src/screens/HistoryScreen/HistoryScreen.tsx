@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import {View, Text, StyleSheet, ScrollView, StatusBar} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBar from '../../components/Appbar';
 import Project from '../../components/Project';
@@ -66,6 +66,7 @@ const HistoryScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#E4E1E1FF" />
       <AppBar nameScreen="Danh sách dự án" onBackPress={handleBackToHome} />
       <ScrollView>
         <View style={styles.content}>

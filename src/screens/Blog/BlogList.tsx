@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, FlatList} from 'react-native';
+import {View, Text, StyleSheet, FlatList, StatusBar} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {AppStackNavigationProp} from '@/types/TypeScreen';
 import {useNavigation} from '@react-navigation/native';
@@ -53,6 +53,7 @@ const BlogList: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#E4E1E1FF" />
       <AppBar nameScreen="Blog" />
       <View style={styles.carouselContainer}>
         <Carousel

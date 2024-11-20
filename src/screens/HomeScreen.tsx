@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Image, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {FONTFAMILY} from '../theme/theme';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -84,7 +84,8 @@ const HomeScreen: React.FC = ({}) => {
 
   return (
     <SafeAreaView>
-      <ScrollView>
+      <StatusBar backgroundColor="#1F7F81" barStyle="light-content" />
+      <ScrollView style={{backgroundColor: 'white'}}>
 
         {/* Linear Gradient Header */}
         <View style={styles.container}>

@@ -5,6 +5,7 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBar from '../../components/Appbar';
@@ -41,6 +42,7 @@ const HouseLibrary: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar barStyle="light-content" backgroundColor="#E4E1E1FF" />
       <AppBar nameScreen="Thư viện mẫu nhà" />
       <View style={styles.flatListContent}>
         <FlatList
