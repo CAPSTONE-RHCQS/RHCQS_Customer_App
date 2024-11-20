@@ -7,9 +7,7 @@ export const createProjectHaveDesign = async (projectData: any) => {
         headers['Content-Type'] = 'multipart/form-data';
 
         const formData = new FormData();
-        formData.append('AccountId', projectData.AccountId);
-        formData.append('Address', projectData.Address);
-        formData.append('Area', projectData.Area);
+        formData.append('ProjectId', projectData.ProjectId);
 
         projectData.PerspectiveImage.forEach((image: string) => {
             formData.append('PerspectiveImage', {

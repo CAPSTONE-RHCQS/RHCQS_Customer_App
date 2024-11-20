@@ -54,7 +54,7 @@ const TrackingScreen: React.FC = () => {
   };
 
   const handleHasDesign = () => {
-    navigationApp.navigate('HasDesignScreen');
+    navigationApp.navigate('HasDesignScreen', {projectId: projectId});
   };
 
   useFocusEffect(

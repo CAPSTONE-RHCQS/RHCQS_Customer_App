@@ -22,6 +22,8 @@ import {
   resetDataUltilities,
 } from '../../redux/actions/reset/resetData';
 import {PromotionSelector} from '../../redux/selectors/Promotion/PromotionSelector';
+import Checkbox from '../../components/Checkbox';
+import Separator from '../../components/Separator';
 
 const ConfirmInformation: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
@@ -38,6 +40,7 @@ const ConfirmInformation: React.FC = () => {
   const [errorMessage, setErrorMessage] = useState('');
   const [addressError, setAddressError] = useState('');
   const [projectNameError, setProjectNameError] = useState('');
+  const [hasDrawing, setHasDrawing] = useState<boolean>(false);
 
   const ultilitiesData = useSelector(UltilitiesSelector);
   const constructionData = useSelector(ContructionSelector);
@@ -140,6 +143,7 @@ const ConfirmInformation: React.FC = () => {
         discount: promotionData.discount,
       },
       quotationUtilitiesRequest,
+      isDrawing: hasDrawing,
     };
 
     console.log('projectData', JSON.stringify(projectData, null, 2));
@@ -247,12 +251,29 @@ const ConfirmInformation: React.FC = () => {
           onChangeText={setProjectName}
           placeholder="Nhập tên dự án"
         />
+        <Checkbox
+          id="hasDrawing"
+          label="Đã có bản vẽ"
+          isChecked={hasDrawing}
+          onCheck={() => setHasDrawing(!hasDrawing)}
+          isRequired={true}
+        />
         {addressError ? (
           <Text style={styles.errorText}>{addressError}</Text>
         ) : null}
         {projectNameError ? (
           <Text style={styles.errorText}>{projectNameError}</Text>
         ) : null}
+        <Separator />
+        <View style={styles.noteContainer}>
+          <View style={styles.noteTitleContainer}>
+            <Text style={styles.noteTitle}>* </Text>
+            <Text style={styles.noteText}>Chú thích</Text>
+          </View>
+          <Text style={styles.noteDescription}>
+            Nếu khách hàng đã có bản vẽ sẵn, vui lòng chọn {'\n'}'Đã có bản vẽ'
+          </Text>
+        </View>
       </View>
       <View style={styles.buttonContainer}>
         <CustomButton
@@ -271,7 +292,7 @@ const ConfirmInformation: React.FC = () => {
           {errorMessage || 'Dự án đã được tạo thành công!'}
         </Dialog.Description>
         <Dialog.Button
-          label="Đóng"
+          label="Danh sách dự án"
           onPress={() => {
             setVisible(false);
             if (!errorMessage) {
@@ -328,6 +349,27 @@ const styles = StyleSheet.create({
     color: 'red',
     fontFamily: FONTFAMILY.montserat_semibold,
     marginTop: 5,
+  },
+  noteContainer: {
+    marginTop: 10,
+  },
+  noteTitleContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  noteTitle: {
+    color: 'red',
+  },
+  noteText: {
+    color: 'black',
+    fontFamily: FONTFAMILY.montserat_semibold,
+    fontSize: 14,
+  },
+  noteDescription: {
+    color: '#333',
+    fontFamily: FONTFAMILY.montserat_regular,
+    fontSize: 14,
+    marginLeft: 10
   },
 });
 

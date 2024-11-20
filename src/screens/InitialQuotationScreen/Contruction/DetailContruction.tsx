@@ -175,7 +175,10 @@ const DetailContruction: React.FC = () => {
   return (
     <View style={styles.container}>
       <AppBar nameScreen="Tính chi phí xây dựng thô" />
-      <Text style={styles.titleText}>{Name}</Text>
+      <View style={styles.noteContainer}>
+        <Text style={styles.titleText}>{Name}</Text>
+        <Text style={styles.noteText}> *</Text>
+      </View>
       <View style={styles.bodyContainer}>
         <InputField
           name=""
@@ -183,7 +186,6 @@ const DetailContruction: React.FC = () => {
           onChangeText={setArea}
           placeholder="Nhập diện tích"
           keyboardType="numeric"
-          isRequired={true}
         />
         {hasSubConstructionItems && (
           <>
@@ -234,11 +236,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   titleText: {
-    marginHorizontal: 20,
+    marginLeft: 20,
     marginTop: 20,
     fontFamily: FONTFAMILY.montserat_bold,
     fontSize: 16,
     color: 'black',
+  },
+  noteContainer: {
+    flexDirection: 'row',
+  },
+  noteText: {
+    marginTop: 20,
+    fontFamily: FONTFAMILY.montserat_bold,
+    fontSize: 16,
+    color: 'red',
   },
   bodyContainer: {
     flex: 1,

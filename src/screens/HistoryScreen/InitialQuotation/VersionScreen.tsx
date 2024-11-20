@@ -37,15 +37,21 @@ const VersionScreen: React.FC = () => {
     <View style={styles.container}>
       <AppBar nameScreen="Lịch sử báo giá sơ bộ" />
       <View style={styles.content}>
-        {versions
-          .filter(version => Number(version.Version) !== 0)
-          .map((version, index) => (
-            <Tracking
-              key={index}
-              title={`Báo giá sơ bộ phiên bản ${version.Version}`}
-              onPress={() => handlePressTracking(version.Version, projectId)}
-            />
-          ))}
+        {versions.length === 0 ? (
+          <View style={styles.centeredContent}>
+            <Text style={styles.noVersionText}>Báo giá sơ bộ đang được tạo</Text>
+          </View>
+        ) : (
+          versions
+            .filter(version => Number(version.Version) !== 0)
+            .map((version, index) => (
+              <Tracking
+                key={index}
+                title={`Báo giá sơ bộ phiên bản ${version.Version}`}
+                onPress={() => handlePressTracking(version.Version, projectId)}
+              />
+            ))
+        )}
       </View>
     </View>
   );
@@ -57,9 +63,21 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   content: {
+    flex: 1,
     marginTop: 10,
     marginHorizontal: 20,
-  }
+  },
+  centeredContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noVersionText: {
+    fontSize: 20,
+    color: 'black',
+    fontFamily: FONTFAMILY.montserat_bold,
+    marginBottom: 50,
+  },
 });
 
 export default VersionScreen;

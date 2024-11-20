@@ -9,6 +9,11 @@ import {name as appName} from './app.json';
 
 // Đăng ký trình xử lý thông báo nền
 messaging().setBackgroundMessageHandler(async remoteMessage => {
+  console.log('Message handled in the background!', remoteMessage);
+});
+
+messaging().onMessage(async remoteMessage => {
+  console.log('A new FCM message arrived!', remoteMessage);
 });
 
 AppRegistry.registerComponent(appName, () => App);

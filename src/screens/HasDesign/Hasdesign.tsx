@@ -16,42 +16,43 @@ import CustomButton from '../../components/CustomButton';
 import {getProfile} from '../../api/Account/Account';
 import {createProjectHaveDesign} from '../../api/HasDesign/HasDesign';
 import Dialog from 'react-native-dialog';
-import {useNavigation} from '@react-navigation/native';
-import {AppStackNavigationProp} from '../../types/TypeScreen';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
+import {
+  AppStackNavigationProp,
+  AppStackParamList,
+} from '../../types/TypeScreen';
 
 const Hasdesign: React.FC = () => {
-  const [area, setArea] = useState<string>('');
-  const [address, setAddress] = useState<string>('');
-  const [customerId, setCustomerId] = useState<string>('');
+  const route = useRoute<RouteProp<AppStackParamList, 'HasDesignScreen'>>();
+  const {projectId} = route.params;
   const [perspectiveImages, setPerspectiveImages] = useState<string[]>([]);
   const [architectureImages, setArchitectureImages] = useState<string[]>([]);
   const [structureImages, setStructureImages] = useState<string[]>([]);
-  const [electricityWaterImages, setElectricityWaterImages] = useState<string[]>([]);
+  const [electricityWaterImages, setElectricityWaterImages] = useState<
+    string[]
+  >([]);
   const [isContinueButtonEnabled, setIsContinueButtonEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const navigationApp = useNavigation<AppStackNavigationProp>();
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const profile = await getProfile();
-        setCustomerId(profile.Id);
-        console.log('customerId', customerId);
-      } catch (error) {
-        console.error('Failed to fetch profile:', error);
-      }
-    };
-    fetchProfile();
-  }, []);
-
-  useEffect(() => {
-    if (area && address && customerId) {
+    if (
+      perspectiveImages.length > 0 &&
+      architectureImages.length > 0 &&
+      structureImages.length > 0 &&
+      electricityWaterImages.length > 0
+    ) {
       setIsContinueButtonEnabled(true);
     } else {
       setIsContinueButtonEnabled(false);
     }
-  }, [area, address, customerId]);
+  }, [
+    perspectiveImages,
+    architectureImages,
+    structureImages,
+    electricityWaterImages,
+  ]);
 
   const handleImagePicker = (
     setImages: React.Dispatch<React.SetStateAction<string[]>>,
@@ -68,9 +69,7 @@ const Hasdesign: React.FC = () => {
     setLoading(true);
     try {
       const projectData = {
-        AccountId: customerId,
-        Address: address,
-        Area: area,
+        ProjectId: projectId,
         PerspectiveImage: perspectiveImages,
         ArchitectureImage: architectureImages,
         StructureImage: structureImages,
@@ -95,7 +94,7 @@ const Hasdesign: React.FC = () => {
   ) => (
     <View style={styles.uploadContainer}>
       <View style={styles.uploadItem}>
-        <Text style={styles.titleUpload}>{title}</Text>
+        <Text style={styles.title}>{title}</Text>
         <View style={styles.imageWrapper}>
           {images.map((uri, index) => (
             <Image key={index} source={{uri}} style={styles.image} />
@@ -110,29 +109,14 @@ const Hasdesign: React.FC = () => {
           </TouchableOpacity>
         </View>
       </View>
+      <Separator />
     </View>
   );
 
   return (
-    <ScrollView style={styles.container}>
+    <View style={styles.container}>
       <AppBar nameScreen="Gửi bảng thiết kế" />
-      <View style={styles.content}>
-        <InputField
-          name="Diện tích đất"
-          value={area}
-          onChangeText={setArea}
-          placeholder="Nhập diện tích đất"
-          isRequired={true}
-        />
-        <InputField
-          name="Địa chỉ"
-          value={address}
-          onChangeText={setAddress}
-          placeholder="Nhập địa chỉ"
-          isRequired={true}
-        />
-        <Separator />
-        <Text style={styles.title}>Tải lên bảng thiết kế</Text>
+      <ScrollView style={styles.content}>
         {renderUploadSection(
           'Phối cảnh',
           perspectiveImages,
@@ -149,19 +133,19 @@ const Hasdesign: React.FC = () => {
           electricityWaterImages,
           setElectricityWaterImages,
         )}
-        <View style={styles.buttonContainer}>
-          <CustomButton
-            title="Tiếp tục"
-            onPress={handleContinuePress}
-            colors={
-              isContinueButtonEnabled
-                ? ['#53A6A8', '#3C9597', '#1F7F81']
-                : ['#A9A9A9', '#A9A9A9', '#A9A9A9']
-            }
-            disabled={!isContinueButtonEnabled}
-            loading={loading}
-          />
-        </View>
+      </ScrollView>
+      <View style={styles.buttonContainer}>
+        <CustomButton
+          title="Tiếp tục"
+          onPress={handleContinuePress}
+          colors={
+            isContinueButtonEnabled
+              ? ['#53A6A8', '#3C9597', '#1F7F81']
+              : ['#A9A9A9', '#A9A9A9', '#A9A9A9']
+          }
+          disabled={!isContinueButtonEnabled}
+          loading={loading}
+        />
       </View>
 
       <Dialog.Container contentStyle={styles.dialogContainer} visible={visible}>
@@ -178,7 +162,7 @@ const Hasdesign: React.FC = () => {
           style={styles.dialogButton}
         />
       </Dialog.Container>
-    </ScrollView>
+    </View>
   );
 };
 
@@ -236,7 +220,10 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   buttonContainer: {
+    justifyContent: 'flex-end',
+    marginHorizontal: 20,
     marginBottom: 20,
+    backgroundColor: 'white',
   },
   dialogContainer: {
     borderRadius: 12,

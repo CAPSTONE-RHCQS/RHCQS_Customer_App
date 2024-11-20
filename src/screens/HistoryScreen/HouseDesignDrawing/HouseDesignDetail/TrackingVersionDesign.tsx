@@ -1,4 +1,4 @@
-import {View, StyleSheet} from 'react-native';
+import {View, StyleSheet, Text} from 'react-native';
 import React, {useEffect, useState, useCallback} from 'react';
 import AppBar from '../../../../components/Appbar';
 import TrackingHouseDesignVersion from '../../../../components/TrackingHouseDesignVersion';
@@ -6,7 +6,7 @@ import {getVersionDesignDetail} from '../../../../api/Project/project';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {AppStackNavigationProp, AppStackParamList} from '@/types/TypeScreen';
 import {TrackingVersionDesignType} from '@/types/screens/History/HistoryType';
-
+import {FONTFAMILY} from '../../../../theme/theme';
 interface FormattedDesignData {
   title: string;
   status: string;
@@ -19,7 +19,6 @@ interface FormattedDesignData {
 }
 
 const TrackingVersionDesign: React.FC = () => {
-
   const navigation = useNavigation<AppStackNavigationProp>();
 
   const route =
@@ -63,15 +62,21 @@ const TrackingVersionDesign: React.FC = () => {
     <View style={styles.container}>
       <AppBar nameScreen="Bản vẽ chi tiết" />
       <View style={styles.content}>
-        {designData.map((item, index) => (
-          <TrackingHouseDesignVersion
-            key={index}
-            title={item.title}
-            status={item.status}
-            subItems={item.subItems}
-            onPress={() => {}}
-          />
-        ))}
+        {designData.length === 0 ? (
+          <View style={styles.centeredContent}>
+            <Text style={styles.noVersionText}>Bản thiết kế đang cập nhật</Text>
+          </View>
+        ) : (
+          designData.map((item, index) => (
+            <TrackingHouseDesignVersion
+              key={index}
+              title={item.title}
+              status={item.status}
+              subItems={item.subItems}
+              onPress={() => {}}
+            />
+          ))
+        )}
       </View>
     </View>
   );
@@ -83,8 +88,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   content: {
+    flex: 1,
     marginTop: 10,
     marginHorizontal: 20,
+  },
+  centeredContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noVersionText: {
+    fontSize: 20,
+    color: 'black',
+    fontFamily: FONTFAMILY.montserat_bold,
+    marginBottom: 50,
   },
 });
 

@@ -7,9 +7,16 @@ interface CheckboxProps {
   label: string;
   isChecked: boolean;
   onCheck: (id: string) => void;
+  isRequired?: boolean;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({ id, label, isChecked, onCheck }) => {
+const Checkbox: React.FC<CheckboxProps> = ({
+  id,
+  label,
+  isChecked,
+  onCheck,
+  isRequired,
+}) => {
   return (
     <TouchableOpacity onPress={() => onCheck(id)} style={styles.container}>
       <View style={styles.checkbox}>
@@ -26,6 +33,7 @@ const Checkbox: React.FC<CheckboxProps> = ({ id, label, isChecked, onCheck }) =>
         )}
       </View>
       <Text style={styles.label}>{label}</Text>
+      {isRequired && <Text style={styles.required}> *</Text>}
     </TouchableOpacity>
   );
 };
@@ -51,6 +59,9 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.montserat_medium,
     fontSize: 14,
     color: 'black',
+  },
+  required: {
+    color: 'red',
   },
 });
 

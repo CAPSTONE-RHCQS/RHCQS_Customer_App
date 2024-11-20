@@ -13,7 +13,7 @@ export type AppStackParamList = {
   UltilitiesScreen: undefined;
   DetailUltilities: { Id: string };
   Package: undefined;
-  HasDesignScreen: undefined;
+  HasDesignScreen: { projectId: string };
   ConfirmInformation: undefined;
   DetailContruction: { Name: string };
   // History

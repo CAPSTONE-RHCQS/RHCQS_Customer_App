@@ -7,11 +7,13 @@ import {getVersionFinal} from '../../../api/Project/project';
 import AppBar from '../../../components/Appbar';
 import Tracking from '../../../components/Tracking';
 import {VersionType} from '../../../types/screens/History/HistoryType';
+import {FONTFAMILY} from '../../../theme/theme';
 
 const VersionFinalScreen: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'VersionFinalScreen'>>();
   const {projectId} = route.params;
-  const navigationApp = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
+  const navigationApp =
+    useNavigation<NativeStackNavigationProp<AppStackParamList>>();
 
   const [versions, setVersions] = useState<VersionType[]>([]);
 
@@ -25,22 +27,33 @@ const VersionFinalScreen: React.FC = () => {
   }, [projectId]);
 
   const handlePressTracking = (version: string, projectId: string) => {
-    navigationApp.navigate('VersionFinalDetail', {version: version, projectId: projectId});
+    navigationApp.navigate('VersionFinalDetail', {
+      version: version,
+      projectId: projectId,
+    });
   };
 
   return (
     <View style={styles.container}>
       <AppBar nameScreen="Lịch sử báo giá chi tiết" />
       <View style={styles.content}>
-        {versions
-          .filter(version => Number(version.Version) !== 0)
-          .map((version, index) => (
-            <Tracking
-              key={index}
-              title={`Báo giá chi tiết phiên bản ${version.Version}`}
-              onPress={() => handlePressTracking(version.Version, projectId)}
-            />
-          ))}
+        {versions.length === 0 ? (
+          <View style={styles.centeredContent}>
+            <Text style={styles.noVersionText}>
+              Báo giá chi tiết đang được tạo
+            </Text>
+          </View>
+        ) : (
+          versions
+            .filter(version => Number(version.Version) !== 0)
+            .map((version, index) => (
+              <Tracking
+                key={index}
+                title={`Báo giá chi tiết phiên bản ${version.Version}`}
+                onPress={() => handlePressTracking(version.Version, projectId)}
+              />
+            ))
+        )}
       </View>
     </View>
   );
@@ -52,8 +65,20 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   content: {
+    flex: 1,
     marginTop: 10,
     marginHorizontal: 20,
+  },
+  centeredContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  noVersionText: {
+    fontSize: 20,
+    color: 'black',
+    fontFamily: FONTFAMILY.montserat_bold,
+    marginBottom: 50,
   },
 });
 
