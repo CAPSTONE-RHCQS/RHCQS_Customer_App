@@ -109,6 +109,8 @@ const ConfirmInformation: React.FC = () => {
       projectType = 'ALL';
     } else if (packageData.selectedComplete) {
       projectType = 'FINISHED';
+    } else if (hasDrawing === true) {
+      projectType = 'HAVE_DRAWING';
     }
 
     const projectData = {
@@ -369,7 +371,7 @@ const styles = StyleSheet.create({
     color: '#333',
     fontFamily: FONTFAMILY.montserat_regular,
     fontSize: 14,
-    marginLeft: 10
+    marginLeft: 10,
   },
 });
 
