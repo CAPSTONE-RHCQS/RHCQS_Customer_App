@@ -25,12 +25,22 @@ export const getProjectByEmail = async (email: string): Promise<ProjectHistory[]
   }
 };
 
+// Get project by id
+export const getProjectById = async (projectId: string): Promise<ProjectHistory> => {
+  try {
+    const headers = await getHeaders();
+    const response = await axiosInstance.get(`/project/id?id=${encodeURIComponent(projectId)}`, { headers });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 // Get tracking
 export const getTracking = async (projectId: string): Promise<TrackingType> => {
   try {
     const headers = await getHeaders();
     const response = await axiosInstance.get(`/project/tracking?projectId=${encodeURIComponent(projectId)}`, { headers });
-    console.log('Tracking data API:', response.data);
     return response.data;
   } catch (error) {
     console.error('Error getting tracking:', error);
@@ -184,6 +194,17 @@ export const cancelInitialQuotation = async (id: string): Promise<any> => {
     return response.data;
   } catch (error) {
     console.error('Error cancel initial quotation:', error);
+    throw error;
+  }
+};
+
+export const requestDesign = async (data: any) => {
+  try {
+    const headers = await getHeaders();
+    const response = await axiosInstance.post(`/housedesign/request/design`, data, { headers });
+    return response.data;
+  } catch (error) {
+    console.error('Error request design:', error);
     throw error;
   }
 };

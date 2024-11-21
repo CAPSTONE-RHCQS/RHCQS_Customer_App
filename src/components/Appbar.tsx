@@ -7,9 +7,10 @@ interface AppBarProps {
   onBackPress?: () => void;
   icon?: any;
   onIconPress?: (event: any) => void;
+  showIcon?: boolean;
 }
 
-const AppBar: React.FC<AppBarProps> = ({nameScreen, onBackPress, icon, onIconPress}) => {
+const AppBar: React.FC<AppBarProps> = ({nameScreen, onBackPress, icon, onIconPress, showIcon}) => {
   const navigation = useNavigation();
 
   const handleGoBack = () => {
@@ -29,7 +30,7 @@ const AppBar: React.FC<AppBarProps> = ({nameScreen, onBackPress, icon, onIconPre
         />
       </TouchableOpacity>
       <Text style={styles.title}>{nameScreen}</Text>
-      {icon && (
+      {icon && showIcon && (
         <TouchableOpacity onPress={(event) => onIconPress && onIconPress(event)} style={styles.iconButton}>
           <Image source={icon} style={styles.icon} />
         </TouchableOpacity>
