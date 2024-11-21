@@ -85,7 +85,7 @@ const CustomerOptions: React.FC = () => {
 
         {/* Ưu đãi khách hàng */}
         <TouchableOpacity
-          onPress={() => {}}
+          onPress={() => navigationApp.navigate('ChatScreen')}
           activeOpacity={0.7}>
           <LinearGradient
             colors={['#14787A', '#3C9597', '#5BABAD']}
