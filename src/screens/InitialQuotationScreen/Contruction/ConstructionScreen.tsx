@@ -25,6 +25,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {PackageSelector} from '../../../redux/selectors/PackageSelector/PackageSelector';
 import {pushConstruction} from '../../../redux/actions/Contruction/ContructionAction';
 import {DetailContructionSelector} from '../../../redux/selectors/ContructionSelector/DetailContructionSelector/DetailContructionSelector';
+import {resetDataDetailConstruction} from '../../../redux/actions/reset/resetData';
+import {resetDataConstruction} from '../../../redux/actions/reset/resetData';
 
 const ConstructionScreen: React.FC = () => {
   // Navigation
@@ -65,7 +67,9 @@ const ConstructionScreen: React.FC = () => {
   useEffect(() => {
     // Cập nhật tổng tiền khi detailConstructionData thay đổi
     const updatedTotalPrice = checkedItems.reduce((acc, id) => {
-      const detail = detailConstructionData.find((detail: any) => detail.id === id);
+      const detail = detailConstructionData.find(
+        (detail: any) => detail.id === id,
+      );
       return acc + (detail ? detail.totalPrice : 0);
     }, 0);
     setTotalPrice(updatedTotalPrice);
@@ -82,7 +86,6 @@ const ConstructionScreen: React.FC = () => {
         ? prevState.filter(item => item !== id)
         : [...prevState, id];
 
-      // Cập nhật tổng tiền dựa trên trạng thái mới
       const updatedTotalPrice = newCheckedItems.reduce((acc, itemId) => {
         const detail = detailConstructionData.find(
           (detail: any) => detail.id === itemId,
@@ -102,6 +105,12 @@ const ConstructionScreen: React.FC = () => {
 
       return newCheckedItems;
     });
+  };
+
+  const handleBack = () => {
+    dispatch(resetDataDetailConstruction());
+    dispatch(resetDataConstruction());
+    navigationApp.goBack();
   };
 
   const handleContinuePress = () => {
@@ -161,13 +170,12 @@ const ConstructionScreen: React.FC = () => {
     });
   };
 
-  // Kiểm tra điều kiện để kích hoạt nút "Tiếp tục"
   const isContinueButtonEnabled =
     parseFloat(constructionArea) >= 36 &&
     checkedItems.length > 0 &&
     checkedItems.every(id => {
       const detail = detailConstructionData.find(
-        (detail: any) => detail.id === id
+        (detail: any) => detail.id === id,
       );
       return detail && detail.totalPrice > 0;
     });
@@ -175,7 +183,7 @@ const ConstructionScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" backgroundColor="#E4E1E1FF" />
-      <AppBar nameScreen="Tính chi phí xây dựng thô" />
+      <AppBar nameScreen="Tính chi phí xây dựng thô" onBackPress={handleBack} />
       <View style={styles.bodyContainer}>
         <View>
           <InputField
@@ -223,12 +231,13 @@ const ConstructionScreen: React.FC = () => {
           <View style={styles.selectedPackages}>
             {packageData.selectedRough && (
               <Text style={styles.packageText}>
-                {packageData.roughPackagePrice} - {packageData.roughPackageName}
+                {packageData.roughPackagePrice.toLocaleString()} -{' '}
+                {packageData.roughPackageName}
               </Text>
             )}
             {packageData.selectedComplete && (
               <Text style={styles.packageText}>
-                {packageData.completePackagePrice} -{' '}
+                {packageData.completePackagePrice.toLocaleString()} -{' '}
                 {packageData.completePackageName}
               </Text>
             )}
@@ -254,7 +263,6 @@ const ConstructionScreen: React.FC = () => {
         />
       </View>
 
-      {/* Modal cho FloorSelection */}
       <Modal
         animationType="slide"
         transparent={true}
