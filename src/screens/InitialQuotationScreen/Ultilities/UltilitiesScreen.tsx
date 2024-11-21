@@ -9,10 +9,7 @@ import {
   getRoughUltilities,
   getFinishedUltilities,
 } from '../../../api/Ultilities/Ultilities';
-import {
-  Section,
-  Ultilities as UltilitiesType,
-} from '../../../types/screens/Ultilities/UltilitiesType';
+import {Ultilities as UltilitiesType} from '../../../types/screens/Ultilities/UltilitiesType';
 import {ScrollView} from 'react-native-gesture-handler';
 import CustomButton from '../../../components/CustomButton';
 import {PackageSelector} from '../../../redux/selectors/PackageSelector/PackageSelector';
@@ -34,7 +31,6 @@ import {pushPromotion} from '../../../redux/actions/Promotion/PromotionAction';
 const UltilitiesScreen: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
   const dispatch = useDispatch();
-
 
   const detailUltilitiesData = useSelector(DetailUltilitiesSelector);
   const packageData = useSelector(PackageSelector);
@@ -79,8 +75,6 @@ const UltilitiesScreen: React.FC = () => {
 
   const fetchPromotion = async () => {
     const promotionData = await getPromotion();
-    console.log('promotionData', JSON.stringify(promotionData, null, 2));
-
     const filteredPromotions = promotionData.filter(promo => {
       const completePackageName = packageData.completePackageName;
       const roughPackageName = packageData.roughPackageName;
@@ -111,11 +105,13 @@ const UltilitiesScreen: React.FC = () => {
         ? prevState.filter(item => item !== id)
         : [...prevState, id];
 
+      console.log('price', price);
+
       setTotalPrice(prevTotal =>
         isChecked ? prevTotal - price : prevTotal + price,
       );
 
-      if (isChecked) {
+      if (!isChecked) {
         AsyncStorage.setItem(
           'checkedItemsUltilities',
           JSON.stringify(newCheckedItems),
@@ -171,7 +167,7 @@ const UltilitiesScreen: React.FC = () => {
   };
 
   const handlePromotionSelect = (promotionId: string) => {
-    if (selectedPromotionId === promotionId) {
+    if (selectedPromotionId === promotionId && promotion.length === 1) {
       return;
     }
 
@@ -189,41 +185,35 @@ const UltilitiesScreen: React.FC = () => {
 
   const discountAmount = calculateDiscount();
   const finalTotalPrice =
-    constructionData.totalPrice + totalPrice - discountAmount;
+    packageData.selectedRoughType === undefined &&
+    packageData.selectedCompleteType === 'FINISHED'
+      ? totalPrice - discountAmount
+      : (constructionData.totalPrice || 0) + totalPrice - discountAmount;
 
   const renderUltilities = () => {
     return ultilities.map((utility, index) => {
       return (
         <Ultilities
-          key={index} // Mỗi tiện ích được lặp qua sẽ có một key là index để React xác định các phần tử một cách duy nhất.
-          id={utility.Id} // Truyền Id của tiện ích vào component Ultilities.
-          title={`${index + 1} - ${utility.Name}`} // Truyền tên tiện ích vào component Ultilities.
+          key={index}
+          id={utility.Id}
+          title={`${index + 1} - ${utility.Name}`}
           ultilities={utility.Sections.map(section => {
-            // Mỗi section của tiện ích sẽ được xử lý.
             const detail = detailUltilitiesData.find(
               (detail: any) => detail.id === section.Id,
             );
-
             const price = detail ? detail.totalPrice : 0;
             const area = detail ? detail.checkedItemName : '';
-
-            const formattedPrice = price.toLocaleString();
-            // Trả về đối tượng section, bao gồm các thông tin và hàm xử lý checkbox cho từng mục trong Ultilities.
             return {
-              id: section.Id, // Truyền Id của section.
-              title: section.Name, // Truyền tên section.
-              price: formattedPrice, // Truyền giá, được định dạng với dấu phân cách hàng nghìn.
-              area: area, // Truyền thông tin area của section.
-              unit: '', // Giá trị đơn vị để trống.
-              isChecked: checkedItems.includes(section.Id), // Kiểm tra xem section này có nằm trong danh sách checkedItems không.
-
-              // Hàm xử lý khi checkbox được nhấn, nó sẽ truyền Id của section và giá đã được convert từ chuỗi sang số.
-              onCheckBoxPress: () =>
-                handleCheckBoxPress(section.Id, parseFloat(price)),
+              id: section.Id,
+              title: section.Name,
+              price: price,
+              area: area,
+              unit: '',
+              isChecked: checkedItems.includes(section.Id),
+              onCheckBoxPress: () => handleCheckBoxPress(section.Id, price),
             };
           })}
-          onDetailPress={handleDetailPress} // Truyền hàm xử lý sự kiện khi người dùng nhấn vào chi tiết của tiện ích.
-          // Truyền một hàm xử lý chung cho checkbox, nhưng ở cấp tiện ích, hàm này được định nghĩa ở component cha.
+          onDetailPress={handleDetailPress}
           onCheckBoxPress={handleCheckBoxPress}
         />
       );
@@ -277,13 +267,14 @@ const UltilitiesScreen: React.FC = () => {
         <View style={styles.totalPriceContainer}>
           <Text style={styles.totalPriceText}>Tổng tiền: </Text>
           <Text style={styles.totalPrice}>
-            {finalTotalPrice.toLocaleString()} VND
+            {isNaN(finalTotalPrice) ? '0' : finalTotalPrice.toLocaleString()}{' '}
+            VND
           </Text>
         </View>
         <View style={styles.totalPriceContainer}>
           <Text style={styles.totalPriceText}>Đã giảm: </Text>
           <Text style={styles.totalPrice}>
-            {discountAmount.toLocaleString()} VND
+            {isNaN(discountAmount) ? '0' : discountAmount.toLocaleString()} VND
           </Text>
         </View>
         <CustomButton

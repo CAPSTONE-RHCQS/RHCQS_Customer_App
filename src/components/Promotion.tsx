@@ -38,7 +38,7 @@ const Promotion: React.FC<ExpandableListProps> = ({
   }, [promotions]);
 
   const handleCheckboxPress = (id: string) => {
-    setSelectedPromotionId(prevId => (prevId === id ? null : id));
+    setSelectedPromotionId(id);
     const selectedPromotion = promotions.find(promotion => promotion.Id === id);
     if (selectedPromotion) {
       console.log('Selected Promotion:', selectedPromotion);

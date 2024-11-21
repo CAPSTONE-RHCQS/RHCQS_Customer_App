@@ -10,7 +10,7 @@ interface ExpandableListProps {
   ultilities: Array<{
     id: string;
     title: string;
-    price: string;
+    price: number;
     area: string;
     unit: string;
     isChecked: boolean;
@@ -51,12 +51,14 @@ const Ultilities: React.FC<ExpandableListProps> = ({
                 key={ultility.id}
                 id={ultility.id}
                 title={ultility.title}
-                price={ultility.price}
+                price={ultility.price.toString()}
                 area={ultility.area}
                 unit={ultility.unit}
                 isChecked={ultility.isChecked}
                 onDetailPress={() => onDetailPress(ultility.id)}
-                onCheckBoxPress={() => onCheckBoxPress(ultility.id, parseFloat(ultility.price.replace(/,/g, '')))}
+                onCheckBoxPress={() =>
+                  onCheckBoxPress(ultility.id, ultility.price)
+                }
               />
             ))}
           </View>

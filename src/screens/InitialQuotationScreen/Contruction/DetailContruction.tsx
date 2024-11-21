@@ -190,7 +190,6 @@ const DetailContruction: React.FC = () => {
         {hasSubConstructionItems && (
           <>
             <Separator />
-
             <View style={styles.checkboxGroup}>{renderCheckboxOption()}</View>
           </>
         )}
