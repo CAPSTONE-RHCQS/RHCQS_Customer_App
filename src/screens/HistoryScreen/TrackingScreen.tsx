@@ -199,7 +199,7 @@ const TrackingScreen: React.FC = () => {
 
             {project?.IsDrawing && (
               <Pressable onPress={handleHasDesign}>
-                <Text style={styles.modalText}>Đã có bản thiết kế</Text>
+                <Text style={styles.modalText}>Gửi bản thiết kế</Text>
               </Pressable>
             )}
           </View>

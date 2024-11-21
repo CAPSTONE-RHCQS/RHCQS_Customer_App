@@ -19,6 +19,7 @@ import {
   resetDataDetailConstruction,
   resetDataDetailUltilities,
   resetDataPackage,
+  resetDataPromotion,
   resetDataUltilities,
 } from '../../redux/actions/reset/resetData';
 import {PromotionSelector} from '../../redux/selectors/Promotion/PromotionSelector';
@@ -166,6 +167,7 @@ const ConfirmInformation: React.FC = () => {
       dispatch(resetDataDetailUltilities());
       dispatch(resetDataConstruction());
       dispatch(resetDataDetailConstruction());
+      dispatch(resetDataPromotion());
       setLoading(false);
       setVisible(true);
     } catch (error) {

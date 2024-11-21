@@ -35,20 +35,15 @@ const UltilitiesScreen: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
   const dispatch = useDispatch();
 
-  // Lấy dữ liệu chi tiết các mục tiện ích
+
   const detailUltilitiesData = useSelector(DetailUltilitiesSelector);
-  // Lấy dữ liệu package
   const packageData = useSelector(PackageSelector);
-  console.log('packageData', packageData);
-  // Lấy dữ liệu construction
   const constructionData = useSelector(ContructionSelector);
-  // State để lưu trữ ID các mục đã check
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
-  // State để lưu trữ diện tích xây dựng
   const [constructionArea, setConstructionArea] = useState<string>(
     constructionData.constructionArea,
   );
-  // State để lưu trữ dữ liệu các mục tiện ích
+
   const [ultilities, setUltilities] = useState<UltilitiesType[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [loading, setLoading] = useState(false);
@@ -86,7 +81,6 @@ const UltilitiesScreen: React.FC = () => {
     const promotionData = await getPromotion();
     console.log('promotionData', JSON.stringify(promotionData, null, 2));
 
-    // Lọc khuyến mãi dựa trên tên gói
     const filteredPromotions = promotionData.filter(promo => {
       const completePackageName = packageData.completePackageName;
       const roughPackageName = packageData.roughPackageName;
@@ -117,12 +111,10 @@ const UltilitiesScreen: React.FC = () => {
         ? prevState.filter(item => item !== id)
         : [...prevState, id];
 
-      // Cập nhật tổng tiền
       setTotalPrice(prevTotal =>
         isChecked ? prevTotal - price : prevTotal + price,
       );
 
-      // Lưu hoặc xóa ID trong AsyncStorage
       if (isChecked) {
         AsyncStorage.setItem(
           'checkedItemsUltilities',
@@ -179,6 +171,10 @@ const UltilitiesScreen: React.FC = () => {
   };
 
   const handlePromotionSelect = (promotionId: string) => {
+    if (selectedPromotionId === promotionId) {
+      return;
+    }
+
     const selectedPromotion = promotion.find(promo => promo.Id === promotionId);
     if (selectedPromotion) {
       setSelectedPromotionValue(selectedPromotion.Value);
@@ -246,6 +242,14 @@ const UltilitiesScreen: React.FC = () => {
   };
 
   const isContinueButtonEnabled = checkedItems.length > 0;
+
+  useEffect(() => {
+    if (promotion.length > 0 && !selectedPromotionId) {
+      const firstPromotion = promotion[0];
+      setSelectedPromotionValue(firstPromotion.Value);
+      setSelectedPromotionId(firstPromotion.Id);
+    }
+  }, [promotion]);
 
   return (
     <View style={styles.container}>
