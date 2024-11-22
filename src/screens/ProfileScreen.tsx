@@ -43,7 +43,6 @@ const ProfileScreen: React.FC = () => {
         setPhoneNumber(profile.PhoneNumber);
         setEmail(profile.Email);
         setDateOfBirth(profile.DateOfBirth);
-        console.log('profile', profile);
       } catch (error) {
         console.error('Failed to fetch profile:', error);
       }

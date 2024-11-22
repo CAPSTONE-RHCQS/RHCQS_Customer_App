@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Image,
   StyleSheet,
@@ -14,38 +14,63 @@ import {FONTFAMILY} from '../../theme/theme';
 import {useNavigation} from '@react-navigation/native';
 import {AuthStackNavigationProp} from '@/types/TypeScreen';
 import {registerUser} from '../../api/Auth/Auth';
-import { Register } from '../../types/Customer';
+import {Animated} from 'react-native';
+import Dialog from 'react-native-dialog';
 
 const RegisterScreen: React.FC = () => {
   const navigationAuth = useNavigation<AuthStackNavigationProp>();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [confilmPassword, setConfilmPassword] = useState('');
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [visible, setVisible] = useState(false);
 
   const handleRegister = async () => {
-
+    setIsLoading(true);
     try {
-      const registerData: Register = {
-        email,
-        password,
-        confirmPassword: confilmPassword,
-      };
-      const response = await registerUser(
-        registerData.email,
-        registerData.password,
-        registerData.confirmPassword,
-      );
+      const phoneRegex = /^[0-9]{10,11}$/;
+      if (!phoneRegex.test(phoneNumber)) {
+        setErrorMessage('Số điện thoại không hợp lệ');
+        setIsLoading(false);
+        return;
+      }
+
+      await registerUser(email, password, confilmPassword, phoneNumber);
       setErrorMessage(null);
-      navigationAuth.navigate('LoginScreen');
+      setIsLoading(false);
+      setVisible(true);
     } catch (error: any) {
       setErrorMessage(error.message);
-      setIsButtonDisabled(false);
+      setIsLoading(false);
     }
   };
+
+  const fadeAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (isLoading) {
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(fadeAnim, {
+            toValue: 0.3,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+          Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 1000,
+            useNativeDriver: true,
+          }),
+        ]),
+      ).start();
+    } else {
+      fadeAnim.setValue(1);
+    }
+  }, [isLoading, fadeAnim]);
 
   return (
     <View style={styles.container}>
@@ -56,6 +81,13 @@ const RegisterScreen: React.FC = () => {
           value={email}
           onChangeText={setEmail}
           placeholder="Email"
+        />
+        <InputField
+          name="Số điện thoại"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          placeholder="Số điện thoại"
+          keyboardType="numeric"
         />
         <Text style={styles.title}>Mật khẩu</Text>
         <View style={styles.passwordContainer}>
@@ -108,9 +140,27 @@ const RegisterScreen: React.FC = () => {
           title="Đăng kí"
           onPress={handleRegister}
           colors={['#53A6A8', '#3C9597', '#1F7F81']}
-          loading={isButtonDisabled}
+          loading={isLoading}
         />
       </View>
+      <Dialog.Container contentStyle={styles.dialogContainer} visible={visible}>
+        <Dialog.Title style={styles.dialogTitle}>
+          {errorMessage ? 'Lỗi' : 'Thành công'}
+        </Dialog.Title>
+        <Dialog.Description style={styles.dialogDescription}>
+          {errorMessage || 'Đăng ký thành công!'}
+        </Dialog.Description>
+        <Dialog.Button
+          label="Đăng nhập"
+          onPress={() => {
+            setVisible(false);
+            if (!errorMessage) {
+              navigationAuth.navigate('LoginScreen');
+            }
+          }}
+          style={styles.dialogButton}
+        />
+      </Dialog.Container>
     </View>
   );
 };
@@ -164,6 +214,25 @@ const styles = StyleSheet.create({
     color: 'red',
     marginTop: 10,
     fontFamily: FONTFAMILY.montserat_medium,
+  },
+  dialogContainer: {
+    borderRadius: 12,
+    marginHorizontal: 20,
+  },
+  dialogTitle: {
+    color: '#1F7F81',
+    fontSize: 20,
+    fontFamily: FONTFAMILY.montserat_bold,
+  },
+  dialogDescription: {
+    color: '#333',
+    fontSize: 16,
+    fontFamily: FONTFAMILY.montserat_regular,
+  },
+  dialogButton: {
+    color: '#1F7F81',
+    fontFamily: FONTFAMILY.montserat_semibold,
+    textTransform: 'none',
   },
 });
 
