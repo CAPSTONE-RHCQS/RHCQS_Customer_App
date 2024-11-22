@@ -173,7 +173,7 @@ const VersionDetail: React.FC = () => {
       <Dialog.Container contentStyle={styles.dialogContainer} visible={visible}>
         <Dialog.Title style={styles.dialogTitle}>Xác nhận</Dialog.Title>
         <Dialog.Description style={styles.dialogDescription}>
-          Bạn có chắc chắn muốn yêu cầu bản thiết kế?
+          Bạn có chắc chắn muốn chấp nhận báo giá sơ bộ này?
         </Dialog.Description>
 
         <Dialog.Button

@@ -37,7 +37,7 @@ const ConstructionScreen: React.FC = () => {
   const packageData = useSelector(PackageSelector);
 
   // State để lưu trữ diện tích đất và diện tích xây dựng
-  const [constructionArea, setConstructionArea] = useState('');
+  const [constructionArea, setConstructionArea] = useState('36');
   // State để lưu trữ số tầng lầu đã chọn
   const [selectedFloors, setSelectedFloors] = useState<number | null>(1);
   // State để lưu trữ ID các mục đã check
@@ -62,6 +62,15 @@ const ConstructionScreen: React.FC = () => {
     fetchConstructionOption();
   }, []);
 
+  useEffect(() => {
+    // Cập nhật tổng tiền khi detailConstructionData thay đổi
+    const updatedTotalPrice = checkedItems.reduce((acc, id) => {
+      const detail = detailConstructionData.find((detail: any) => detail.id === id);
+      return acc + (detail ? detail.totalPrice : 0);
+    }, 0);
+    setTotalPrice(updatedTotalPrice);
+  }, [detailConstructionData, checkedItems]);
+
   const handleDetailPress = (Name: string) => {
     navigationApp.navigate('DetailContruction', {Name});
   };
@@ -73,12 +82,15 @@ const ConstructionScreen: React.FC = () => {
         ? prevState.filter(item => item !== id)
         : [...prevState, id];
 
-      // Cập nhật tổng tiền
-      setTotalPrice(prevTotal =>
-        isChecked ? prevTotal - price : prevTotal + price,
-      );
+      // Cập nhật tổng tiền dựa trên trạng thái mới
+      const updatedTotalPrice = newCheckedItems.reduce((acc, itemId) => {
+        const detail = detailConstructionData.find(
+          (detail: any) => detail.id === itemId,
+        );
+        return acc + (detail ? detail.totalPrice : 0);
+      }, 0);
+      setTotalPrice(updatedTotalPrice);
 
-      // Lưu hoặc xóa ID trong AsyncStorage
       if (isChecked) {
         AsyncStorage.setItem(
           'checkedItemsConstruction',
@@ -151,7 +163,14 @@ const ConstructionScreen: React.FC = () => {
 
   // Kiểm tra điều kiện để kích hoạt nút "Tiếp tục"
   const isContinueButtonEnabled =
-    constructionArea !== '' && checkedItems.length > 0;
+    parseFloat(constructionArea) >= 36 &&
+    checkedItems.length > 0 &&
+    checkedItems.every(id => {
+      const detail = detailConstructionData.find(
+        (detail: any) => detail.id === id
+      );
+      return detail && detail.totalPrice > 0;
+    });
 
   return (
     <View style={styles.container}>
@@ -169,6 +188,9 @@ const ConstructionScreen: React.FC = () => {
           />
           <Text style={styles.noteText}>Đơn vị tính: m²</Text>
         </View>
+        <Text style={styles.noteTextArea}>
+          Lưu ý: Diện tích xây dựng phải lớn hơn hoặc bằng 36 m²
+        </Text>
 
         <View style={styles.floorsSelection}>
           <Text style={styles.floorsText}>Số tầng lầu</Text>
@@ -273,6 +295,10 @@ const styles = StyleSheet.create({
     position: 'absolute',
     fontSize: 12,
     right: 0,
+  },
+  noteTextArea: {
+    fontFamily: FONTFAMILY.montserat_semibold,
+    fontSize: 12,
   },
   floorsSelection: {
     marginTop: 10,

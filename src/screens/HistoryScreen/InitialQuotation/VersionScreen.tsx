@@ -21,7 +21,6 @@ const VersionScreen: React.FC = () => {
     const fetchVersion = async () => {
       const versions = await getVersion(projectId);
       setVersions(versions);
-      console.log('versions', versions);
     };
     fetchVersion();
   }, [projectId]);

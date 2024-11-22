@@ -8,6 +8,7 @@ export interface ProjectHistory {
   InsDate: string
   UpsDate: string
   ProjectCode: string
+  IsDrawing: boolean
 }
 
 // Response Status
