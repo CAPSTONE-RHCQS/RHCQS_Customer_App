@@ -1,13 +1,12 @@
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {FONTFAMILY} from '../theme/theme';
 import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
-import { AppStackNavigationProp, AppStackParamList } from '@/types/TypeScreen';
+import {AppStackNavigationProp, AppStackParamList} from '@/types/TypeScreen';
 
 const CustomerOptions: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
-
 
   return (
     <View style={styles.optionContainer}>
@@ -85,7 +84,7 @@ const CustomerOptions: React.FC = () => {
 
         {/* Ưu đãi khách hàng */}
         <TouchableOpacity
-          onPress={() => navigationApp.navigate('ChatScreen')}
+          onPress={() => console.log('Ưu đãi khách hàng')}
           activeOpacity={0.7}>
           <LinearGradient
             colors={['#14787A', '#3C9597', '#5BABAD']}

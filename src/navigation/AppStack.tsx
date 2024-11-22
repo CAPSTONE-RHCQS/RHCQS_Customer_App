@@ -30,7 +30,8 @@ import VersionFinalDetail from '../screens/HistoryScreen/FinalQuotation/VersionF
 import ContactContruction from '../screens/HistoryScreen/ContactContruction/ContactContruction';
 import TrackingContruction from '../screens/HistoryScreen/ContactContruction/TrackingContruction';
 import Hasdesign from '../screens/HasDesign/Hasdesign';
-import ChatScreen from '../screens/ChatScreen';
+import ChatScreen from '../screens/Chat/ChatScreen';
+import ChatList from '../screens/Chat/ChatList';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -104,7 +105,8 @@ const AppStack: React.FC = () => {
       {/* Blog */}
       <Stack.Screen name="BlogList" component={BlogList} />
       <Stack.Screen name="BlogDetail" component={BlogDetail} />
-
+      {/* Chat */}
+      <Stack.Screen name="ChatList" component={ChatList} />
       <Stack.Screen name="ChatScreen" component={ChatScreen}/>
     </Stack.Navigator>
   );

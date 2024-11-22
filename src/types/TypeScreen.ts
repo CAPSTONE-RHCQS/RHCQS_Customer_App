@@ -41,9 +41,9 @@ export type AppStackParamList = {
   // Blog
   BlogList: undefined;
   BlogDetail: { id: string, heading: string };
-
   //Chat
-  ChatScreen: undefined;
+  ChatList: undefined;
+  ChatScreen: {id: string};
 
 };
 
