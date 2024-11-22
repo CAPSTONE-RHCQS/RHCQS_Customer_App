@@ -320,6 +320,7 @@ const styles = StyleSheet.create({
   blogContainer:{
     marginVertical: 5,
     marginHorizontal: 27,
+    backgroundColor: 'white',
   },
   listBlogContainer:{
     marginTop: '8%',
