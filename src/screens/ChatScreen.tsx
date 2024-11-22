@@ -1,87 +1,71 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TextInput, Button, FlatList, StyleSheet } from 'react-native';
+import { HubConnectionBuilder, LogLevel, HubConnection } from '@microsoft/signalr';
+import 'react-native-url-polyfill/auto';
 
 const ChatScreen: React.FC = () => {
-    const [webSocket, setWebSocket] = useState<WebSocket | null>(null);
     const [messages, setMessages] = useState<{ user: string; message: string }[]>([]);
     const [message, setMessage] = useState<string>('');
     const [isConnected, setIsConnected] = useState(false);
+    const [connection, setConnection] = useState<HubConnection | null>(null);
 
     const roomId = '8401DDA8-4779-47F8-A4BD-4ECDB18362DF';
-    const accountId = 'BFA97975-1915-46A0-B185-ED881C8C953F';
+    const accountId = '277EED22-D3B8-4DCB-81A5-8A0E57C48E7B';
+    const username = "nganttk002@gmail.com";
 
     useEffect(() => {
-        // Create a new WebSocket connection
-        const ws = new WebSocket(
-            `wss://rhqs-fzbda8gefsh7bnft.southeastasia-01.azurewebsites.net/chatHub`,
-        );
+        const connection = new HubConnectionBuilder()
+            .withUrl('https://rhqs-fzbda8gefsh7bnft.southeastasia-01.azurewebsites.net/chatHub')
+            .configureLogging(LogLevel.Information)
+            .withAutomaticReconnect()
+            .build();
 
-        ws.onopen = () => {
-            console.log('WebSocket connected');
-            setIsConnected(true);
-
-            // Join the room after connecting
-            const joinMessage = {
-                type: 'join',
-                roomId,
-                accountId,
-            };
-            ws.send(JSON.stringify(joinMessage));
-        };
-
-        ws.onmessage = (event) => {
-            console.log('Received data:', event.data);  // Log dữ liệu nhận được
-        
+        const startConnection = async () => {
             try {
-                const data = JSON.parse(event.data);
-        
-                // Handle incoming messages
-                if (data.type === 'message') {
-                    setMessages((prevMessages) => [
-                        ...prevMessages,
-                        { user: data.user, message: data.message },
-                    ]);
-                } else if (data.type === 'system') {
-                    setMessages((prevMessages) => [
-                        ...prevMessages,
-                        { user: 'System', message: data.message },
-                    ]);
-                }
-            } catch (error) {
-                console.error('Error parsing message:', error);
+                await connection.start();
+                console.log('SignalR connected');
+                setIsConnected(true);
+                setConnection(connection); // Store the connection in the state
+
+                console.log("RoomId - AccountId", roomId, accountId);
+
+                // Join the room using SignalR
+                await connection.invoke("JoinRoom", roomId, username);
+                console.log('Joined room successfully');
+            } catch (err) {
+                console.error('SignalR connection or JoinRoom error:', err);
             }
         };
 
-        ws.onerror = (error) => {
-            console.error('WebSocket error:', error);
-        };
+        startConnection();
 
-        ws.onclose = () => {
-            console.log('WebSocket disconnected');
-            setIsConnected(false);
-        };
+        // Listening to incoming messages from the SignalR group
+        connection.on("ReceiveMessage", (user, message) => {
+            console.log("New message received:", user, message);
+            setMessages(prev => [...prev, { user, message }]);
+        });
 
-        setWebSocket(ws);
+        connection.on("UserJoined", (user) => {
+            console.log(`${user} has joined the room`);
+            setMessages(messages => [...messages, { user: "System", message: `${user} has joined the room.` }]);
+        });
 
+        // Cleanup when component unmounts
         return () => {
-            // Cleanup WebSocket connection
-            ws.close();
+            connection.stop().then(() => console.log('SignalR disconnected'));
         };
     }, []);
 
-    const sendMessage = () => {
-        if (webSocket && message.trim()) {
-            const messagePayload = {
-                type: 'message',
-                roomId,
-                user: 'Staff',
-                message,
-            };
-
-            webSocket.send(JSON.stringify(messagePayload));
-
-            setMessages((prevMessages) => [...prevMessages, { user: 'Staff', message }]);
-            setMessage('');
+    // Send a message to the SignalR server
+    const sendMessage = async () => {
+        if (message.trim() && connection) { 
+            try {
+                await connection.invoke("SendMessageToRoom", roomId, username, message);
+                console.log('Message sent:', message);
+                setMessage(''); // Clear input field
+            } catch (err) {
+                console.error('Error sending message:', err);
+            }
         }
     };
 
