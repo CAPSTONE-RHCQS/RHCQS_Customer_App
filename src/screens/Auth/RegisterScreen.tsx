@@ -32,7 +32,7 @@ const RegisterScreen: React.FC = () => {
   const handleRegister = async () => {
     setIsLoading(true);
     try {
-      const phoneRegex = /^[0-9]{10,11}$/;
+      const phoneRegex = /^[0-9]{10}$/;
       if (!phoneRegex.test(phoneNumber)) {
         setErrorMessage('Số điện thoại không hợp lệ');
         setIsLoading(false);
