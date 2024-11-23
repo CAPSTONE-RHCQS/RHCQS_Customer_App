@@ -5,6 +5,7 @@ import {FONTFAMILY} from '../theme/theme';
 import {AppStackNavigationProp, AppStackParamList} from '../types/TypeScreen';
 
 interface SubItemProps {
+  id: string;
   subTitle: string;
   subStatus?: string;
   price: string;
@@ -16,7 +17,7 @@ interface TrackingBatchPaymentProps {
   title: string;
   status?: string;
   subItems: SubItemProps[];
-  onPress: () => void;
+  onPress: (id: string) => void;
 }
 
 const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
@@ -52,8 +53,8 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
     }
   };
 
-  const handleSubItemPress = (index: number) => {
-    console.log('subTitle', index);
+  const handleSubItemPress = (id: string) => {
+    onPress(id);
   };
 
   return (
@@ -63,7 +64,6 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
         onPress={() => {
           if (isPressable) {
             setExpanded(!expanded);
-            onPress();
           }
         }}
         disabled={!isPressable}>
@@ -88,7 +88,7 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
             <TouchableOpacity
               key={index}
               style={styles.subItem}
-              onPress={() => handleSubItemPress(index)}>
+              onPress={() => handleSubItemPress(item.id)}>
               <View >
                 <Text style={styles.subItemTitle} numberOfLines={2} ellipsizeMode="tail">
                   {item.subTitle}

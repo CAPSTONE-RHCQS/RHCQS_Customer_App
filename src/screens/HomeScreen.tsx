@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Image, StatusBar, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Image,
+  StatusBar,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {FONTFAMILY} from '../theme/theme';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -12,9 +19,9 @@ import CustomerOptions from '../components/CustomerOption';
 import NewsItem from '../components/News';
 import BlogItem from '../components/Blog';
 import {getProfile} from '../api/Account/Account';
-import { getBlog } from '../api/Blog/Blog';
-import { Blog } from '../types/screens/Blog/BlogType';
-import { useNavigation } from '@react-navigation/native';
+import {getBlog} from '../api/Blog/Blog';
+import {Blog} from '../types/screens/Blog/BlogType';
+import {useNavigation} from '@react-navigation/native';
 import {AppStackNavigationProp} from '../types/TypeScreen';
 import messaging from '@react-native-firebase/messaging';
 
@@ -26,6 +33,7 @@ const HomeScreen: React.FC = ({}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [customerName, setCustomerName] = useState('');
   const [customerImg, setCustomerImg] = useState<string | null>(null);
+  const [accountId, setAccountId] = useState<string>('');
   const [blogData, setBlogData] = useState<Blog[]>([]);
   // Render
   const renderBanner = ({item}: {item: any; index: number}) => {
@@ -51,6 +59,7 @@ const HomeScreen: React.FC = ({}) => {
         const profile = await getProfile();
         setCustomerName(profile.Username);
         setCustomerImg(profile.ImageUrl);
+        setAccountId(profile.Id);
       } catch (error) {
         console.error('Failed to fetch profile:', error);
       }
@@ -62,11 +71,9 @@ const HomeScreen: React.FC = ({}) => {
     const fetchBlog = async () => {
       const blog = await getBlog();
       setBlogData(blog);
-    }
+    };
     fetchBlog();
   }, []);
-
-
 
   // Handle
   const handlePress = (option: string) => {
@@ -86,7 +93,6 @@ const HomeScreen: React.FC = ({}) => {
     <SafeAreaView>
       <StatusBar backgroundColor="#1F7F81" barStyle="light-content" />
       <ScrollView style={{backgroundColor: 'white'}}>
-
         {/* Linear Gradient Header */}
         <View style={styles.container}>
           <LinearGradient
@@ -101,7 +107,10 @@ const HomeScreen: React.FC = ({}) => {
             <View style={styles.profileContainer}>
               <View style={styles.profileImageContainer}>
                 {customerImg ? (
-                  <Image source={{uri: customerImg}} style={styles.profileImage} />
+                  <Image
+                    source={{uri: customerImg}}
+                    style={styles.profileImage}
+                  />
                 ) : (
                   <Image
                     source={require('../assets/image/data/avatar.jpeg')}
@@ -111,7 +120,12 @@ const HomeScreen: React.FC = ({}) => {
               </View>
               <Text style={styles.profileName}>{customerName} </Text>
               <View style={styles.iconContainer}>
-                <TouchableOpacity onPress={() => navigationApp.navigate('ChatList')}>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigationApp.navigate('ChatList', {
+                      accountId: accountId,
+                    })
+                  }>
                   <Image
                     source={require('../assets/image/icon/chat_icon.png')}
                     style={styles.chatIcon}
@@ -123,7 +137,6 @@ const HomeScreen: React.FC = ({}) => {
                 />
               </View>
             </View>
-
           </LinearGradient>
         </View>
 
@@ -207,7 +220,6 @@ const HomeScreen: React.FC = ({}) => {
             </View>
           </View>
         </View>
-
       </ScrollView>
     </SafeAreaView>
   );
@@ -319,15 +331,15 @@ const styles = StyleSheet.create({
     marginTop: '8%',
     marginLeft: '-14%',
   },
-  blogContainer:{
+  blogContainer: {
     marginVertical: 5,
     marginHorizontal: 27,
     backgroundColor: 'white',
   },
-  listBlogContainer:{
+  listBlogContainer: {
     marginTop: '8%',
     marginLeft: '-34%',
-  }
+  },
 });
 
 export default HomeScreen;

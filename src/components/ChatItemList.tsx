@@ -1,12 +1,11 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {View, Text, Image, TouchableOpacity, StyleSheet} from 'react-native';
 import {ChatData} from '../types/screens/Chat/Chat';
 import {FONTFAMILY} from '../theme/theme';
-import {useNavigation} from '@react-navigation/native';
-import {AppStackNavigationProp} from '../types/TypeScreen';
+
+const defaultAvatar = require('../assets/image/data/avatar.jpeg');
 
 const ChatItem: React.FC<ChatData & {onPress: () => void}> = ({
-  Id,
   AvatarStaff,
   StaffName,
   MessageContext,
@@ -16,7 +15,7 @@ const ChatItem: React.FC<ChatData & {onPress: () => void}> = ({
 }) => {
   return (
     <TouchableOpacity style={styles.itemContainer} onPress={onPress}>
-      <Image source={AvatarStaff} style={styles.avatar} />
+      <Image source={AvatarStaff ? { uri: AvatarStaff } : defaultAvatar} style={styles.avatar} />
       <View style={styles.textContainer}>
         <Text style={[styles.staffName, isRead ? styles.read : styles.unread]}>
           {StaffName}
@@ -33,24 +32,14 @@ const ChatItem: React.FC<ChatData & {onPress: () => void}> = ({
   );
 };
 
-const ChatItemList: React.FC<{data: ChatData[]}> = ({data}) => {
-  const [chatData, setChatData] = useState(data);
-  const navigationApp = useNavigation<AppStackNavigationProp>();
-
-  const handlePress = (id: string) => {
-    setChatData(prevData =>
-      prevData.map(item => (item.Id === id ? {...item, isRead: true} : item)),
-    );
-    navigationApp.navigate('ChatScreen', {id});
-  };
-
+const ChatItemList: React.FC<{data: ChatData[], onPress: (id: string, extraId: string) => void, extraId: string}> = ({data, onPress, extraId}) => {
   return (
     <View>
-      {chatData.map(item => (
+      {data.map(item => (
         <ChatItem
           key={item.Id}
           {...item}
-          onPress={() => handlePress(item.Id)}
+          onPress={() => onPress(item.Id, extraId)}
         />
       ))}
     </View>

@@ -77,7 +77,9 @@ const Promotion: React.FC<ExpandableListProps> = ({
                 <Text style={styles.promotionName} numberOfLines={2}>
                   {promotion.Name}
                 </Text>
-                <Text style={styles.promotionValue}>{formatValue(promotion.Value)}</Text>
+                <Text style={styles.promotionValue}>
+                  {formatValue(promotion.Value)}VND
+                </Text>
                 <Checkbox
                   id={promotion.Id}
                   label=""

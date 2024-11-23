@@ -32,6 +32,7 @@ import TrackingContruction from '../screens/HistoryScreen/ContactContruction/Tra
 import Hasdesign from '../screens/HasDesign/Hasdesign';
 import ChatScreen from '../screens/Chat/ChatScreen';
 import ChatList from '../screens/Chat/ChatList';
+import UploadBill from '../screens/HistoryScreen/ContactContruction/UploadBill';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -102,12 +103,13 @@ const AppStack: React.FC = () => {
         name="TrackingContruction"
         component={TrackingContruction}
       />
+      <Stack.Screen name="UploadBill" component={UploadBill} />
       {/* Blog */}
       <Stack.Screen name="BlogList" component={BlogList} />
       <Stack.Screen name="BlogDetail" component={BlogDetail} />
       {/* Chat */}
       <Stack.Screen name="ChatList" component={ChatList} />
-      <Stack.Screen name="ChatScreen" component={ChatScreen}/>
+      <Stack.Screen name="ChatScreen" component={ChatScreen} />
     </Stack.Navigator>
   );
 };

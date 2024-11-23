@@ -106,12 +106,12 @@ const ConfirmInformation: React.FC = () => {
     );
 
     let projectType = 'ROUGH';
-    if (packageData.selectedRough && packageData.selectedComplete) {
+    if (hasDrawing) {
+      projectType = 'HAVE_DRAWING';
+    } else if (packageData.selectedRough && packageData.selectedComplete) {
       projectType = 'ALL';
     } else if (packageData.selectedComplete) {
       projectType = 'FINISHED';
-    } else if (hasDrawing === true) {
-      projectType = 'HAVE_DRAWING';
     }
 
     const projectData = {
@@ -219,6 +219,11 @@ const ConfirmInformation: React.FC = () => {
     }
   }, [loading, fadeAnim]);
 
+  const handleCheckboxToggle = () => {
+    setHasDrawing(prevState => !prevState);
+    console.log('Checkbox state:', !hasDrawing);
+  };
+
   return (
     <View style={styles.container}>
       <AppBar nameScreen="Xác nhận thông tin" />
@@ -259,7 +264,7 @@ const ConfirmInformation: React.FC = () => {
           id="hasDrawing"
           label="Đã có bản vẽ"
           isChecked={hasDrawing}
-          onCheck={() => setHasDrawing(!hasDrawing)}
+          onCheck={handleCheckboxToggle}
           isRequired={true}
         />
         {addressError ? (

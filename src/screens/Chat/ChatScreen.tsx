@@ -13,20 +13,50 @@ import {
   HubConnection,
 } from '@microsoft/signalr';
 import 'react-native-url-polyfill/auto';
+import {useRoute} from '@react-navigation/native';
+import {AppStackParamList} from '../../types/TypeScreen';
+import {RouteProp} from '@react-navigation/native';
+import {getProfile} from '../../api/Account/Account';
+import AppBar from '../../components/Appbar';
+import {getChatDetail} from '../../api/Chat/Chat';
 
 const ChatScreen: React.FC = () => {
+  const route = useRoute<RouteProp<AppStackParamList, 'ChatScreen'>>();
+  const {id, roomId} = route.params;
   const [messages, setMessages] = useState<{user: string; message: string}[]>(
     [],
   );
   const [message, setMessage] = useState<string>('');
   const [isConnected, setIsConnected] = useState(false);
+  const [customerName, setCustomerName] = useState<string>('');
   const [connection, setConnection] = useState<HubConnection | null>(null);
-
-  const roomId = '8401DDA8-4779-47F8-A4BD-4ECDB18362DF';
-  const accountId = '277EED22-D3B8-4DCB-81A5-8A0E57C48E7B';
-  const username = 'nganttk002@gmail.com';
+  const [isProfileFetched, setIsProfileFetched] = useState(false);
 
   useEffect(() => {
+    const fetchChatDetail = async () => {
+      const chatDetail = await getChatDetail(roomId);
+    };
+    fetchChatDetail();
+  }, []);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const profile = await getProfile();
+        console.log('Profile fetched:', profile);
+        setCustomerName(profile.Username);
+        setIsProfileFetched(true);
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+        setIsProfileFetched(true);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  useEffect(() => {
+    if (!isProfileFetched) return;
+
     const connection = new HubConnectionBuilder()
       .withUrl(
         'https://rhqs-fzbda8gefsh7bnft.southeastasia-01.azurewebsites.net/chatHub',
@@ -42,10 +72,10 @@ const ChatScreen: React.FC = () => {
         setIsConnected(true);
         setConnection(connection); // Store the connection in the state
 
-        console.log('RoomId - AccountId', roomId, accountId);
+        console.log('RoomId - AccountId', roomId, id);
 
         // Join the room using SignalR
-        await connection.invoke('JoinRoom', roomId, username);
+        await connection.invoke('JoinRoom', roomId, customerName);
         console.log('Joined room successfully');
       } catch (err) {
         console.error('SignalR connection or JoinRoom error:', err);
@@ -72,13 +102,18 @@ const ChatScreen: React.FC = () => {
     return () => {
       connection.stop().then(() => console.log('SignalR disconnected'));
     };
-  }, []);
+  }, [isProfileFetched]);
 
   // Send a message to the SignalR server
   const sendMessage = async () => {
     if (message.trim() && connection) {
       try {
-        await connection.invoke('SendMessageToRoom', roomId, username, message);
+        await connection.invoke(
+          'SendMessageToRoom',
+          roomId,
+          customerName,
+          message,
+        );
         console.log('Message sent:', message);
         setMessage(''); // Clear input field
       } catch (err) {
@@ -89,30 +124,39 @@ const ChatScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {isConnected ? (
-        <>
-          <FlatList
-            data={messages}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({item}) => (
-              <Text style={styles.message}>
-                {item.user}: {item.message}
-              </Text>
-            )}
-          />
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              value={message}
-              onChangeText={setMessage}
-              placeholder="Type a message..."
+      <AppBar nameScreen="Tin nhắn" />
+      <View style={styles.content}>
+        {isConnected ? (
+          <>
+            <FlatList
+              data={messages}
+              keyExtractor={(item, index) => index.toString()}
+              renderItem={({item}) => (
+                <Text
+                  style={[
+                    styles.message,
+                    item.user === customerName
+                      ? styles.sentMessage
+                      : styles.receivedMessage,
+                  ]}>
+                  {item.user}: {item.message}
+                </Text>
+              )}
             />
-            <Button title="Send" onPress={sendMessage} />
-          </View>
-        </>
-      ) : (
-        <Text>Connecting to chat...</Text>
-      )}
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.input}
+                value={message}
+                onChangeText={setMessage}
+                placeholder="Type a message..."
+              />
+              <Button title="Send" onPress={sendMessage} />
+            </View>
+          </>
+        ) : (
+          <Text>Connecting to chat...</Text>
+        )}
+      </View>
     </View>
   );
 };
@@ -120,11 +164,26 @@ const ChatScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: 'white',
+  },
+  content: {
+    flex: 1,
     padding: 16,
   },
   message: {
     fontSize: 16,
     marginBottom: 8,
+    padding: 10,
+    borderRadius: 10,
+    maxWidth: '80%',
+  },
+  sentMessage: {
+    alignSelf: 'flex-end',
+    backgroundColor: '#DCF8C6',
+  },
+  receivedMessage: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#ECECEC',
   },
   inputContainer: {
     flexDirection: 'row',

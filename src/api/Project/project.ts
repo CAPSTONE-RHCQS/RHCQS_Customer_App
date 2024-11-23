@@ -208,3 +208,21 @@ export const requestDesign = async (data: any) => {
     throw error;
   }
 };
+
+export const uploadBill = async (paymentId: string, data: any) => {
+  try {
+    const headers = await getHeaders();
+    headers['Content-Type'] = 'multipart/form-data';
+    const formData = new FormData();
+    formData.append('TransferInvoice', {
+      uri: data.selectedImage,
+      type: 'image/png',
+      name: data.selectedImage.split('/').pop(),
+    } as any);
+    const response = await axiosInstance.put(`/payment/confirm?paymentId=${encodeURIComponent(paymentId)}`, formData, { headers });
+    return response.data;
+  } catch (error) {
+    console.error('Error upload bill:', error);
+    throw error;
+  }
+};

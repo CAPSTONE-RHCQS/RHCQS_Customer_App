@@ -23,6 +23,7 @@ export type AppStackParamList = {
   VersionDetail: { projectId: string, version: string };
   VersionFinalScreen: { projectId: string };
   VersionFinalDetail: { projectId: string, version: string };
+  UploadBill: {projectId: string, paymentId: string};
   //Contact
   ContactDesignScreen: { projectId: string };
   TrackingDesignContact: { projectId: string };
@@ -42,8 +43,8 @@ export type AppStackParamList = {
   BlogList: undefined;
   BlogDetail: { id: string, heading: string };
   //Chat
-  ChatList: undefined;
-  ChatScreen: {id: string};
+  ChatList: {accountId: string};
+  ChatScreen: {id: string, roomId: string};
 
 };
 

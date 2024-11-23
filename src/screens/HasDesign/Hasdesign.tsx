@@ -8,12 +8,10 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBar from '../../components/Appbar';
-import InputField from '../../components/InputField';
 import Separator from '../../components/Separator';
 import {FONTFAMILY} from '../../theme/theme';
 import {launchImageLibrary} from 'react-native-image-picker';
 import CustomButton from '../../components/CustomButton';
-import {getProfile} from '../../api/Account/Account';
 import {createProjectHaveDesign} from '../../api/HasDesign/HasDesign';
 import Dialog from 'react-native-dialog';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';

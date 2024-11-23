@@ -1,6 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {RouteProp, useNavigation} from '@react-navigation/native';
+import React, {useState, useCallback} from 'react';
+import {RouteProp, useNavigation, useFocusEffect} from '@react-navigation/native';
 import {AppStackNavigationProp, AppStackParamList} from '@/types/TypeScreen';
 import {useRoute} from '@react-navigation/native';
 import {TrackingContructionType} from '../../../types/screens/History/HistoryType';
@@ -19,17 +19,16 @@ const TrackingContruction: React.FC = () => {
     TrackingContructionType[]
   >([]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const data = await getTrackingPaymentContruction(projectId);
-      setTrackingPayment(Array.isArray(data) ? data : [data]);
-      console.log('trackingPayment', JSON.stringify(trackingPayment, null, 2));
-    };
-    fetchData();
-  }, [projectId]);
+  const fetchData = async () => {
+    const data = await getTrackingPaymentContruction(projectId);
+    setTrackingPayment(Array.isArray(data) ? data : [data]);
+  };
 
-  // cập nhật lại dữ liệu
-  useEffect(() => {}, [trackingPayment]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [projectId])
+  );
 
   const formatDate = (date: string) => {
     const dateObj = new Date(date);
@@ -50,6 +49,7 @@ const TrackingContruction: React.FC = () => {
   };
 
   const subItems = trackingPayment.map(item => ({
+    id: item.Id,
     subTitle: insertLineBreak(item.Description, 20),
     price: formatPrice(item.TotalPrice) + ' VNĐ',
     date: formatDate(item.InsDate),
@@ -71,7 +71,12 @@ const TrackingContruction: React.FC = () => {
 
         <TrackingBatchPayment
           title="Thanh toán"
-          onPress={() => {}}
+          onPress={(id: string) => {
+            navigationApp.navigate('UploadBill', {
+              projectId: projectId,
+              paymentId: id,
+            });
+          }}
           subItems={subItems}
         />
       </View>

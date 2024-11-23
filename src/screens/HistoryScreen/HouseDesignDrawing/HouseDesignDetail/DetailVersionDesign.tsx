@@ -113,43 +113,44 @@ const DetailVersionDesign: React.FC = () => {
             : ''
         }
       />
-      <View style={styles.noteContainer}>
-        <Text style={styles.note}>Điều chỉnh:</Text>
-        <Text style={styles.noteDetail}>{versionDetail?.Note}</Text>
-      </View>
-      {status !== 'Finished' && status !== 'Accepted' && (
-        <View style={styles.inputContainer}>
-          <Text style={styles.title}>Ghi chú</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Nhập ghi chú..."
-            placeholderTextColor="gray"
-            value={inputValue}
-            onChangeText={setInputValue}
-            multiline={true}
-            textAlignVertical="top"
+      <View style={styles.content}>
+        <View style={styles.noteContainer}>
+          <Text style={styles.note}>Điều chỉnh:</Text>
+          <Text style={styles.noteDetail}>{versionDetail?.Note}</Text>
+        </View>
+        {status !== 'Finished' && status !== 'Accepted' && (
+          <View style={styles.inputContainer}>
+            <Text style={styles.title}>Ghi chú</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Nhập ghi chú..."
+              placeholderTextColor="gray"
+              value={inputValue}
+              onChangeText={setInputValue}
+              multiline={true}
+              textAlignVertical="top"
+            />
+            <TouchableOpacity onPress={handlePutComment}>
+              <Text style={styles.buttonText}>Gửi ghi chú</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+        {loading ? (
+          <View style={styles.loader}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        ) : pdfUri ? (
+          <Pdf
+            source={{uri: pdfUri}}
+            onError={error => {
+              console.log(error);
+            }}
+            style={styles.pdf}
           />
-          <TouchableOpacity onPress={handlePutComment}>
-            <Text style={styles.buttonText}>Gửi ghi chú</Text>
-          </TouchableOpacity>
-        </View>
-      )}
-      {loading ? (
-        <View style={styles.loader}>
-          <ActivityIndicator size="large" color="#0000ff" />
-        </View>
-      ) : pdfUri ? (
-        <Pdf
-          source={{uri: pdfUri}}
-          onError={error => {
-            console.log(error);
-          }}
-          style={styles.pdf}
-        />
-      ) : (
-        <Text style={styles.text}>Không tìm thấy file PDF.</Text>
-      )}
-
+        ) : (
+          <Text style={styles.text}>Không tìm thấy file PDF.</Text>
+        )}
+      </View>
       {status !== 'Finished' && status !== 'Accepted' && (
         <View style={styles.buttonContainer}>
           <CustomButton
@@ -191,8 +192,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: 'white',
   },
-  inputContainer: {
+  content: {
+    marginTop: 16,
     flex: 1,
+  },
+  inputContainer: {
     position: 'relative',
     marginHorizontal: 20,
     marginBottom: 10,
@@ -235,10 +239,6 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     fontFamily: FONTFAMILY.montserat_bold,
     color: '#1F7F81',
-  },
-  image: {
-    width: width,
-    height: height / 1.7,
   },
   buttonContainer: {
     justifyContent: 'flex-end',
