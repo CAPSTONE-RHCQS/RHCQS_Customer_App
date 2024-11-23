@@ -111,10 +111,12 @@ const HomeScreen: React.FC = ({}) => {
               </View>
               <Text style={styles.profileName}>{customerName} </Text>
               <View style={styles.iconContainer}>
-                <Image
-                  source={require('../assets/image/icon/chat_icon.png')}
-                  style={styles.chatIcon}
-                />
+                <TouchableOpacity onPress={() => navigationApp.navigate('ChatList')}>
+                  <Image
+                    source={require('../assets/image/icon/chat_icon.png')}
+                    style={styles.chatIcon}
+                  />
+                </TouchableOpacity>
                 <Image
                   source={require('../assets/image/icon/notification_icon.png')}
                   style={styles.notificationIcon}
