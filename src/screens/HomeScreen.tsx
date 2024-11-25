@@ -24,6 +24,7 @@ import {Blog} from '../types/screens/Blog/BlogType';
 import {useNavigation} from '@react-navigation/native';
 import {AppStackNavigationProp} from '../types/TypeScreen';
 import messaging from '@react-native-firebase/messaging';
+import {sendFCM} from '../api/Notification/Notification';
 
 const viewHeight = height / 6;
 
@@ -32,6 +33,8 @@ const HomeScreen: React.FC = ({}) => {
   // State
   const [currentIndex, setCurrentIndex] = useState(0);
   const [customerName, setCustomerName] = useState('');
+  const [fcmToken, setFcmToken] = useState<string | null>(null);
+  const [email, setEmail] = useState<string>('');
   const [customerImg, setCustomerImg] = useState<string | null>(null);
   const [accountId, setAccountId] = useState<string>('');
   const [blogData, setBlogData] = useState<Blog[]>([]);
@@ -44,7 +47,7 @@ const HomeScreen: React.FC = ({}) => {
     const getToken = async () => {
       try {
         const token = await messaging().getToken();
-        console.log('FCM Token:', token);
+        setFcmToken(token);
       } catch (error) {
         console.error('Failed to get FCM token:', error);
       }
@@ -60,12 +63,17 @@ const HomeScreen: React.FC = ({}) => {
         setCustomerName(profile.Username);
         setCustomerImg(profile.ImageUrl);
         setAccountId(profile.Id);
+        setEmail(profile.Email);
+
+        if (fcmToken && email) {
+          await sendFCM({deviceToken: fcmToken, email: email});
+        }
       } catch (error) {
         console.error('Failed to fetch profile:', error);
       }
     };
     fetchProfile();
-  }, []);
+  }, [fcmToken]);
 
   useEffect(() => {
     const fetchBlog = async () => {
