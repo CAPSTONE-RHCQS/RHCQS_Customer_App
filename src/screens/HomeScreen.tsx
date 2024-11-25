@@ -175,7 +175,9 @@ const HomeScreen: React.FC = ({}) => {
         </View>
 
         {/* Customer Option */}
+        <View style={styles.customerOptionContainer}>
         <CustomerOptions />
+        </View>
 
         {/* News */}
         <View style={styles.newsContainer}>
@@ -313,6 +315,9 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginHorizontal: 8,
     justifyContent: 'space-around',
+  },
+  customerOptionContainer: {
+    marginHorizontal: 27,
   },
   newsContainer: {
     marginVertical: 5,

@@ -14,7 +14,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import CustomButton from '../../../components/CustomButton';
 import {PackageSelector} from '../../../redux/selectors/PackageSelector/PackageSelector';
 import {useSelector, useDispatch} from 'react-redux';
-import {useNavigation, NavigationProp} from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 import {AppStackNavigationProp} from '../../../types/TypeScreen';
 import {ContructionSelector} from '../../../redux/selectors/ContructionSelector/ContructionSelector';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -183,6 +183,10 @@ const UltilitiesScreen: React.FC = () => {
     return area * selectedPromotionValue;
   };
 
+  const formatPrice = (price: number): string => {
+    return price.toLocaleString();
+  };
+
   const discountAmount = calculateDiscount();
   const finalTotalPrice =
     packageData.selectedRoughType === undefined &&
@@ -215,6 +219,7 @@ const UltilitiesScreen: React.FC = () => {
           })}
           onDetailPress={handleDetailPress}
           onCheckBoxPress={handleCheckBoxPress}
+          formatPrice={formatPrice}
         />
       );
     });

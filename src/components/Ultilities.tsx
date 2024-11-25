@@ -17,6 +17,7 @@ interface ExpandableListProps {
   }>;
   onDetailPress: (id: string) => void;
   onCheckBoxPress: (id: string, price: number) => void;
+  formatPrice: (price: number) => string;
 }
 
 const Ultilities: React.FC<ExpandableListProps> = ({
@@ -25,6 +26,7 @@ const Ultilities: React.FC<ExpandableListProps> = ({
   ultilities,
   onDetailPress,
   onCheckBoxPress,
+  formatPrice,
 }) => {
   const [expanded, setExpanded] = useState(false);
 
@@ -51,7 +53,7 @@ const Ultilities: React.FC<ExpandableListProps> = ({
                 key={ultility.id}
                 id={ultility.id}
                 title={ultility.title}
-                price={ultility.price.toString()}
+                price={formatPrice(ultility.price)}
                 area={ultility.area}
                 unit={ultility.unit}
                 isChecked={ultility.isChecked}

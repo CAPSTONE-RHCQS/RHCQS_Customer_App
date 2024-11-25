@@ -20,6 +20,7 @@ const VersionScreen: React.FC = () => {
   useEffect(() => {
     const fetchVersion = async () => {
       const versions = await getVersion(projectId);
+      console.log('versions', JSON.stringify(versions, null, 2));
       setVersions(versions);
     };
     fetchVersion();

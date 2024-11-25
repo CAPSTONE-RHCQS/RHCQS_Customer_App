@@ -4,7 +4,10 @@ import React, {useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import Ultilities from '../../components/Ultilities';
 import Separator from '../../components/Separator';
-import {getFinishedUltilities} from '../../api/Ultilities/Ultilities';
+import {
+  getFinishedUltilities,
+  getHouseTemplateUltilities,
+} from '../../api/Ultilities/Ultilities';
 import {Ultilities as UltilitiesType} from '../../types/screens/Ultilities/UltilitiesType';
 import {ScrollView} from 'react-native-gesture-handler';
 import CustomButton from '../../components/CustomButton';
@@ -16,30 +19,27 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {pushUltilities} from '../../redux/actions/Ultilities/UltilitiesAction';
 import {DetailUltilitiesSelector} from '../../redux/selectors/UltilitiesSelector/DetailUltilitiesSelector/DetailUltilitiesSelector';
 import {useFocusEffect} from '@react-navigation/native';
+import {selectTotalRough} from '../../redux/selectors/HouseTemplate/SubTemplateSelector';
 
 const UltilitiesHouse: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
   const dispatch = useDispatch();
 
-  // Lấy dữ liệu chi tiết các mục tiện ích
   const detailUltilitiesData = useSelector(DetailUltilitiesSelector);
-  console.log('detailUltilitiesData', detailUltilitiesData);
-  // Lấy dữ liệu package
+  console.log(detailUltilitiesData);
   const packageData = useSelector(PackageSelector);
-  console.log('packageData', packageData);
+  const totalRough = useSelector(selectTotalRough);
+  console.log('subTemplateData', totalRough);
 
-  // State để lưu trữ ID các mục đã check
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
-  // State để lưu trữ dữ liệu các mục tiện ích
   const [ultilities, setUltilities] = useState<UltilitiesType[]>([]);
-  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [totalPrice, setTotalPrice] = useState<number>(totalRough);
   const [loading, setLoading] = useState(false);
   const fetchUltilities = async () => {
     const selectedCompleteType = packageData.selectedCompleteType;
 
     if (selectedCompleteType === 'FINISHED') {
-      const finishedData = await getFinishedUltilities();
-      console.log('finishedData', finishedData);
+      const finishedData = await getHouseTemplateUltilities();
       setUltilities(finishedData);
     }
   };
@@ -61,12 +61,10 @@ const UltilitiesHouse: React.FC = () => {
         ? prevState.filter(item => item !== id)
         : [...prevState, id];
 
-      // Cập nhật tổng tiền
       setTotalPrice(prevTotal =>
         isChecked ? prevTotal - price : prevTotal + price,
       );
 
-      // Lưu hoặc xóa ID trong AsyncStorage
       if (isChecked) {
         AsyncStorage.setItem(
           'checkedItemsUltilities',
@@ -95,6 +93,10 @@ const UltilitiesHouse: React.FC = () => {
     dispatch(pushUltilities({checkedItems: detailedCheckedItems}));
   };
 
+  const formatPrice = (price: number): string => {
+    return price.toLocaleString();
+  };
+
   const renderUltilities = () => {
     return ultilities.map((utility, index) => {
       return (
@@ -110,20 +112,19 @@ const UltilitiesHouse: React.FC = () => {
             const price = detail ? detail.totalPrice : 0;
             const area = detail ? detail.checkedItemName : '';
 
-            const formattedPrice = price.toLocaleString();
             return {
               id: section.Id,
               title: section.Name,
-              price: formattedPrice,
+              price: price,
               area: area,
               unit: '',
               isChecked: checkedItems.includes(section.Id),
-              onCheckBoxPress: () =>
-                handleCheckBoxPress(section.Id, parseFloat(price)),
+              onCheckBoxPress: () => handleCheckBoxPress(section.Id, price),
             };
           })}
           onDetailPress={handleDetailPress}
           onCheckBoxPress={handleCheckBoxPress}
+          formatPrice={formatPrice}
         />
       );
     });
@@ -141,9 +142,7 @@ const UltilitiesHouse: React.FC = () => {
         <Separator />
         <View style={styles.totalPriceContainer}>
           <Text style={styles.totalPriceText}>Tổng tiền: </Text>
-          <Text style={styles.totalPrice}>
-            {totalPrice.toLocaleString()} VND
-          </Text>
+          <Text style={styles.totalPrice}>{formatPrice(totalPrice)} VNĐ</Text>
         </View>
         <CustomButton
           title="Tiếp tục"

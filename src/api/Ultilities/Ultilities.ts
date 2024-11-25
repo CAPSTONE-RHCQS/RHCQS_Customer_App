@@ -34,6 +34,17 @@ export const getFinishedUltilities = async (): Promise<Ultilities[]> => {
     }
 };
 
+export const getHouseTemplateUltilities = async (): Promise<Ultilities[]> => {
+    try {
+        const headers = await getHeaders();
+        const response = await axiosInstance.get('/utilities/type?type=TEMPLATE', { headers });
+        return response.data || [];
+    } catch (error) {
+        console.error('Error fetching ultilities data:', error);
+        return [];
+    }
+};
+
 export const getUltilitiesById = async (id: string): Promise<Ultilities | null> => {
     try {
         const headers = await getHeaders();

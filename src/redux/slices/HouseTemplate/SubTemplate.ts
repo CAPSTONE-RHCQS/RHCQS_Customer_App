@@ -1,9 +1,11 @@
 interface SubTemplateState {
     subTemplateId: string;
+    totalRough: number;
 }
 
 const initialState: SubTemplateState = {
     subTemplateId: '',
+    totalRough: 0,
 };
 
 const subTemplateSlice = (state: SubTemplateState = initialState, action: any) => {

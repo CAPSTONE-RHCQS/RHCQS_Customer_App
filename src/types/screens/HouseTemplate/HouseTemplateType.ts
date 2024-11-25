@@ -19,6 +19,7 @@ export interface SubTemplate {
   InsDate: any
   Size: string
   Url: string
+  TotalRough: number,
   TemplateItems: TemplateItem[]
   Designdrawings: Designdrawing[]
 }
@@ -32,6 +33,7 @@ export interface TemplateItem {
   Area: number
   Unit: string
   InsDate: any
+  Price: number
 }
 
 export interface Designdrawing {

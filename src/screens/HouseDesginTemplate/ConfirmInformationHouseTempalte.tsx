@@ -72,7 +72,7 @@ import {
       try {
         await createProjectHouseTemplate(projectData);
         console.log('Project created successfully');
-        console.log('projectData', projectData);
+        console.log('projectData', JSON.stringify(projectData, null, 2));
         setLoading(false);
         setVisible(true);
       } catch (error) {

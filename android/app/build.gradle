@@ -127,6 +127,7 @@ project.ext.vectoricons = [
 
 dependencies {
     implementation("com.facebook.react:react-android")
+    implementation("com.facebook.fresco:fresco:2.0.0")
     implementation project(':react-native-vector-icons')
 
     if (hermesEnabled.toBoolean()) {

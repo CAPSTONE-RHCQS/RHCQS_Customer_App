@@ -24,6 +24,7 @@ const HouseResidentialArea: React.FC = () => {
   const [currentTemplate, setCurrentTemplate] = useState<{
     id: string;
     url: string;
+    totalRough: number;
   } | null>(null);
 
   useEffect(() => {
@@ -35,6 +36,7 @@ const HouseResidentialArea: React.FC = () => {
           setCurrentTemplate({
             id: data.SubTemplates[0].Id,
             url: data.SubTemplates[0].Url,
+            totalRough: data.SubTemplates[0].TotalRough,
           });
         }
       } catch (error) {
@@ -49,12 +51,21 @@ const HouseResidentialArea: React.FC = () => {
   const handleContinue = () => {
     if (currentTemplate) {
       navigationApp.navigate('HousePackageTemplate', {houseId});
-      dispatch(pushSubTemplate({subTemplateId: currentTemplate.id}));
+      dispatch(
+        pushSubTemplate({
+          subTemplateId: currentTemplate.id,
+          totalRough: currentTemplate.totalRough,
+        }),
+      );
     }
   };
 
   const handleTemplateSelect = (template: any) => {
-    setCurrentTemplate({id: template.Id, url: template.Url});
+    setCurrentTemplate({
+      id: template.Id,
+      url: template.Url,
+      totalRough: template.TotalRough,
+    });
     console.log('Selected SubTemplate Id:', template.Id);
   };
 
@@ -93,7 +104,11 @@ const HouseResidentialArea: React.FC = () => {
       <View style={styles.buttonContainer}>
         <CustomButton
           title="Tiếp tục"
-          colors={currentTemplate && !loading ? ['#53A6A8', '#3C9597', '#1F7F81'] : ['#d3d3d3', '#d3d3d3', '#d3d3d3']}
+          colors={
+            currentTemplate && !loading
+              ? ['#53A6A8', '#3C9597', '#1F7F81']
+              : ['#d3d3d3', '#d3d3d3', '#d3d3d3']
+          }
           onPress={handleContinue}
           loading={loading}
           disabled={!currentTemplate || loading}
