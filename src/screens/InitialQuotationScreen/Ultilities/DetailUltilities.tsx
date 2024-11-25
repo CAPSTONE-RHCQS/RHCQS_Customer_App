@@ -26,7 +26,7 @@ const DetailUltilities: React.FC = () => {
 
   const constructionData = useSelector(ContructionSelector);
   const detailUltilitiesData = useSelector(DetailUltilitiesSelector);
-  const [quantity, setQuantity] = useState('');
+  const [quantity, setQuantity] = useState('1');
   const [sectionData, setSectionData] = useState<Section | null>(null);
   const [coefficients, setCoefficients] = useState<{[key: string]: number}>({});
   const [coefficient, setCoefficient] = useState(0);

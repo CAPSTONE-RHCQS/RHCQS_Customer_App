@@ -30,7 +30,6 @@ const ContactContruction: React.FC = () => {
       try {
         const data = await getContactContruction(projectId);
         setContactContruction(data);
-
         if (data?.File) {
           const pdfPath = await downloadPdf(data.File);
           setPdfUri(pdfPath);

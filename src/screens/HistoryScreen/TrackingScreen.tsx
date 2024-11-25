@@ -52,7 +52,6 @@ const TrackingScreen: React.FC = () => {
   const fetchProject = async () => {
     try {
       const projectData: ProjectHistory = await getProjectById(projectId);
-      console.log('projectData', JSON.stringify(projectData, null, 2));
       setProject(projectData);
     } catch (error) {
       console.error('Error fetching project data:', error);

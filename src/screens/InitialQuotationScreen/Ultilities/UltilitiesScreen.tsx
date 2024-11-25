@@ -91,7 +91,20 @@ const UltilitiesScreen: React.FC = () => {
     React.useCallback(() => {
       fetchUltilities();
       fetchPromotion();
-    }, [packageData]),
+      const calculateTotalPrice = () => {
+        let newTotalPrice = 0;
+        checkedItems.forEach(id => {
+          const detail = detailUltilitiesData.find(
+            (detail: any) => detail.id === id,
+          );
+          if (detail) {
+            newTotalPrice += detail.totalPrice;
+          }
+        });
+        setTotalPrice(newTotalPrice);
+      };
+      calculateTotalPrice();
+    }, [packageData, checkedItems, detailUltilitiesData]),
   );
 
   const handleDetailPress = (Id: string) => {
@@ -104,8 +117,6 @@ const UltilitiesScreen: React.FC = () => {
       const newCheckedItems = isChecked
         ? prevState.filter(item => item !== id)
         : [...prevState, id];
-
-      console.log('price', price);
 
       setTotalPrice(prevTotal =>
         isChecked ? prevTotal - price : prevTotal + price,

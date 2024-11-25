@@ -74,16 +74,13 @@ import {
       try {
         await createProjectHouseTemplate(projectData);
         console.log('Project created successfully');
-        console.log('projectData', JSON.stringify(projectData, null, 2));
         setLoading(false);
         setVisible(true);
       } catch (error) {
         if (axios.isAxiosError(error)) {
           console.error('Axios error:', error.response?.data);
-          console.log('projectData', projectData);
         } else {
           console.error('Unexpected error:', error);
-          console.log('projectData', projectData);
         }
       }
     }, [

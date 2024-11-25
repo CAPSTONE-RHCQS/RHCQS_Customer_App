@@ -64,16 +64,16 @@ const HomeScreen: React.FC = ({}) => {
         setCustomerImg(profile.ImageUrl);
         setAccountId(profile.Id);
         setEmail(profile.Email);
-
         if (fcmToken && email) {
           await sendFCM({deviceToken: fcmToken, email: email});
+          console.log('sendFCM success');
         }
       } catch (error) {
         console.error('Failed to fetch profile:', error);
       }
     };
     fetchProfile();
-  }, [fcmToken]);
+  }, [fcmToken, email]);
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -176,7 +176,7 @@ const HomeScreen: React.FC = ({}) => {
 
         {/* Customer Option */}
         <View style={styles.customerOptionContainer}>
-        <CustomerOptions />
+          <CustomerOptions />
         </View>
 
         {/* News */}

@@ -150,8 +150,6 @@ const ConfirmInformation: React.FC = () => {
       isDrawing: hasDrawing,
     };
 
-    console.log('projectData', JSON.stringify(projectData, null, 2));
-
     projectData.initialQuotation.initialQuotationItemRequests.forEach(
       (item: any, index: number) => {
         console.log(
