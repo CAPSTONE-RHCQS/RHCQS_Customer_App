@@ -52,6 +52,7 @@ const TrackingScreen: React.FC = () => {
   const fetchProject = async () => {
     try {
       const projectData: ProjectHistory = await getProjectById(projectId);
+      console.log('projectData', JSON.stringify(projectData, null, 2));
       setProject(projectData);
     } catch (error) {
       console.error('Error fetching project data:', error);
@@ -165,7 +166,8 @@ const TrackingScreen: React.FC = () => {
           onIconPress={handleIconPress}
           showIcon={
             tracking?.InitialResponse?.Status === 'Finalized' &&
-            !tracking?.ContractDesignResponse
+            !tracking?.ContractDesignResponse &&
+            project?.Type !== 'TEMPLATE'
           }
         />
         <View>

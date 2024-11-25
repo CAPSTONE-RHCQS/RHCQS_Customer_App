@@ -12,7 +12,6 @@ import {FONTFAMILY} from '../../theme/theme';
 
 const HistoryScreen: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
-  const [customerEmail, setCustomerEmail] = useState('');
   const [projectHistory, setProjectHistory] = useState<ProjectHistory[]>([]);
 
   useFocusEffect(
@@ -20,8 +19,8 @@ const HistoryScreen: React.FC = () => {
       const fetchProfile = async () => {
         try {
           const profile = await getProfile();
-          setCustomerEmail(profile.Email);
           const projects = await getProjectByEmail(profile.Email);
+          console.log('projects', JSON.stringify(projects, null, 2));
           setProjectHistory(projects);
         } catch (error) {
           console.error('Failed to fetch profile:', error);
