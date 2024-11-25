@@ -102,6 +102,7 @@ const ConfirmInformation: React.FC = () => {
         utilitiesItemId: item.checkedItems ?? item.id,
         name: item.checkedItemName ?? item.name,
         price: item.totalPrice,
+        quantity: item.area === '' ? null : item.area,
       }),
     );
 
