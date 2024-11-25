@@ -57,7 +57,9 @@ const HistoryScreen: React.FC = () => {
         return new Date(yearB, monthB - 1, dayB).getTime() - new Date(yearA, monthA - 1, dayA).getTime();
       })
       .reduce((acc, date) => {
-        acc[date] = grouped[date];
+        acc[date] = grouped[date].sort((a, b) => {
+          return new Date(b.InsDate).getTime() - new Date(a.InsDate).getTime();
+        });
         return acc;
       }, {} as Record<string, ProjectHistory[]>);
   };

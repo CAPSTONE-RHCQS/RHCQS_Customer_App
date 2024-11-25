@@ -31,6 +31,7 @@ import {
     const [visible, setVisible] = useState(false);
   
     const ultilitiesData = useSelector(UltilitiesSelector);
+    console.log('ultilitiesData', ultilitiesData);
     const packageData = useSelector(PackageSelector);
     const subTemplateData = useSelector(selectSubTemplateId);
     console.log('subTemplateData', subTemplateData);
@@ -58,6 +59,7 @@ import {
           utilitiesItemId: item.checkedItems ?? item.id,
           name: item.checkedItemName ?? item.name,
           price: item.totalPrice,
+          quantity: item.area === '' ? null : item.area,
         }),
       );
 
