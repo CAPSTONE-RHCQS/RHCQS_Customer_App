@@ -15,6 +15,8 @@ const subTemplateSlice = (state: SubTemplateState = initialState, action: any) =
                 ...state,
                 ...action.payload
             };
+        case 'resetDataSubTempalte':
+            return initialState;
         default:
             return state;
     }

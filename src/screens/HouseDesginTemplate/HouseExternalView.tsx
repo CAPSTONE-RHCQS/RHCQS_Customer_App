@@ -24,13 +24,11 @@ const HouseExternalView: React.FC = () => {
     const fetchHouseTemplate = async () => {
       try {
         const data = await getHouseTemplateById(houseId);
-        console.log('data', houseId);
         setExteriorImages(data.ExteriorsUrls.map((item: any) => item.Url));
         setDesignDrawings(
           data.SubTemplates[0].Designdrawings.map((item: any) => item.Url),
         );
         setDescription(data.Description);
-        console.log('description', data.Description);
       } catch (error) {
         console.error('Error fetching house template:', error);
       } finally {

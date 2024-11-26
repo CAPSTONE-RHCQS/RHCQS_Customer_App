@@ -53,7 +53,6 @@ const TrackingScreen: React.FC = () => {
     try {
       const projectData: ProjectHistory = await getProjectById(projectId);
       setProject(projectData);
-      console.log('projectData', JSON.stringify(projectData, null, 2));
     } catch (error) {
       console.error('Error fetching project data:', error);
     }
@@ -63,6 +62,7 @@ const TrackingScreen: React.FC = () => {
     try {
       const trackingData: TrackingType = await getTracking(projectId);
       setTracking(trackingData);
+      console.log('trackingData', JSON.stringify(trackingData, null, 2));
     } catch (error) {
       console.error('Error fetching tracking data:', error);
     }
@@ -101,6 +101,9 @@ const TrackingScreen: React.FC = () => {
 
   const closeModal = () => {
     setModalPosition(null);
+    setRequestDesignDialogVisible(false);
+    fetchProject();
+    fetchTracking();
   };
 
   useFocusEffect(

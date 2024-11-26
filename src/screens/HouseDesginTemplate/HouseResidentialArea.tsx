@@ -11,6 +11,7 @@ import {FONTFAMILY} from '../../theme/theme';
 import CustomButton from '../../components/CustomButton';
 import {useDispatch} from 'react-redux';
 import {pushSubTemplate} from '../../redux/actions/HouseTemplate/SubTemplate';
+import {ScrollView} from 'react-native-gesture-handler';
 
 const HouseResidentialArea: React.FC = () => {
   const route =
@@ -32,6 +33,10 @@ const HouseResidentialArea: React.FC = () => {
       try {
         const data = await getHouseTemplateById(houseId);
         setSubTemplates(data.SubTemplates);
+        console.log(
+          'data.SubTemplates',
+          JSON.stringify(data.SubTemplates, null, 2),
+        );
         if (data.SubTemplates.length > 0) {
           setCurrentTemplate({
             id: data.SubTemplates[0].Id,
@@ -69,6 +74,42 @@ const HouseResidentialArea: React.FC = () => {
     console.log('Selected SubTemplate Id:', template.Id);
   };
 
+  const renderTemplateDetails = () => {
+    if (!currentTemplate) return null;
+
+    const selectedTemplate = subTemplates.find(
+      template => template.Id === currentTemplate.id,
+    );
+
+    if (!selectedTemplate) return null;
+
+    return (
+      <View style={styles.table}>
+        <Text style={styles.sectionTitle}>Thông số</Text>
+        <View style={styles.tableContainer}>
+          <View style={styles.tableRow}>
+            <Text style={styles.tableHeader}>Tên</Text>
+            <Text style={styles.tableHeader}>Hệ số</Text>
+            <Text style={styles.tableHeader}>Diện tích</Text>
+            <Text style={styles.tableHeader}>Giá</Text>
+          </View>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            {selectedTemplate.TemplateItems.map((item: any, index: number) => (
+              <View key={index} style={styles.tableRow}>
+                <Text style={styles.tableCell}>{item.Name}</Text>
+                <Text style={styles.tableCell}>{item.Coefficient}</Text>
+                <Text style={styles.tableCell}>{item.Area}</Text>
+                <Text style={[styles.tableCell, styles.lastTableCell]}>
+                  {item.Price.toLocaleString('vi-VN')}
+                </Text>
+              </View>
+            ))}
+          </ScrollView>
+        </View>
+      </View>
+    );
+  };
+
   return (
     <View style={styles.container}>
       <AppBar nameScreen={name} />
@@ -100,8 +141,17 @@ const HouseResidentialArea: React.FC = () => {
             </TouchableOpacity>
           ))}
         </View>
+        {renderTemplateDetails()}
       </View>
       <View style={styles.buttonContainer}>
+        {currentTemplate && (
+          <Text style={styles.totalRough}>
+            Tổng tiền:{' '}
+            <Text style={styles.totalRoughPrimary}>
+              {currentTemplate.totalRough.toLocaleString('vi-VN')}đ
+            </Text>
+          </Text>
+        )}
         <CustomButton
           title="Tiếp tục"
           colors={
@@ -178,6 +228,47 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginHorizontal: 20,
     marginBottom: 20,
+  },
+  table: {
+    marginTop: 20,
+  },
+  tableContainer: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+  },
+  tableRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+  },
+  tableHeader: {
+    fontFamily: FONTFAMILY.montserat_bold,
+    color: 'black',
+    flex: 1,
+    textAlign: 'center',
+  },
+  tableCell: {
+    fontFamily: FONTFAMILY.montserat_regular,
+    color: 'black',
+    flex: 1,
+    textAlign: 'center',
+    borderRightWidth: 1,
+    borderRightColor: '#ccc',
+  },
+  lastTableCell: {
+    borderRightWidth: 0,
+  },
+  totalRough: {
+    fontFamily: FONTFAMILY.montserat_bold,
+    fontSize: 16,
+    textAlign: 'right',
+    marginTop: 10,
+    color: 'black',
+  },
+  totalRoughPrimary: {
+    color: '#53A6A8',
   },
 });
 

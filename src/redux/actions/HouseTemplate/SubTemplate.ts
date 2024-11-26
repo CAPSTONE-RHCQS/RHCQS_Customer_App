@@ -4,3 +4,9 @@ export const pushSubTemplate = (subTemplateData: any) => {
         payload: subTemplateData,
     };
 };
+
+export const resetDataSubTemplate = () => {
+    return {
+        type: 'resetDataSubTempalte',
+    };
+};

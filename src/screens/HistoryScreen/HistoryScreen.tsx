@@ -20,7 +20,6 @@ const HistoryScreen: React.FC = () => {
         try {
           const profile = await getProfile();
           const projects = await getProjectByEmail(profile.Email);
-          console.log('projects', JSON.stringify(projects, null, 2));
           setProjectHistory(projects);
         } catch (error) {
           console.error('Failed to fetch profile:', error);

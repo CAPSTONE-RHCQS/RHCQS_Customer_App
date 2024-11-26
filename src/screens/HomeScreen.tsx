@@ -66,7 +66,6 @@ const HomeScreen: React.FC = ({}) => {
         setEmail(profile.Email);
         if (fcmToken && email) {
           await sendFCM({deviceToken: fcmToken, email: email});
-          console.log('sendFCM success');
         }
       } catch (error) {
         console.error('Failed to fetch profile:', error);
