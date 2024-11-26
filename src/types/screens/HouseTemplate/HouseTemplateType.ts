@@ -7,6 +7,8 @@ export interface HouseTemplate {
   NumberOfFront: any
   ImgUrl: string
   InsDate: any
+  PackageRoughName: string
+  PackageRoughPrice: number
   SubTemplates: SubTemplate[]
   PackageHouses: PackageHouse[]
   ExteriorsUrls: ExteriorsUrl[]

@@ -21,6 +21,8 @@ const HouseResidentialArea: React.FC = () => {
   const dispatch = useDispatch();
   const navigationApp = useNavigation<AppStackNavigationProp>();
   const [subTemplates, setSubTemplates] = useState<any[]>([]);
+  const [packageRough, setPackageRough] = useState<string>('');
+  const [packageRoughPrice, setPackageRoughPrice] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [currentTemplate, setCurrentTemplate] = useState<{
     id: string;
@@ -32,7 +34,10 @@ const HouseResidentialArea: React.FC = () => {
     const fetchHouseTemplate = async () => {
       try {
         const data = await getHouseTemplateById(houseId);
+        setPackageRough(data.PackageRoughName);
+        setPackageRoughPrice(data.PackageRoughPrice);
         setSubTemplates(data.SubTemplates);
+        console.log('data', JSON.stringify(data, null, 2));
         console.log(
           'data.SubTemplates',
           JSON.stringify(data.SubTemplates, null, 2),
@@ -86,9 +91,20 @@ const HouseResidentialArea: React.FC = () => {
     return (
       <View style={styles.table}>
         <Text style={styles.sectionTitle}>Thông số</Text>
+        <Text style={styles.packageRough}>
+          Gói thi công thô:
+          <Text style={styles.totalRoughPrimary}> {packageRough}</Text>
+        </Text>
+        <Text style={styles.packageRoughPrice}>
+          Giá gói thi công thô:
+          <Text style={styles.totalRoughPrimary}>
+            {' '}
+            {packageRoughPrice.toLocaleString('vi-VN')}đ
+          </Text>
+        </Text>
         <View style={styles.tableContainer}>
           <View style={styles.tableRow}>
-            <Text style={styles.tableHeader}>Tên</Text>
+            <Text style={styles.tableHeader}>Hạng mục</Text>
             <Text style={styles.tableHeader}>Hệ số</Text>
             <Text style={styles.tableHeader}>Diện tích</Text>
             <Text style={styles.tableHeader}>Giá</Text>
@@ -232,6 +248,17 @@ const styles = StyleSheet.create({
   table: {
     marginTop: 20,
   },
+  packageRough: {
+    fontFamily: FONTFAMILY.montserat_medium,
+    fontSize: 14,
+    color: 'black',
+  },
+  packageRoughPrice: {
+    fontFamily: FONTFAMILY.montserat_medium,
+    fontSize: 14,
+    color: 'black',
+    marginBottom: 10,
+  },
   tableContainer: {
     borderWidth: 1,
     borderColor: '#ccc',
@@ -269,6 +296,7 @@ const styles = StyleSheet.create({
   },
   totalRoughPrimary: {
     color: '#53A6A8',
+    fontFamily: FONTFAMILY.montserat_semibold,
   },
 });
 
