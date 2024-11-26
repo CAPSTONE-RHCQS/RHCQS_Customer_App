@@ -59,7 +59,7 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
       case 'Completed':
         return 'Đã hoàn thành';
       case 'Finished':
-        return 'Hoàn tất dự án';
+        return 'Đã kí hợp đồng';
       case 'Canceled':
         return 'Đã hủy';
       default:

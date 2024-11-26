@@ -1,4 +1,11 @@
-import {View, Text, StyleSheet, ScrollView, StatusBar} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  StatusBar,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBar from '../../components/Appbar';
 import Project from '../../components/Project';
@@ -52,7 +59,10 @@ const HistoryScreen: React.FC = () => {
       .sort((a, b) => {
         const [dayA, monthA, yearA] = a.split('-').map(Number);
         const [dayB, monthB, yearB] = b.split('-').map(Number);
-        return new Date(yearB, monthB - 1, dayB).getTime() - new Date(yearA, monthA - 1, dayA).getTime();
+        return (
+          new Date(yearB, monthB - 1, dayB).getTime() -
+          new Date(yearA, monthA - 1, dayA).getTime()
+        );
       })
       .reduce((acc, date) => {
         acc[date] = grouped[date].sort((a, b) => {
@@ -70,19 +80,30 @@ const HistoryScreen: React.FC = () => {
       <AppBar nameScreen="Danh sách dự án" onBackPress={handleBackToHome} />
       <ScrollView>
         <View style={styles.content}>
-          {Object.entries(groupedProjects).map(([date, projects]) => (
-            <View key={date}>
-              <Text style={styles.dateText}>{date}</Text>
-              {projects.map((project, index) => (
-                <Project
-                  key={index}
-                  title={project.Name}
-                  projectCode={project.ProjectCode}
-                  onPress={() => handleProjectPress(project.Id)}
-                />
-              ))}
+          {projectHistory.length === 0 ? (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emptyText}>Bạn chưa có dự án nào !</Text>
+              <TouchableOpacity
+                style={styles.createButton}
+                onPress={() => navigationApp.navigate('Package')}>
+                <Text style={styles.createButtonText}>Tạo dự án mới</Text>
+              </TouchableOpacity>
             </View>
-          ))}
+          ) : (
+            Object.entries(groupedProjects).map(([date, projects]) => (
+              <View key={date}>
+                <Text style={styles.dateText}>{date}</Text>
+                {projects.map((project, index) => (
+                  <Project
+                    key={index}
+                    title={project.Name}
+                    projectCode={project.ProjectCode}
+                    onPress={() => handleProjectPress(project.Id)}
+                  />
+                ))}
+              </View>
+            ))
+          )}
         </View>
       </ScrollView>
     </View>
@@ -104,6 +125,27 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.montserat_bold,
     marginVertical: 10,
     color: '#1F7F81',
+  },
+  emptyContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 300,
+  },
+  emptyText: {
+    fontSize: 18,
+    fontFamily: FONTFAMILY.montserat_bold,
+    color: 'black',
+    marginBottom: 20,
+  },
+  createButton: {
+    paddingHorizontal: 20,
+    borderRadius: 5,
+  },
+  createButtonText: {
+    color: '#3BC0C2FF',
+    fontSize: 20,
+    fontFamily: FONTFAMILY.montserat_bold,
   },
 });
 

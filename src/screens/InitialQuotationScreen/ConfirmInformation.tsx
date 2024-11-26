@@ -72,6 +72,8 @@ const ConfirmInformation: React.FC = () => {
     setAddressError('');
     setProjectNameError('');
 
+    console.log('Submitting with hasDrawing:', hasDrawing);
+
     if (!address) {
       setAddressError('Địa chỉ không được để trống');
     }
@@ -159,8 +161,11 @@ const ConfirmInformation: React.FC = () => {
       },
     );
 
+    console.log('projectData', projectData);
+
     try {
       await createProject(projectData);
+      console.log('projectData', projectData);
       dispatch(resetDataPackage());
       dispatch(resetDataUltilities());
       dispatch(resetDataDetailUltilities());
@@ -193,6 +198,7 @@ const ConfirmInformation: React.FC = () => {
     packageData,
     detailUltilities,
     dispatch,
+    hasDrawing,
   ]);
 
   const fadeAnim = useRef(new Animated.Value(1)).current;
@@ -219,8 +225,11 @@ const ConfirmInformation: React.FC = () => {
   }, [loading, fadeAnim]);
 
   const handleCheckboxToggle = () => {
-    setHasDrawing(prevState => !prevState);
-    console.log('Checkbox state:', !hasDrawing);
+    setHasDrawing(prevState => {
+      const newState = !prevState;
+      console.log('Checkbox state:', newState);
+      return newState;
+    });
   };
 
   return (
