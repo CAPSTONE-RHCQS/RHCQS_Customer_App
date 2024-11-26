@@ -48,6 +48,7 @@ const TrackingScreen: React.FC = () => {
   const [isRequestDesignDialogVisible, setRequestDesignDialogVisible] =
     useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
+  const [isCancelDialogVisible, setCancelDialogVisible] = useState(false);
 
   const fetchProject = async () => {
     try {
@@ -62,15 +63,19 @@ const TrackingScreen: React.FC = () => {
     try {
       const trackingData: TrackingType = await getTracking(projectId);
       setTracking(trackingData);
-      console.log('trackingData', JSON.stringify(trackingData, null, 2));
     } catch (error) {
       console.error('Error fetching tracking data:', error);
     }
   };
 
   const handleCancelInitialQuotation = async () => {
+    setCancelDialogVisible(true);
+  };
+
+  const confirmCancelInitialQuotation = async () => {
     await cancelInitialQuotation(projectId);
     navigationApp.navigate('HistoryScreen');
+    setCancelDialogVisible(false);
   };
 
   const handleHasDesign = () => {
@@ -181,7 +186,8 @@ const TrackingScreen: React.FC = () => {
           tracking.InitialResponse.Status !== 'Finalized' &&
           tracking.InitialResponse.Status !== 'Approved' &&
           tracking.InitialResponse.Status !== 'Reviewing' &&
-          tracking.InitialResponse.Status !== 'Processing' && (
+          tracking.InitialResponse.Status !== 'Processing' &&
+          tracking.InitialResponse.Status !== 'Canceled' && (
             <View style={styles.buttonContainer}>
               <View style={styles.button}>
                 <TouchableOpacity onPress={handleCancelInitialQuotation}>
@@ -222,6 +228,25 @@ const TrackingScreen: React.FC = () => {
             style={styles.dialogButtonClose}
             label="Đóng"
             onPress={closeModal}
+          />
+        </Dialog.Container>
+
+        <Dialog.Container
+          contentStyle={styles.dialogContainer}
+          visible={isCancelDialogVisible}>
+          <Dialog.Title style={styles.dialogTitle}>Xác nhận</Dialog.Title>
+          <Dialog.Description style={styles.dialogDescription}>
+            Bạn có chắc chắn muốn hủy báo giá sơ bộ?
+          </Dialog.Description>
+          <Dialog.Button
+            label="Hủy"
+            onPress={() => setCancelDialogVisible(false)}
+            style={styles.dialogButtonCancel}
+          />
+          <Dialog.Button
+            label="Xác nhận"
+            onPress={confirmCancelInitialQuotation}
+            style={styles.dialogButton}
           />
         </Dialog.Container>
       </View>
@@ -268,6 +293,7 @@ const styles = StyleSheet.create({
   },
   modalText: {
     fontFamily: FONTFAMILY.montserat_medium,
+    color: '#808080FF',
     fontSize: 16,
     marginVertical: 12,
     marginHorizontal: 10,
@@ -288,6 +314,16 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.montserat_regular,
   },
   dialogButtonClose: {
+    color: '#1F7F81',
+    fontFamily: FONTFAMILY.montserat_semibold,
+    textTransform: 'none',
+  },
+  dialogButtonCancel: {
+    color: '#1F7F81',
+    fontFamily: FONTFAMILY.montserat_semibold,
+    textTransform: 'none',
+  },
+  dialogButton: {
     color: '#1F7F81',
     fontFamily: FONTFAMILY.montserat_semibold,
     textTransform: 'none',

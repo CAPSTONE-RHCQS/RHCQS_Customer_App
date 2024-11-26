@@ -178,7 +178,6 @@ export const putConfirmVersionDesign = async (id: string): Promise<any> => {
   try {
     const headers = await getHeaders();
     const response = await axiosInstance.put(`/design/confirm?versionId=${encodeURIComponent(id)}`, null, { headers });
-    console.log('response', response.data);
     return response.data;
   } catch (error) {
     console.error('Error put confirmed version design:', error);

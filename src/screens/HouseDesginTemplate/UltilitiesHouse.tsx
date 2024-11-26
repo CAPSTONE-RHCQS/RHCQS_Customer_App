@@ -26,10 +26,8 @@ const UltilitiesHouse: React.FC = () => {
   const dispatch = useDispatch();
 
   const detailUltilitiesData = useSelector(DetailUltilitiesSelector);
-  console.log(detailUltilitiesData);
   const packageData = useSelector(PackageSelector);
   const totalRough = useSelector(selectTotalRough);
-  console.log('subTemplateData', totalRough);
 
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
   const [ultilities, setUltilities] = useState<UltilitiesType[]>([]);
@@ -47,7 +45,20 @@ const UltilitiesHouse: React.FC = () => {
   useFocusEffect(
     React.useCallback(() => {
       fetchUltilities();
-    }, [packageData]),
+      const calculateTotalPrice = () => {
+        let newTotalPrice = totalRough;
+        checkedItems.forEach(id => {
+          const detail = detailUltilitiesData.find(
+            (detail: any) => detail.id === id,
+          );
+          if (detail) {
+            newTotalPrice += detail.totalPrice;
+          }
+        });
+        setTotalPrice(newTotalPrice);
+      };
+      calculateTotalPrice();
+    }, [packageData, checkedItems, detailUltilitiesData]),
   );
 
   const handleDetailPress = (Id: string) => {
@@ -79,6 +90,7 @@ const UltilitiesHouse: React.FC = () => {
   };
 
   const handleContinuePress = () => {
+    setLoading(true);
     if (checkedItems.length === 0) return;
     navigationApp.navigate('ConfirmInformationHouseTemplate');
 
@@ -91,6 +103,7 @@ const UltilitiesHouse: React.FC = () => {
       .filter(Boolean);
 
     dispatch(pushUltilities({checkedItems: detailedCheckedItems}));
+    setLoading(false);
   };
 
   const formatPrice = (price: number): string => {
@@ -184,14 +197,14 @@ const styles = StyleSheet.create({
   },
   totalPriceText: {
     fontFamily: FONTFAMILY.montserat_semibold,
-    fontSize: 14,
+    fontSize: 16,
     color: 'black',
     textAlign: 'right',
     marginBottom: 10,
   },
   totalPrice: {
     fontFamily: FONTFAMILY.montserat_semibold,
-    fontSize: 14,
+    fontSize: 16,
     color: COLORS.primary,
     textAlign: 'right',
     marginBottom: 10,

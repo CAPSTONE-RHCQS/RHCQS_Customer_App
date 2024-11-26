@@ -47,6 +47,7 @@ const VersionFinalDetail: React.FC = () => {
   const [responseStatus, setResponseStatus] = useState<TrackingType | null>(
     null,
   );
+  const [commentSuccessVisible, setCommentSuccessVisible] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchTracking = async () => {
@@ -99,6 +100,7 @@ const VersionFinalDetail: React.FC = () => {
     if (selectedVersion && selectedVersion.Id) {
       await putComment(selectedVersion.Id, inputValue);
       console.log('Comment sent successfully');
+      setCommentSuccessVisible(true);
     } else {
       console.error('Version ID is missing');
     }
@@ -179,7 +181,6 @@ const VersionFinalDetail: React.FC = () => {
         <Dialog.Description style={styles.dialogDescription}>
           Bạn có chắc chắn muốn yêu cầu bản thiết kế?
         </Dialog.Description>
-
         <Dialog.Button
           label="Hủy"
           onPress={() => {
@@ -192,6 +193,20 @@ const VersionFinalDetail: React.FC = () => {
           onPress={() => {
             setVisible(false);
             navigationApp.navigate('TrackingScreen', {projectId});
+          }}
+          style={styles.dialogButton}
+        />
+      </Dialog.Container>
+
+      <Dialog.Container contentStyle={styles.dialogContainer} visible={commentSuccessVisible}>
+        <Dialog.Title style={styles.dialogTitle}>Thông báo</Dialog.Title>
+        <Dialog.Description style={styles.dialogDescription}>
+          Gửi ghi chú thành công!
+        </Dialog.Description>
+        <Dialog.Button
+          label="Đóng"
+          onPress={() => {
+            setCommentSuccessVisible(false);
           }}
           style={styles.dialogButton}
         />

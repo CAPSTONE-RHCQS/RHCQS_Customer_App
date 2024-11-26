@@ -17,7 +17,6 @@ PushNotification.createChannel(
     importance: 4,
     vibrate: true,
   },
-  created => console.log(`createChannel returned '${created}'`),
 );
 
 messaging().setBackgroundMessageHandler(async remoteMessage => {
@@ -38,15 +37,8 @@ messaging().onMessage(async remoteMessage => {
 
 async function checkNotification() {
   const authStatus = await messaging().requestPermission();
-  const enabled =
     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
-
-  if (enabled) {
-    console.log('Notification permission granted');
-  } else {
-    console.log('Notification permission not granted');
-  }
 }
 
 checkNotification();

@@ -32,23 +32,13 @@ const ConstructionScreen: React.FC = () => {
   // Navigation
   const navigationApp = useNavigation<AppStackNavigationProp>();
   const dispatch = useDispatch();
-
-  // Lấy dữ liệu từ Redux
   const detailConstructionData = useSelector(DetailContructionSelector);
-
   const packageData = useSelector(PackageSelector);
-
-  // State để lưu trữ diện tích đất và diện tích xây dựng
   const [constructionArea, setConstructionArea] = useState('36');
-  // State để lưu trữ số tầng lầu đã chọn
   const [selectedFloors, setSelectedFloors] = useState<number | null>(1);
-  // State để lưu trữ ID các mục đã check
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
-  // State để lưu trữ dữ liệu các mục xây dựng
   const [modalVisible, setModalVisible] = useState(false);
-  // State để lưu trữ dữ liệu các mục xây dựng
   const [buildOptionsData, setBuildOptionsData] = useState<Item[]>([]);
-  // State để lưu trữ tổng tiền
   const [totalPrice, setTotalPrice] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
@@ -65,7 +55,6 @@ const ConstructionScreen: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    // Cập nhật tổng tiền khi detailConstructionData thay đổi
     const updatedTotalPrice = checkedItems.reduce((acc, id) => {
       const detail = detailConstructionData.find(
         (detail: any) => detail.id === id,
@@ -303,10 +292,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     fontSize: 12,
     right: 0,
+    color: '#808080FF',
   },
   noteTextArea: {
     fontFamily: FONTFAMILY.montserat_semibold,
     fontSize: 12,
+    color: '#808080FF',
   },
   floorsSelection: {
     marginTop: 10,

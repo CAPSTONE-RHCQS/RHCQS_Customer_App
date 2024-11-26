@@ -41,7 +41,6 @@ const Promotion: React.FC<ExpandableListProps> = ({
     setSelectedPromotionId(id);
     const selectedPromotion = promotions.find(promotion => promotion.Id === id);
     if (selectedPromotion) {
-      console.log('Selected Promotion:', selectedPromotion);
     }
     onDetailPress(id);
   };

@@ -25,7 +25,6 @@ export const uploadImage = async (imageUri: string) => {
                 }
             }
         );
-        console.log("Response from API:", response.data);
         return response.data.url;
     } catch (error) {
         throw error;

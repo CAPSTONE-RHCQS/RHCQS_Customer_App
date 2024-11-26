@@ -15,7 +15,7 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
 
-  const isPressable = status !== 'Pending';
+  const isPressable = status !== 'Pending' && status !== 'Canceled';
 
   const getStatusColor = (status: string | undefined) => {
     switch (status) {

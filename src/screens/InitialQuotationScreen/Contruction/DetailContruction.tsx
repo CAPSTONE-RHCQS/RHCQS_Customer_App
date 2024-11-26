@@ -27,7 +27,7 @@ const DetailContruction: React.FC = () => {
 
   const detailConstructionData = useSelector(DetailContructionSelector);
   const packageData = useSelector(PackageSelector);
-  const [area, setArea] = useState('');
+  const [area, setArea] = useState('36');
   const [coefficient, setCoefficient] = useState(0);
   const [constructionData, setConstructionData] = useState<
     SubConstructionItem[]

@@ -74,8 +74,7 @@ const Hasdesign: React.FC = () => {
         ElectricityWaterImage: electricityWaterImages,
       };
 
-      const response = await createProjectHaveDesign(projectData);
-      console.log('Project created successfully:', response);
+      await createProjectHaveDesign(projectData);
       setVisible(true);
     } catch (error) {
       console.error('Error creating project:', error);
