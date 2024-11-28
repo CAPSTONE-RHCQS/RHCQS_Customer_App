@@ -1,5 +1,3 @@
-import { SubConstructionItem } from '../types/screens/Contruction/ContructionType';
-
 export const sliderData = [
   {
     image: require('../assets/image/banner/1x/Banner_hoan_thien-100.jpg'),
@@ -19,37 +17,16 @@ export const profileData = [
 export const newsData = [
   {
     id: 1,
-    heading: 'Đổ Bê Tông Sàn Lầu 2 Tại Công Trình RHCQs Thủ Đức',
-    subHeading: 'Đổ Bê Tông Sàn Lầu 2 Tại Công Trình RHCQs Thủ Đức',
-    image: require('../assets/image/banner/1x/Banner_hoan_thien-100.jpg'),
+    heading: 'Thành phố Hồ Chí Minh: Giảm lãi suất cho công chức, viên chức vay mua nhà còn 3,2%/năm',
+    subHeading: 'Thành phố Hồ Chí Minh: Giảm lãi suất cho công chức, viên chức vay mua nhà còn 3,2%/năm',
+    image: require('../assets/image/banner/1x/news1.jpg'),
     description: 'ádfasdfasdfasdfasdfasdfasdfasdfa'
   },
   {
     id: 2,
-    heading: 'Đổ Bê Tông Sàn Lầu 2 Tại Công Trình RHCQs Thủ Đức',
-    subHeading: 'Đổ Bê Tông Sàn Lầu 2 Tại Công Trình RHCQs Thủ Đức',
-    image: require('../assets/image/banner/1x/Banner_hoan_thien-100.jpg'),
-    description: 'ádfasdfasdfasdfasdfasdfasdfasdfa'
-  },
-  {
-    id: 3,
-    heading: 'Đổ Bê Tông Sàn Lầu 2 Tại Công Trình RHCQs Thủ Đức',
-    subHeading: 'Đổ Bê Tông Sàn Lầu 2 Tại Công Trình RHCQs Thủ Đức',
-    image: require('../assets/image/banner/1x/Banner_hoan_thien-100.jpg'),
-    description: 'ádfasdfasdfasdfasdfasdfasdfasdfa'
-  },
-  {
-    id: 4,
-    heading: 'Đổ Bê Tông Sàn Lầu 2 Tại Công Trình RHCQs Thủ Đức',
-    subHeading: 'Đổ Bê Tông Sàn Lầu 2 Tại Công Trình RHCQs Thủ Đức',
-    image: require('../assets/image/banner/1x/Banner_hoan_thien-100.jpg'),
-    description: 'ádfasdfasdfasdfasdfasdfasdfasdfa'
-  },
-  {
-    id: 5,
-    heading: 'Đổ Bê Tông Sàn Lầu 2 Tại Công Trình RHCQs Thủ Đức',
-    subHeading: 'Đổ Bê Tông Sàn Lầu 2 Tại Công Trình RHCQs Thủ Đức',
-    image: require('../assets/image/banner/1x/Banner_hoan_thien-100.jpg'),
+    heading: 'Điều kiện áp dụng hình thức giao đất không thu tiền sử dụng đất',
+    subHeading: 'Điều kiện áp dụng hình thức giao đất không thu tiền sử dụng đất',
+    image: require('../assets/image/banner/1x/news2.jpg'),
     description: 'ádfasdfasdfasdfasdfasdfasdfasdfa'
   }
 ]
