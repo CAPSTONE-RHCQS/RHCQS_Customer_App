@@ -34,7 +34,7 @@ const ConstructionScreen: React.FC = () => {
   const dispatch = useDispatch();
   const detailConstructionData = useSelector(DetailContructionSelector);
   const packageData = useSelector(PackageSelector);
-  const [constructionArea, setConstructionArea] = useState('36');
+  const [constructionArea, setConstructionArea] = useState('');
   const [selectedFloors, setSelectedFloors] = useState<number | null>(1);
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
@@ -63,6 +63,11 @@ const ConstructionScreen: React.FC = () => {
     }, 0);
     setTotalPrice(updatedTotalPrice);
   }, [detailConstructionData, checkedItems]);
+
+  const handleAreaChange = (value: string) => {
+    setConstructionArea(value);
+    AsyncStorage.setItem('constructionArea', value);
+  };
 
   const handleDetailPress = (Name: string) => {
     navigationApp.navigate('DetailContruction', {Name});
@@ -97,6 +102,7 @@ const ConstructionScreen: React.FC = () => {
   };
 
   const handleBack = () => {
+    AsyncStorage.removeItem('constructionArea');
     dispatch(resetDataDetailConstruction());
     dispatch(resetDataConstruction());
     navigationApp.goBack();
@@ -178,7 +184,7 @@ const ConstructionScreen: React.FC = () => {
           <InputField
             name="Diện tích xây dựng"
             value={constructionArea}
-            onChangeText={setConstructionArea}
+            onChangeText={handleAreaChange}
             placeholder="90"
             keyboardType="numeric"
             isRequired={true}

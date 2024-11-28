@@ -27,7 +27,7 @@ const DetailContruction: React.FC = () => {
 
   const detailConstructionData = useSelector(DetailContructionSelector);
   const packageData = useSelector(PackageSelector);
-  const [area, setArea] = useState('36');
+  const [area, setArea] = useState('');
   const [coefficient, setCoefficient] = useState(0);
   const [constructionData, setConstructionData] = useState<
     SubConstructionItem[]
@@ -40,7 +40,9 @@ const DetailContruction: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const roughPackagePrice = packageData.roughPackagePrice;
   const hasSubConstructionItems = constructionData.length > 0;
-  const constructionArea = area ? parseFloat(area) * coefficient : 0;
+  const constructionArea = isNaN(parseFloat(area)) || isNaN(coefficient)
+    ? 0
+    : parseFloat(area) * coefficient;
   const unitPrice = hasSubConstructionItems
     ? roughPackagePrice
     : roughPackagePrice;
@@ -53,31 +55,29 @@ const DetailContruction: React.FC = () => {
         setConstructionId(data.Id);
         setConstructionData(data.SubConstructionItems || []);
         if (data.SubConstructionItems && data.SubConstructionItems.length > 0) {
-          // Lấy hệ số của các item
-          const initialCoefficients =
-            data.SubConstructionItems.reduce((acc, item) => {
+          const initialCoefficients = data.SubConstructionItems.reduce(
+            (acc, item) => {
               acc[item.Id] = item.Coefficient;
               return acc;
-            }, {} as {[key: string]: number}) || {};
+            },
+            {} as {[key: string]: number}
+          );
           setCoefficients(initialCoefficients);
 
-          // Kiểm tra xem có checkedItems đã lưu không
           const savedCheckedItems = await AsyncStorage.getItem(
-            'checkedItemsStereobate',
+            `checkedItems_${Name}`
           );
           if (savedCheckedItems) {
             const parsedCheckedItems = JSON.parse(savedCheckedItems);
             setCheckedItems(parsedCheckedItems);
 
-            // Tìm hệ số đầu tiên được check
             const checkedId = Object.keys(parsedCheckedItems).find(
-              id => parsedCheckedItems[id],
+              id => parsedCheckedItems[id]
             );
             if (checkedId) {
               setCoefficient(initialCoefficients[checkedId]);
             }
           } else {
-            // Nếu không có checkedItems đã lưu, chọn checkbox đầu tiên
             const firstItemId = data.SubConstructionItems[0].Id;
             setCheckedItems({[firstItemId]: true});
             setCoefficient(initialCoefficients[firstItemId]);
@@ -90,15 +90,19 @@ const DetailContruction: React.FC = () => {
       }
     };
 
-    // Khôi phục dữ liệu từ detailConstructionData
-    const restoreData = () => {
+    const restoreData = async () => {
       const existingData = detailConstructionData.find(
-        (item: any) => item.name === Name,
+        (item: any) => item.name === Name
       );
       if (existingData) {
         setArea(existingData.area);
         setCheckedItems({[existingData.checkedItems]: true});
         setCoefficient(existingData.coefficient);
+      } else {
+        const storedArea = await AsyncStorage.getItem('constructionArea');
+        if (storedArea) {
+          setArea(storedArea);
+        }
       }
     };
 
@@ -124,7 +128,7 @@ const DetailContruction: React.FC = () => {
         id: constructionId,
         name: Name,
         totalPrice: totalPrice,
-        area: area,
+        area: constructionArea.toFixed(0),
         ...(checkedItemName && {checkedItemName}),
         ...(selectedItemId && {checkedItems: selectedItemId}),
         coefficient: coefficient,
@@ -141,9 +145,8 @@ const DetailContruction: React.FC = () => {
     setCheckedItems(newCheckedItems);
     setCoefficient(coefficients[id]);
 
-    // Lưu các mục đã được check vào storage
     await AsyncStorage.setItem(
-      'checkedItemsStereobate',
+      `checkedItems_${Name}`,
       JSON.stringify(newCheckedItems),
     );
   };
@@ -200,7 +203,7 @@ const DetailContruction: React.FC = () => {
         </View>
         <View style={styles.titleGroup}>
           <Text style={styles.title}>Diện tích xây dựng</Text>
-          <Text style={styles.price}>{area} m²</Text>
+          <Text style={styles.price}>{constructionArea.toFixed(0)} m²</Text>
         </View>
         <View style={styles.titleGroup}>
           <Text style={styles.title}>Đơn giá</Text>

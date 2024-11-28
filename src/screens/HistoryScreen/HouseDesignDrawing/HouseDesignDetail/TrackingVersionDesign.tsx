@@ -7,6 +7,8 @@ import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import {AppStackNavigationProp, AppStackParamList} from '@/types/TypeScreen';
 import {TrackingVersionDesignType} from '@/types/screens/History/HistoryType';
 import {FONTFAMILY} from '../../../../theme/theme';
+import {useFocusEffect} from '@react-navigation/native';
+
 interface FormattedDesignData {
   title: string;
   status: string;
@@ -54,9 +56,11 @@ const TrackingVersionDesign: React.FC = () => {
     }
   }, [projectId, navigation]);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
+  useFocusEffect(
+    useCallback(() => {
+      fetchData();
+    }, [fetchData])
+  );
 
   return (
     <View style={styles.container}>

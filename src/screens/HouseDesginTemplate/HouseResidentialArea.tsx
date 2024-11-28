@@ -109,18 +109,16 @@ const HouseResidentialArea: React.FC = () => {
             <Text style={styles.tableHeader}>Diện tích</Text>
             <Text style={styles.tableHeader}>Giá</Text>
           </View>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {selectedTemplate.TemplateItems.map((item: any, index: number) => (
-              <View key={index} style={styles.tableRow}>
-                <Text style={styles.tableCell}>{item.Name}</Text>
-                <Text style={styles.tableCell}>{item.Coefficient}</Text>
-                <Text style={styles.tableCell}>{item.Area}</Text>
-                <Text style={[styles.tableCell, styles.lastTableCell]}>
-                  {item.Price.toLocaleString('vi-VN')}
-                </Text>
-              </View>
-            ))}
-          </ScrollView>
+          {selectedTemplate.TemplateItems.map((item: any, index: number) => (
+            <View key={index} style={styles.tableRow}>
+              <Text style={styles.tableCell}>{item.Name}</Text>
+              <Text style={styles.tableCell}>{item.Coefficient}</Text>
+              <Text style={styles.tableCell}>{item.Area}</Text>
+              <Text style={[styles.tableCell, styles.lastTableCell]}>
+                {item.Price.toLocaleString('vi-VN')}
+              </Text>
+            </View>
+          ))}
         </View>
       </View>
     );
@@ -129,7 +127,7 @@ const HouseResidentialArea: React.FC = () => {
   return (
     <View style={styles.container}>
       <AppBar nameScreen={name} />
-      <View style={styles.content}>
+      <ScrollView style={styles.content}>
         <View style={styles.ImageSize}>
           {currentTemplate?.url && (
             <Image source={{uri: currentTemplate.url}} style={styles.image} />
@@ -158,7 +156,7 @@ const HouseResidentialArea: React.FC = () => {
           ))}
         </View>
         {renderTemplateDetails()}
-      </View>
+      </ScrollView>
       <View style={styles.buttonContainer}>
         {currentTemplate && (
           <Text style={styles.totalRough}>

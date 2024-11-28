@@ -31,10 +31,9 @@ const LoginScreen: React.FC = () => {
     try {
       await login(email, password);
       setSuccessMessage('Đăng nhập thành công!');
-      setErrorMessage('');
     } catch (error: any) {
+      console.log(error);
       setErrorMessage(error.message);
-      setSuccessMessage('');
     } finally {
       setIsButtonDisabled(false);
     }
@@ -176,6 +175,7 @@ const styles = StyleSheet.create({
     height: 20,
   },
   errorText: {
+    fontFamily: FONTFAMILY.montserat_semibold,
     color: 'red',
     marginTop: 10,
     textAlign: 'center',

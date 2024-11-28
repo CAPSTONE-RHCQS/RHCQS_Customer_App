@@ -45,10 +45,7 @@ const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
       await AsyncStorage.setItem('accessToken', Token);
       return response.data;
     } catch (error: any) {
-      const errorMessage =
-        error.response?.data?.message || 'Login failed. Please try again.';
-      console.error('Login error:', errorMessage);
-      throw new Error('Login failed: ' + errorMessage);
+      throw new Error(error.response?.data?.Error);
     } finally {
       setIsLoading(false);
     }

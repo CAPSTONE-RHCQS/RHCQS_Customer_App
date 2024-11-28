@@ -15,7 +15,7 @@ import CustomButton from '../../../components/CustomButton';
 import storage from '../../../utils/storage';
 import {pushDetailUltilities} from '../../../redux/actions/Ultilities/DetailUltilitiesAction';
 import InputField from '../../../components/InputField';
-import { DetailUltilitiesSelector } from '../../../redux/selectors/UltilitiesSelector/DetailUltilitiesSelector/DetailUltilitiesSelector';
+import {DetailUltilitiesSelector} from '../../../redux/selectors/UltilitiesSelector/DetailUltilitiesSelector/DetailUltilitiesSelector';
 
 const DetailUltilities: React.FC = () => {
   // route
@@ -39,6 +39,7 @@ const DetailUltilities: React.FC = () => {
   useEffect(() => {
     const fetchUltilitiesOption = async () => {
       const data = await getUltilitiesSectionById(Id);
+      console.log(data);
       setSectionData(data);
       if (data?.Items && data.Items.length > 0) {
         const initialCoefficients = data.Items.reduce((acc, item) => {
@@ -49,7 +50,7 @@ const DetailUltilities: React.FC = () => {
 
         // Kiểm tra trong detailUltilitiesData
         const existingItem = detailUltilitiesData.find(
-          (item: any) => item.id === Id
+          (item: any) => item.id === Id,
         );
 
         if (existingItem) {
@@ -156,12 +157,24 @@ const DetailUltilities: React.FC = () => {
             </>
           ) : (
             <>
-              <InputField
-                placeholder="Nhập diện tích"
-                value={quantity}
-                onChangeText={setQuantity}
-                name=""
-              />
+              {[
+                'Chi phí bản vẽ hoàn công',
+                'Combo Hạch Toán',
+                'Combo giấy phép',
+                'Chi phí bản vẽ xin phép xây dựng',
+              ].includes(sectionData.Name) ? (
+                <>
+                  <Text style={styles.fixedQuantityText}>Số lượng: 1</Text>
+                  <Separator />
+                </>
+              ) : (
+                <InputField
+                  placeholder="Nhập diện tích"
+                  value={quantity}
+                  onChangeText={setQuantity}
+                  name=""
+                />
+              )}
               <View style={styles.titleGroup}>
                 <Text style={styles.title}>Đơn giá</Text>
                 <Text style={styles.price}>
@@ -272,6 +285,12 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginHorizontal: 20,
     marginBottom: 30,
+  },
+  fixedQuantityText: {
+    fontFamily: FONTFAMILY.montserat_medium,
+    marginTop: 10,
+    marginHorizontal: 10,
+    color: 'black',
   },
 });
 

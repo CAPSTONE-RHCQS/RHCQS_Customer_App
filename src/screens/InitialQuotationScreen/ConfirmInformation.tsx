@@ -25,6 +25,7 @@ import {
 import {PromotionSelector} from '../../redux/selectors/Promotion/PromotionSelector';
 import Checkbox from '../../components/Checkbox';
 import Separator from '../../components/Separator';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ConfirmInformation: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
@@ -166,6 +167,8 @@ const ConfirmInformation: React.FC = () => {
     try {
       await createProject(projectData);
       console.log('projectData', projectData);
+      AsyncStorage.removeItem('constructionArea');
+      AsyncStorage.removeItem('checkedItemsConstruction');
       dispatch(resetDataPackage());
       dispatch(resetDataUltilities());
       dispatch(resetDataDetailUltilities());

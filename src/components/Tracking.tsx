@@ -27,6 +27,8 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
         return '#0000FF';
       case 'Reviewing':
         return '#0000FF';
+      case 'Rejected':
+        return '#0000FF';
       case 'Ended':
         return '#B96969FF';
       case 'Finalized':
@@ -51,6 +53,8 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
       case 'Approved':
         return 'Đang xử lý';
       case 'Reviewing':
+        return 'Đang xử lý';
+      case 'Rejected':
         return 'Đang xử lý';
       case 'Ended':
         return 'Đã chỉnh sửa';
