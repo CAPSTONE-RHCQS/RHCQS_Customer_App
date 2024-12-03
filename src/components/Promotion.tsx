@@ -31,16 +31,11 @@ const Promotion: React.FC<ExpandableListProps> = ({
   const [expanded, setExpanded] = useState(false);
   const [selectedPromotionId, setSelectedPromotionId] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (promotions.length > 0) {
-      setSelectedPromotionId(promotions[0].Id);
-    }
-  }, [promotions]);
-
   const handleCheckboxPress = (id: string) => {
-    setSelectedPromotionId(id);
-    const selectedPromotion = promotions.find(promotion => promotion.Id === id);
-    if (selectedPromotion) {
+    if (selectedPromotionId === id) {
+      setSelectedPromotionId(null);
+    } else {
+      setSelectedPromotionId(id);
     }
     onDetailPress(id);
   };

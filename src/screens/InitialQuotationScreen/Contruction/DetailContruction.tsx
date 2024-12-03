@@ -8,7 +8,7 @@ import AppBar from '../../../components/Appbar';
 import InputField from '../../../components/InputField';
 import Separator from '../../../components/Separator';
 import CustomButton from '../../../components/CustomButton';
-import {getConstructionByName} from '../../../api/Contruction/Contruction';
+import {getConstructionById} from '../../../api/Contruction/Contruction';
 import {SubConstructionItem} from '../../../types/screens/Contruction/ContructionType';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Checkbox from '../../../components/Checkbox';
@@ -20,7 +20,7 @@ import {DetailContructionSelector} from '../../../redux/selectors/ContructionSel
 
 const DetailContruction: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'DetailContruction'>>();
-  const {Name} = route.params;
+  const {Id} = route.params;
   const navigationContruction =
     useNavigation<NativeStackNavigationProp<AppStackParamList>>();
   const dispatch = useDispatch();
@@ -38,11 +38,13 @@ const DetailContruction: React.FC = () => {
   );
   const [constructionId, setConstructionId] = useState('');
   const [loading, setLoading] = useState(false);
+  const [checkedItemName, setCheckedItemName] = useState('');
   const roughPackagePrice = packageData.roughPackagePrice;
   const hasSubConstructionItems = constructionData.length > 0;
-  const constructionArea = isNaN(parseFloat(area)) || isNaN(coefficient)
-    ? 0
-    : parseFloat(area) * coefficient;
+  const constructionArea =
+    isNaN(parseFloat(area)) || isNaN(coefficient)
+      ? 0
+      : parseFloat(area) * coefficient;
   const unitPrice = hasSubConstructionItems
     ? roughPackagePrice
     : roughPackagePrice;
@@ -50,9 +52,10 @@ const DetailContruction: React.FC = () => {
 
   useEffect(() => {
     const fetchConstructionOption = async () => {
-      const data = await getConstructionByName(Name);
+      const data = await getConstructionById(Id);
       if (data) {
         setConstructionId(data.Id);
+        setCheckedItemName(data.Name);
         setConstructionData(data.SubConstructionItems || []);
         if (data.SubConstructionItems && data.SubConstructionItems.length > 0) {
           const initialCoefficients = data.SubConstructionItems.reduce(
@@ -60,19 +63,19 @@ const DetailContruction: React.FC = () => {
               acc[item.Id] = item.Coefficient;
               return acc;
             },
-            {} as {[key: string]: number}
+            {} as {[key: string]: number},
           );
           setCoefficients(initialCoefficients);
 
           const savedCheckedItems = await AsyncStorage.getItem(
-            `checkedItems_${Name}`
+            `checkedItems_${Id}`,
           );
           if (savedCheckedItems) {
             const parsedCheckedItems = JSON.parse(savedCheckedItems);
             setCheckedItems(parsedCheckedItems);
 
             const checkedId = Object.keys(parsedCheckedItems).find(
-              id => parsedCheckedItems[id]
+              id => parsedCheckedItems[id],
             );
             if (checkedId) {
               setCoefficient(initialCoefficients[checkedId]);
@@ -92,7 +95,7 @@ const DetailContruction: React.FC = () => {
 
     const restoreData = async () => {
       const existingData = detailConstructionData.find(
-        (item: any) => item.name === Name
+        (item: any) => item.id === Id,
       );
       if (existingData) {
         setArea(existingData.area);
@@ -108,7 +111,7 @@ const DetailContruction: React.FC = () => {
 
     fetchConstructionOption();
     restoreData();
-  }, [Name, detailConstructionData]);
+  }, [Id, detailConstructionData]);
 
   const handleContinuePress = async () => {
     await AsyncStorage.setItem('totalPrice', totalPrice.toString());
@@ -126,9 +129,9 @@ const DetailContruction: React.FC = () => {
     dispatch(
       pushDetailConstruction({
         id: constructionId,
-        name: Name,
+        name: checkedItemName,
         totalPrice: totalPrice,
-        area: constructionArea.toFixed(0),
+        area: area,
         ...(checkedItemName && {checkedItemName}),
         ...(selectedItemId && {checkedItems: selectedItemId}),
         coefficient: coefficient,
@@ -146,7 +149,7 @@ const DetailContruction: React.FC = () => {
     setCoefficient(coefficients[id]);
 
     await AsyncStorage.setItem(
-      `checkedItems_${Name}`,
+      `checkedItems_${Id}`,
       JSON.stringify(newCheckedItems),
     );
   };
@@ -179,7 +182,7 @@ const DetailContruction: React.FC = () => {
     <View style={styles.container}>
       <AppBar nameScreen="Tính chi phí xây dựng thô" />
       <View style={styles.noteContainer}>
-        <Text style={styles.titleText}>{Name}</Text>
+        <Text style={styles.titleText}>{checkedItemName}</Text>
         <Text style={styles.noteText}> *</Text>
       </View>
       <View style={styles.bodyContainer}>

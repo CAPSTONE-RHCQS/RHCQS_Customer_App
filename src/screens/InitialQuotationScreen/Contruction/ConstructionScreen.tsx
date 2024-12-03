@@ -69,8 +69,8 @@ const ConstructionScreen: React.FC = () => {
     AsyncStorage.setItem('constructionArea', value);
   };
 
-  const handleDetailPress = (Name: string) => {
-    navigationApp.navigate('DetailContruction', {Name});
+  const handleDetailPress = (Id: string) => {
+    navigationApp.navigate('DetailContruction', {Id});
   };
 
   const handleCheckBoxPress = async (id: string, price: number) => {
@@ -157,7 +157,7 @@ const ConstructionScreen: React.FC = () => {
           price={formattedPrice}
           area={formattedArea}
           unit={option.Unit}
-          onDetailPress={() => handleDetailPress(option.Name)}
+          onDetailPress={() => handleDetailPress(option.Id)}
           isChecked={checkedItems.includes(option.Id)}
           onCheckBoxPress={() => handleCheckBoxPress(option.Id, displayPrice)}
         />

@@ -26,7 +26,7 @@ const TrackingVersionDesign: React.FC = () => {
   const route =
     useRoute<RouteProp<AppStackParamList, 'TrackingVersionDesign'>>();
   const {projectId} = route.params;
-
+  console.log('projectId', projectId);
   const [designData, setDesignData] = useState<FormattedDesignData[]>([]);
 
   const fetchData = useCallback(async () => {
@@ -34,7 +34,6 @@ const TrackingVersionDesign: React.FC = () => {
       const data: TrackingVersionDesignType[] = await getVersionDesignDetail(
         projectId,
       );
-      console.log(JSON.stringify(data, null, 2));
       const formattedData = data.map(item => ({
         title: item.Name,
         status: item.Status,

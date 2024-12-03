@@ -15,7 +15,7 @@ export type AppStackParamList = {
   Package: undefined;
   HasDesignScreen: { projectId: string };
   ConfirmInformation: undefined;
-  DetailContruction: { Name: string };
+  DetailContruction: { Id: string };
   // History
   HistoryScreen: undefined;
   TrackingScreen: { projectId: string };

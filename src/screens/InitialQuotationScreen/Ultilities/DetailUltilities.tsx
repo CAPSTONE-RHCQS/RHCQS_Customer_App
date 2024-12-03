@@ -39,7 +39,6 @@ const DetailUltilities: React.FC = () => {
   useEffect(() => {
     const fetchUltilitiesOption = async () => {
       const data = await getUltilitiesSectionById(Id);
-      console.log(data);
       setSectionData(data);
       if (data?.Items && data.Items.length > 0) {
         const initialCoefficients = data.Items.reduce((acc, item) => {

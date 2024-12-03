@@ -48,6 +48,7 @@ const ConfirmInformation: React.FC = () => {
   const constructionData = useSelector(ContructionSelector);
   const packageData = useSelector(PackageSelector);
   const promotionData = useSelector(PromotionSelector);
+  console.log('promotionData', promotionData);
   const detailUltilities = useSelector(
     (state: any) => state.detailUltilities || [],
   );
@@ -145,10 +146,12 @@ const ConfirmInformation: React.FC = () => {
       initialQuotation: {
         initialQuotationItemRequests,
       },
-      promotion: {
-        id: promotionData.promotionId,
-        discount: promotionData.discount,
-      },
+      promotion: promotionData.promotionId
+        ? {
+            id: promotionData.promotionId,
+            discount: promotionData.discount,
+          }
+        : null,
       quotationUtilitiesRequest,
       isDrawing: hasDrawing,
     };

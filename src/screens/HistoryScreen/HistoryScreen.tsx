@@ -5,6 +5,7 @@ import {
   ScrollView,
   StatusBar,
   TouchableOpacity,
+  BackHandler,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBar from '../../components/Appbar';
@@ -33,6 +34,17 @@ const HistoryScreen: React.FC = () => {
         }
       };
       fetchProfile();
+
+      const onBackPress = () => {
+        navigationApp.navigate('HomeScreen');
+        return true; // Prevent default back action
+      };
+
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+      };
     }, []),
   );
 

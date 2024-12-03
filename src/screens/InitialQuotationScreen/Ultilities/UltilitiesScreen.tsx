@@ -27,6 +27,10 @@ import {PromotionType} from '../../../types/screens/Promotion/Promotion';
 import {getPromotion} from '../../../api/Promotion/Promotion';
 import Promotion from '../../../components/Promotion';
 import {pushPromotion} from '../../../redux/actions/Promotion/PromotionAction';
+import {
+  resetDataDetailUltilities,
+  resetDataUltilities,
+} from '../../../redux/actions/reset/resetData';
 
 const UltilitiesScreen: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
@@ -135,6 +139,13 @@ const UltilitiesScreen: React.FC = () => {
     });
   };
 
+  const handleBack = () => {
+    AsyncStorage.removeItem('constructionArea');
+    dispatch(resetDataDetailUltilities());
+    dispatch(resetDataUltilities());
+    navigationApp.goBack();
+  };
+
   const handleContinuePress = () => {
     if (checkedItems.length === 0) return;
     navigationApp.navigate('ConfirmInformation');
@@ -178,14 +189,24 @@ const UltilitiesScreen: React.FC = () => {
   };
 
   const handlePromotionSelect = (promotionId: string) => {
-    if (selectedPromotionId === promotionId && promotion.length === 1) {
-      return;
-    }
-
-    const selectedPromotion = promotion.find(promo => promo.Id === promotionId);
-    if (selectedPromotion) {
-      setSelectedPromotionValue(selectedPromotion.Value);
-      setSelectedPromotionId(selectedPromotion.Id);
+    if (selectedPromotionId === promotionId) {
+      setSelectedPromotionValue(0);
+      setSelectedPromotionId(null);
+      dispatch(pushPromotion({promotionId: null, discount: 0}));
+    } else {
+      const selectedPromotion = promotion.find(
+        promo => promo.Id === promotionId,
+      );
+      if (selectedPromotion) {
+        setSelectedPromotionValue(selectedPromotion.Value);
+        setSelectedPromotionId(selectedPromotion.Id);
+        dispatch(
+          pushPromotion({
+            promotionId: selectedPromotion.Id,
+            discount: calculateDiscount(),
+          }),
+        );
+      }
     }
   };
 
@@ -249,17 +270,9 @@ const UltilitiesScreen: React.FC = () => {
 
   const isContinueButtonEnabled = checkedItems.length > 0;
 
-  useEffect(() => {
-    if (promotion.length > 0 && !selectedPromotionId) {
-      const firstPromotion = promotion[0];
-      setSelectedPromotionValue(firstPromotion.Value);
-      setSelectedPromotionId(firstPromotion.Id);
-    }
-  }, [promotion]);
-
   return (
     <View style={styles.container}>
-      <AppBar nameScreen="Tính chi phí xây dựng" />
+      <AppBar nameScreen="Tính chi phí xây dựng" onBackPress={handleBack} />
       {packageData.selectedRoughType === undefined &&
         packageData.selectedCompleteType === 'FINISHED' && (
           <View style={styles.inputContainer}>
