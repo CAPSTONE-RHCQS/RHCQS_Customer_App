@@ -43,7 +43,6 @@ const ChatScreen: React.FC = () => {
     const fetchProfile = async () => {
       try {
         const profile = await getProfile();
-        console.log('Profile fetched:', profile);
         setCustomerName(profile.Username);
         setIsProfileFetched(true);
       } catch (error) {

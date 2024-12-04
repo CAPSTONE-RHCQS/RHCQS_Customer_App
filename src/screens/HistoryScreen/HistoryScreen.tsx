@@ -49,7 +49,6 @@ const HistoryScreen: React.FC = () => {
   );
 
   const handleProjectPress = (projectId: string) => {
-    console.log('Project ID:', projectId);
     navigationApp.navigate('TrackingScreen', {projectId});
   };
 

@@ -8,6 +8,7 @@ import {
   Image,
   ActivityIndicator,
   Dimensions,
+  Keyboard,
 } from 'react-native';
 import {RouteProp, useRoute, useNavigation} from '@react-navigation/native';
 import {AppStackParamList} from '../../../../types/TypeScreen';
@@ -41,6 +42,7 @@ const DetailVersionDesign: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [pdfUri, setPdfUri] = useState<string | null>(null);
+  const [commentSuccessVisible, setCommentSuccessVisible] = useState<boolean>(false);
 
   const fetchVersionDetail = async () => {
     try {
@@ -48,7 +50,6 @@ const DetailVersionDesign: React.FC = () => {
       const data: TrackingVersionDesignType[] = await getVersionDesignDetail(
         projectId,
       );
-      console.log('data', projectId);
       for (const item of data) {
         const foundVersion = item.Versions.find(v => v.Id === versionId);
         if (foundVersion) {
@@ -59,7 +60,6 @@ const DetailVersionDesign: React.FC = () => {
           if (foundVersion.FileUrl) {
             const pdfPath = await downloadPdf(foundVersion.FileUrl);
             setPdfUri(pdfPath);
-            console.log('pdfPath', pdfPath);
           }
           break;
         }
@@ -87,12 +87,13 @@ const DetailVersionDesign: React.FC = () => {
 
   useEffect(() => {
     fetchVersionDetail();
-    console.log('versionDetail', versionId);
   }, [projectId, versionId]);
 
   const handlePutComment = () => {
     putCommentVersionDesign(versionId, inputValue).then(() => {
       setInputValue('');
+      setCommentSuccessVisible(true);
+      Keyboard.dismiss();
       fetchVersionDetail();
     });
   };
@@ -180,6 +181,18 @@ const DetailVersionDesign: React.FC = () => {
           onPress={() => {
             handlePutConfirmed();
           }}
+          style={styles.dialogButton}
+        />
+      </Dialog.Container>
+
+      <Dialog.Container contentStyle={styles.dialogContainer} visible={commentSuccessVisible}>
+        <Dialog.Title style={styles.dialogTitle}>Thông báo</Dialog.Title>
+        <Dialog.Description style={styles.dialogDescription}>
+          Ghi chú đã được gửi thành công.
+        </Dialog.Description>
+        <Dialog.Button
+          label="Đóng"
+          onPress={() => setCommentSuccessVisible(false)}
           style={styles.dialogButton}
         />
       </Dialog.Container>

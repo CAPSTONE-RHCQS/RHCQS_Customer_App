@@ -63,7 +63,6 @@ const TrackingScreen: React.FC = () => {
     try {
       const trackingData: TrackingType = await getTracking(projectId);
       setTracking(trackingData);
-      console.log('trackingData', trackingData);
     } catch (error) {
       console.error('Error fetching tracking data:', error);
     }

@@ -7,6 +7,7 @@ import {
   Dimensions,
   TextInput,
   TouchableOpacity,
+  Keyboard,
 } from 'react-native';
 import AppBar from '../../../components/Appbar';
 import {RouteProp, useRoute} from '@react-navigation/native';
@@ -99,8 +100,9 @@ const VersionFinalDetail: React.FC = () => {
   const handlePutComment = useCallback(async () => {
     if (selectedVersion && selectedVersion.Id) {
       await putComment(selectedVersion.Id, inputValue);
-      console.log('Comment sent successfully');
       setCommentSuccessVisible(true);
+      setInputValue('');
+      Keyboard.dismiss();
     } else {
       console.error('Version ID is missing');
     }
@@ -111,7 +113,6 @@ const VersionFinalDetail: React.FC = () => {
 
     if (selectedVersion && selectedVersion.Id) {
       await putFinalized(selectedVersion.Id);
-      console.log(selectedVersion.Id);
     } else {
       console.error('Version ID is missing');
     }
@@ -205,9 +206,7 @@ const VersionFinalDetail: React.FC = () => {
         </Dialog.Description>
         <Dialog.Button
           label="Đóng"
-          onPress={() => {
-            setCommentSuccessVisible(false);
-          }}
+          onPress={() => setCommentSuccessVisible(false)}
           style={styles.dialogButton}
         />
       </Dialog.Container>

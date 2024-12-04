@@ -32,7 +32,6 @@ const LoginScreen: React.FC = () => {
       await login(email, password);
       setSuccessMessage('Đăng nhập thành công!');
     } catch (error: any) {
-      console.log(error);
       setErrorMessage(error.message);
     } finally {
       setIsButtonDisabled(false);

@@ -37,11 +37,6 @@ const HouseResidentialArea: React.FC = () => {
         setPackageRough(data.PackageRoughName);
         setPackageRoughPrice(data.PackageRoughPrice);
         setSubTemplates(data.SubTemplates);
-        console.log('data', JSON.stringify(data, null, 2));
-        console.log(
-          'data.SubTemplates',
-          JSON.stringify(data.SubTemplates, null, 2),
-        );
         if (data.SubTemplates.length > 0) {
           setCurrentTemplate({
             id: data.SubTemplates[0].Id,

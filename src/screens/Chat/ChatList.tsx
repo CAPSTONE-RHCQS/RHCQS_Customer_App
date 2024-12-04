@@ -17,7 +17,6 @@ const ChatList: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
 
   const {accountId} = route.params;
-  console.log('accountId', accountId);
   const [chatList, setChatList] = useState<ChatData[]>([]);
 
   useEffect(() => {

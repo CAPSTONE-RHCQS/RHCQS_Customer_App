@@ -48,7 +48,6 @@ const ConfirmInformation: React.FC = () => {
   const constructionData = useSelector(ContructionSelector);
   const packageData = useSelector(PackageSelector);
   const promotionData = useSelector(PromotionSelector);
-  console.log('promotionData', promotionData);
   const detailUltilities = useSelector(
     (state: any) => state.detailUltilities || [],
   );
@@ -73,8 +72,6 @@ const ConfirmInformation: React.FC = () => {
     setErrorMessage('');
     setAddressError('');
     setProjectNameError('');
-
-    console.log('Submitting with hasDrawing:', hasDrawing);
 
     if (!address) {
       setAddressError('Địa chỉ không được để trống');
@@ -165,11 +162,8 @@ const ConfirmInformation: React.FC = () => {
       },
     );
 
-    console.log('projectData', projectData);
-
     try {
       await createProject(projectData);
-      console.log('projectData', projectData);
       AsyncStorage.removeItem('constructionArea');
       AsyncStorage.removeItem('checkedItemsConstruction');
       dispatch(resetDataPackage());
@@ -184,9 +178,7 @@ const ConfirmInformation: React.FC = () => {
       setLoading(false);
       if (axios.isAxiosError(error)) {
         const errorData = error.response?.data;
-        console.log('Full error data:', errorData);
         if (errorData && typeof errorData === 'object') {
-          console.log('error', errorData.Error);
           setErrorMessage(errorData.Error || 'Đã xảy ra lỗi không xác định');
         } else {
           setErrorMessage('Đã xảy ra lỗi không xác định');
@@ -233,7 +225,6 @@ const ConfirmInformation: React.FC = () => {
   const handleCheckboxToggle = () => {
     setHasDrawing(prevState => {
       const newState = !prevState;
-      console.log('Checkbox state:', newState);
       return newState;
     });
   };

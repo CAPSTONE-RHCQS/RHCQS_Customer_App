@@ -79,9 +79,7 @@ const ProfileScreen: React.FC = () => {
       let imageUrl = customerImg;
 
       if (customerImg && customerImg.startsWith('file://')) {
-        console.log('Uploading image from URI:', customerImg);
         imageUrl = await uploadImage(customerImg);
-        console.log('Image URL:', imageUrl);
       }
 
       const updatedProfile: UpdateProfile = {
@@ -97,7 +95,6 @@ const ProfileScreen: React.FC = () => {
       await updateProfile(userId, updatedProfile);
       setIsEditing(false);
       setReload(!reload);
-      console.log('Profile updated successfully');
     } catch (error) {
       console.error('Failed to update profile:', error);
     } finally {

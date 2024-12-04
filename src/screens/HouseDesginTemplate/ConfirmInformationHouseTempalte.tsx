@@ -80,7 +80,6 @@ const ConfirmInformationHouseTemplate: React.FC = () => {
       dispatch(resetDataDetailUltilities());
       dispatch(resetDataUltilities());
       dispatch(resetDataPackage());
-      console.log(JSON.stringify(projectData, null, 2));
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('Axios error:', error.response?.data);

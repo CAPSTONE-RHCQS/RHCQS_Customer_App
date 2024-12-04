@@ -7,6 +7,7 @@ import {
   Dimensions,
   TextInput,
   TouchableOpacity,
+  Keyboard,
 } from 'react-native';
 import AppBar from '../../../components/Appbar';
 import {RouteProp, useRoute} from '@react-navigation/native';
@@ -47,6 +48,7 @@ const VersionDetail: React.FC = () => {
   const [responseStatus, setResponseStatus] = useState<TrackingType | null>(
     null,
   );
+  const [commentSuccessVisible, setCommentSuccessVisible] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchTracking = async () => {
@@ -98,7 +100,9 @@ const VersionDetail: React.FC = () => {
   const handlePutComment = useCallback(async () => {
     if (selectedVersion && selectedVersion.Id) {
       await putComment(selectedVersion.Id, inputValue);
-      console.log('Comment sent successfully');
+      setCommentSuccessVisible(true);
+      setInputValue('');
+      Keyboard.dismiss();
     } else {
       console.error('Version ID is missing');
     }
@@ -109,7 +113,6 @@ const VersionDetail: React.FC = () => {
 
     if (selectedVersion && selectedVersion.Id) {
       await putFinalized(selectedVersion.Id);
-      console.log(selectedVersion.Id);
     } else {
       console.error('Version ID is missing');
     }
@@ -189,6 +192,18 @@ const VersionDetail: React.FC = () => {
             setVisible(false);
             navigationApp.navigate('TrackingScreen', {projectId});
           }}
+          style={styles.dialogButton}
+        />
+      </Dialog.Container>
+
+      <Dialog.Container contentStyle={styles.dialogContainer} visible={commentSuccessVisible}>
+        <Dialog.Title style={styles.dialogTitle}>Thông báo</Dialog.Title>
+        <Dialog.Description style={styles.dialogDescription}>
+          Ghi chú đã được gửi thành công.
+        </Dialog.Description>
+        <Dialog.Button
+          label="Đóng"
+          onPress={() => setCommentSuccessVisible(false)}
           style={styles.dialogButton}
         />
       </Dialog.Container>
