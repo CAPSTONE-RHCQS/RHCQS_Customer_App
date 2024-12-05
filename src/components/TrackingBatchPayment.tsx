@@ -28,7 +28,7 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
   const navigation = useNavigation<AppStackNavigationProp>();
-  
+
   const isPressable = status !== 'Pending' && status !== 'Canceled';
 
   const getStatusColor = (status: string | undefined) => {
@@ -37,6 +37,8 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
         return '#FFA500';
       case 'Paid':
         return '#008000';
+      case 'Canceled':
+        return '#FF0000';
       default:
         return 'black';
     }
@@ -48,6 +50,8 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
         return 'Chờ thanh toán';
       case 'Paid':
         return 'Đã thanh toán';
+      case 'Canceled':
+        return 'Đã hủy';
       default:
         return '';
     }
@@ -89,8 +93,11 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
               key={index}
               style={styles.subItem}
               onPress={() => handleSubItemPress(item.id)}>
-              <View >
-                <Text style={styles.subItemTitle} numberOfLines={2} ellipsizeMode="tail">
+              <View>
+                <Text
+                  style={styles.subItemTitle}
+                  numberOfLines={2}
+                  ellipsizeMode="tail">
                   {item.subTitle}
                 </Text>
                 <Text style={styles.subItemPrice}>{item.price}</Text>

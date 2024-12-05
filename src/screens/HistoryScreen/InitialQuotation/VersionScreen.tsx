@@ -20,8 +20,8 @@ const VersionScreen: React.FC = () => {
   useEffect(() => {
     const fetchVersion = async () => {
       const versions = await getVersion(projectId);
-      setVersions(versions);
       console.log('versions', JSON.stringify(versions, null, 2));
+      setVersions(versions);
     };
     fetchVersion();
   }, [projectId]);
@@ -46,7 +46,11 @@ const VersionScreen: React.FC = () => {
           </View>
         ) : (
           versions
-            .filter(version => Number(version.Version) !== 0)
+            .filter(
+              version =>
+                Number(version.Version) !== 0 &&
+                !(version.Status === 'Ended' && version.File === '')
+            )
             .map((version, index) => (
               <Tracking
                 key={index}

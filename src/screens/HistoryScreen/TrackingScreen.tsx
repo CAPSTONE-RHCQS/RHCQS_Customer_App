@@ -199,7 +199,8 @@ const TrackingScreen: React.FC = () => {
           tracking.InitialResponse.Status !== 'Reviewing' &&
           tracking.InitialResponse.Status !== 'Processing' &&
           tracking.InitialResponse.Status !== 'Updating' &&
-          tracking.InitialResponse.Status !== 'Canceled' && (
+          tracking.InitialResponse.Status !== 'Canceled' &&
+          tracking.InitialResponse.Status !== 'Ended' && (
             <View style={styles.buttonContainer}>
               <View style={styles.button}>
                 <TouchableOpacity onPress={handleCancelInitialQuotation}>
