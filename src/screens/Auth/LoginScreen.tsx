@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, {useState, useContext} from 'react';
 import {
   View,
   Text,
@@ -7,17 +7,17 @@ import {
   StyleSheet,
   Image,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { AuthStackNavigationProp } from '../../types/TypeScreen';
-import { LinearGradient } from 'react-native-linear-gradient';
+import {useNavigation} from '@react-navigation/native';
+import {AuthStackNavigationProp} from '../../types/TypeScreen';
+import {LinearGradient} from 'react-native-linear-gradient';
 import CustomButton from '../../components/CustomButton';
 import InputField from '../../components/InputField';
-import { AuthContext } from '../../context/AuthContext';
-import { FONTFAMILY } from '../../theme/theme';
+import {AuthContext} from '../../context/AuthContext';
+import {FONTFAMILY} from '../../theme/theme';
 
 const LoginScreen: React.FC = () => {
   const navigationAuth = useNavigation<AuthStackNavigationProp>();
-  const { login } = useContext(AuthContext)!;
+  const {login} = useContext(AuthContext)!;
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -37,7 +37,7 @@ const LoginScreen: React.FC = () => {
       setIsButtonDisabled(false);
     }
   };
-  const isFormValid = email !== '' && password !== ''; 
+  const isFormValid = email !== '' && password !== '';
 
   return (
     <View>
@@ -85,20 +85,29 @@ const LoginScreen: React.FC = () => {
             />
           </TouchableOpacity>
         </View>
-        {errorMessage ? <Text style={styles.errorText}>{errorMessage}</Text> : null}
-        {successMessage ? <Text style={styles.successText}>{successMessage}</Text> : null}
+        {errorMessage ? (
+          <Text style={styles.errorText}>{errorMessage}</Text>
+        ) : null}
+        {successMessage ? (
+          <Text style={styles.successText}>{successMessage}</Text>
+        ) : null}
       </View>
       <CustomButton
         title="Đăng Nhập"
         onPress={handleLogin}
-        colors={isButtonDisabled || !isFormValid ? ['#CCCCCC','#CCCCCC'] : ['#53A6A8', '#3C9597', '#1F7F81']} // Đổi màu nút khi bị khóa
-        style={{ marginHorizontal: 20 }}
+        colors={
+          isButtonDisabled || !isFormValid
+            ? ['#CCCCCC', '#CCCCCC']
+            : ['#53A6A8', '#3C9597', '#1F7F81']
+        }
+        style={{marginHorizontal: 20}}
         disabled={isButtonDisabled || !isFormValid}
         loading={isButtonDisabled}
       />
       <View style={styles.registerContainer}>
         <Text style={styles.registertext}>Bạn chưa có tài khoản?</Text>
-        <TouchableOpacity onPress={() => navigationAuth.navigate('RegisterScreen')}>
+        <TouchableOpacity
+          onPress={() => navigationAuth.navigate('RegisterScreen')}>
           <Text style={styles.registerclick}>Đăng Ký</Text>
         </TouchableOpacity>
       </View>

@@ -149,7 +149,7 @@ const DetailVersionDesign: React.FC = () => {
             style={styles.pdf}
           />
         ) : (
-          <Text style={styles.text}>Không tìm thấy file PDF.</Text>
+          <Text style={styles.text}>Bản vẽ đang được cập nhật</Text>
         )}
       </View>
       {status !== 'Finished' && status !== 'Accepted' && (

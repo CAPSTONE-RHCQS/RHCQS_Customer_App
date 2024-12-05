@@ -79,7 +79,9 @@ const ContactDesignScreen: React.FC = () => {
           style={styles.pdf}
         />
       ) : (
-        <Text style={styles.text}>Không tìm thấy file PDF.</Text>
+        <View style={styles.textContainer}>
+          <Text style={styles.text}>Hợp đồng đang được khởi tạo</Text>
+        </View>
       )}
     </View>
   );
@@ -101,11 +103,17 @@ const styles = StyleSheet.create({
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,
   },
+  textContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   text: {
-    fontFamily: FONTFAMILY.montserat_regular,
-    color: 'gray',
-    fontSize: 16,
-    padding: 20,
+    fontFamily: FONTFAMILY.montserat_bold,
+    color: 'black',
+    fontSize: 20,
+    marginBottom: 20,
+    textAlign: 'center',
   },
 });
 
