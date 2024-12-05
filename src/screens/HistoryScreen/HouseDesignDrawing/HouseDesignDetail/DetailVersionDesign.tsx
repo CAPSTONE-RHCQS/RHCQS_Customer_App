@@ -119,7 +119,7 @@ const DetailVersionDesign: React.FC = () => {
           <Text style={styles.note}>Điều chỉnh:</Text>
           <Text style={styles.noteDetail}>{versionDetail?.Note}</Text>
         </View>
-        {status !== 'Finished' && status !== 'Accepted' && (
+        {status !== 'Finished' && status !== 'Accepted' && status !== 'Updating' && (
           <View style={styles.inputContainer}>
             <Text style={styles.title}>Ghi chú</Text>
             <TextInput

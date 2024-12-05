@@ -15,6 +15,7 @@ interface FormattedDesignData {
   subItems: {
     subTitle: number;
     subStatus: string;
+    confirmed: boolean;
     versionId: string;
     onPress: () => void;
   }[];
@@ -41,6 +42,7 @@ const TrackingVersionDesign: React.FC = () => {
         subItems: item.Versions.map(version => ({
           subTitle: version.Version,
           subStatus: version.Status,
+          confirmed: version.Confirmed,
           versionId: version.Id,
           onPress: () => {
             navigation.navigate('DetailVersionDesign', {

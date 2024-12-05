@@ -8,6 +8,7 @@ interface SubItemProps {
   subTitle: number;
   subStatus?: string;
   versionId: string;
+  confirmed: boolean;
 }
 
 interface TrackingHouseDesignVersionProps {
@@ -31,7 +32,10 @@ const TrackingHouseDesignVersion: React.FC<TrackingHouseDesignVersionProps> = ({
 
   const isPressable = status !== 'Pending' && status !== 'Canceled';
 
-  const getStatusColor = (status: string | undefined) => {
+  const getStatusColor = (status: string | undefined, confirmed: boolean) => {
+    if (confirmed) {
+      return '#0D98A1FF';
+    }
     switch (status) {
       case 'Pending':
         return '#FFA500';
@@ -56,7 +60,10 @@ const TrackingHouseDesignVersion: React.FC<TrackingHouseDesignVersionProps> = ({
     }
   };
 
-  const getStatusText = (status: string | undefined) => {
+  const getStatusText = (status: string | undefined, confirmed: boolean) => {
+    if (confirmed) {
+      return 'Phiên bản đã xác nhận';
+    }
     switch (status) {
       case 'Pending':
         return 'Đang chờ xử lý';
@@ -101,8 +108,8 @@ const TrackingHouseDesignVersion: React.FC<TrackingHouseDesignVersionProps> = ({
         disabled={!isPressable}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{title}</Text>
-          <Text style={[styles.status, {color: getStatusColor(status)}]}>
-            {getStatusText(status)}
+          <Text style={[styles.status, {color: getStatusColor(status, false)}]}>
+            {getStatusText(status, false)}
           </Text>
         </View>
         <Image
@@ -125,9 +132,9 @@ const TrackingHouseDesignVersion: React.FC<TrackingHouseDesignVersionProps> = ({
               <Text
                 style={[
                   styles.subItemStatus,
-                  {color: getStatusColor(item.subStatus)},
+                  {color: getStatusColor(item.subStatus, item.confirmed)},
                 ]}>
-                {getStatusText(item.subStatus)}
+                {getStatusText(item.subStatus, item.confirmed)}
               </Text>
               <Image
                 source={require('../assets/image/icon/chevron/chevron-right.png')}

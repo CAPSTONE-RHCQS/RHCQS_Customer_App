@@ -49,7 +49,8 @@ const VersionDetail: React.FC = () => {
     null,
   );
   const [status, setStatus] = useState<string>('');
-  const [commentSuccessVisible, setCommentSuccessVisible] = useState<boolean>(false);
+  const [commentSuccessVisible, setCommentSuccessVisible] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const fetchTracking = async () => {
@@ -67,6 +68,7 @@ const VersionDetail: React.FC = () => {
     const fetchVersion = async () => {
       try {
         const versions = await getVersion(projectId);
+        console.log('versions', JSON.stringify(versions));
         const matchedVersion = versions.find(v => v.Version === version);
         setStatus(matchedVersion?.Status || '');
         setSelectedVersion(matchedVersion || null);
@@ -134,7 +136,8 @@ const VersionDetail: React.FC = () => {
       <View style={styles.content}>
         {responseStatus?.InitialResponse &&
           responseStatus.InitialResponse.Status !== 'Finalized' &&
-          status !== 'Ended' && (
+          status !== 'Ended' &&
+          status !== 'Updating' && (
             <View style={styles.inputContainer}>
               <Text style={styles.title}>Ghi chú</Text>
               <TextInput
@@ -171,7 +174,7 @@ const VersionDetail: React.FC = () => {
         <CustomButton
           title="Chấp nhận báo giá sơ bộ"
           colors={['#53A6A8', '#3C9597', '#1F7F81']}
-          onPress={handlePutFinalized}
+          onPress={() => setVisible(true)}
           loading={loading}
           style={styles.button}
         />
@@ -193,13 +196,16 @@ const VersionDetail: React.FC = () => {
           label="Xác nhận"
           onPress={() => {
             setVisible(false);
+            handlePutFinalized();
             navigationApp.navigate('TrackingScreen', {projectId});
           }}
           style={styles.dialogButton}
         />
       </Dialog.Container>
 
-      <Dialog.Container contentStyle={styles.dialogContainer} visible={commentSuccessVisible}>
+      <Dialog.Container
+        contentStyle={styles.dialogContainer}
+        visible={commentSuccessVisible}>
         <Dialog.Title style={styles.dialogTitle}>Thông báo</Dialog.Title>
         <Dialog.Description style={styles.dialogDescription}>
           Ghi chú đã được gửi thành công.
