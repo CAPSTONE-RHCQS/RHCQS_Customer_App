@@ -45,8 +45,9 @@ const UploadBill: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <AppBar nameScreen="Upload Bill" />
+      <AppBar nameScreen="Xác nhận thanh toán" />
       <View style={styles.content}>
+        <Text style={styles.title}>Hóa đơn thanh toán</Text>
         <TouchableOpacity
           style={styles.uploadContainer}
           onPress={handleSelectImage}>
@@ -62,7 +63,7 @@ const UploadBill: React.FC = () => {
       </View>
       <View style={styles.buttonContainer}>
         <CustomButton
-          title="Upload"
+          title="Xác nhận thanh toán"
           onPress={handleUploadImage}
           colors={['#53A6A8', '#3C9597', '#1F7F81']}
           loading={loading}
@@ -101,6 +102,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontFamily: FONTFAMILY.montserat_bold,
     marginHorizontal: 20,
+    marginBottom: 20,
+    color: 'black',
   },
   content: {
     flex: 1,

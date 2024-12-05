@@ -148,6 +148,16 @@ const TrackingScreen: React.FC = () => {
       {title: 'Hợp đồng thi công', data: tracking.ContractProcessingResponse},
     ];
 
+    const allStatusesNull = items.every(item => !item.data);
+
+    if (allStatusesNull) {
+      return (
+        <View style={styles.centeredMessage}>
+          <Text style={styles.centeredText}>Dự án đang được khởi tạo</Text>
+        </View>
+      );
+    }
+
     return items.map((item, index) => {
       if (item.data) {
         return (
@@ -327,6 +337,16 @@ const styles = StyleSheet.create({
     color: '#1F7F81',
     fontFamily: FONTFAMILY.montserat_semibold,
     textTransform: 'none',
+  },
+  centeredMessage: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  centeredText: {
+    fontFamily: FONTFAMILY.montserat_medium,
+    fontSize: 18,
+    color: 'gray',
   },
 });
 

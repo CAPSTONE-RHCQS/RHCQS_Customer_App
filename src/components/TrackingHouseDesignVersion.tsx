@@ -43,6 +43,8 @@ const TrackingHouseDesignVersion: React.FC<TrackingHouseDesignVersionProps> = ({
         return '#0000FF';
       case 'Updating':
         return '#0000FF';
+      case 'Updated':
+        return '#0000FF';
       case 'Finalized':
         return '#008000';
       case 'Accepted':
@@ -65,6 +67,8 @@ const TrackingHouseDesignVersion: React.FC<TrackingHouseDesignVersionProps> = ({
       case 'Reviewing':
         return 'Đang xử lý';
       case 'Updating':
+        return 'Đang xử lý';
+      case 'Updated':
         return 'Đang xử lý';
       case 'Finalized':
         return 'Đã hoàn tất';

@@ -268,7 +268,10 @@ const UltilitiesScreen: React.FC = () => {
     );
   };
 
-  const isContinueButtonEnabled = checkedItems.length > 0;
+  const isContinueButtonEnabled = checkedItems.length > 0 && 
+  !(packageData.selectedRoughType === undefined &&
+      packageData.selectedCompleteType === 'FINISHED' &&
+      !constructionArea);
 
   return (
     <View style={styles.container}>

@@ -48,7 +48,8 @@ const VersionFinalDetail: React.FC = () => {
   const [responseStatus, setResponseStatus] = useState<TrackingType | null>(
     null,
   );
-  const [commentSuccessVisible, setCommentSuccessVisible] = useState<boolean>(false);
+  const [commentSuccessVisible, setCommentSuccessVisible] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const fetchTracking = async () => {
@@ -154,9 +155,7 @@ const VersionFinalDetail: React.FC = () => {
               source={{uri: pdfUri}}
               onLoadComplete={numberOfPages => {}}
               onPageChanged={(page, numberOfPages) => {}}
-              onError={error => {
-                console.log(error);
-              }}
+              onError={error => {}}
               style={styles.pdf}
             />
           ) : (
@@ -172,7 +171,7 @@ const VersionFinalDetail: React.FC = () => {
           <CustomButton
             title="Chấp nhận báo giá chi tiết"
             colors={['#53A6A8', '#3C9597', '#1F7F81']}
-            onPress={handlePutFinalized}
+            onPress={() => setVisible(true)}
             loading={loading}
             style={styles.button}
           />
@@ -193,20 +192,28 @@ const VersionFinalDetail: React.FC = () => {
           label="Xác nhận"
           onPress={() => {
             setVisible(false);
+            handlePutFinalized();
             navigationApp.navigate('TrackingScreen', {projectId});
           }}
           style={styles.dialogButton}
         />
       </Dialog.Container>
 
-      <Dialog.Container contentStyle={styles.dialogContainer} visible={commentSuccessVisible}>
+      <Dialog.Container
+        contentStyle={styles.dialogContainer}
+        visible={commentSuccessVisible}>
         <Dialog.Title style={styles.dialogTitle}>Thông báo</Dialog.Title>
         <Dialog.Description style={styles.dialogDescription}>
           Gửi ghi chú thành công!
         </Dialog.Description>
         <Dialog.Button
           label="Đóng"
-          onPress={() => setCommentSuccessVisible(false)}
+          onPress={() => {
+            setCommentSuccessVisible(false);
+            navigationApp.navigate('VersionFinalScreen', {
+              projectId: projectId,
+            });
+          }}
           style={styles.dialogButton}
         />
       </Dialog.Container>
@@ -278,7 +285,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: FONTFAMILY.montserat_regular,
   },
-
   dialogButtonLabel: {
     color: '#1F7F81',
     fontFamily: FONTFAMILY.montserat_semibold,

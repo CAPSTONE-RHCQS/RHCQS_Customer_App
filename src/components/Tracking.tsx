@@ -61,7 +61,7 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
       case 'Finalized':
         return 'Đã hoàn tất';
       case 'Completed':
-        return 'Đã hoàn thành';
+        return 'Hoàn tất thiết kế';
       case 'Finished':
         return 'Đã kí hợp đồng';
       case 'Canceled':
@@ -70,28 +70,6 @@ const Tracking: React.FC<SimpleExpandableListProps> = ({
         return '';
     }
   };
-
-  // return (
-  //   <View style={styles.container}>
-  //     <TouchableOpacity
-  //       style={styles.header}
-  //       onPress={() => {
-  //         setExpanded(!expanded);
-  //         onPress();
-  //       }}>
-  //       <View style={styles.titleContainer}>
-  //         <Text style={styles.title}>{title}</Text>
-  //         <Text style={[styles.status, {color: getStatusColor(status)}]}>
-  //           {getStatusText(status)}
-  //         </Text>
-  //       </View>
-  //       <Image
-  //         source={require('../assets/image/icon/chevron/chevron-right.png')}
-  //         style={styles.icon}
-  //       />
-  //     </TouchableOpacity>
-  //   </View>
-  // );
 
   return (
     <View style={styles.container}>

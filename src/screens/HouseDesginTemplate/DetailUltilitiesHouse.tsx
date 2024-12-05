@@ -24,7 +24,7 @@ const DetailUltilitiesHouse: React.FC = () => {
   const {Id} = route.params;
 
   const constructionData = useSelector(ContructionSelector);
-  const [quantity, setQuantity] = useState('');
+  const [quantity, setQuantity] = useState('1');
   const [sectionData, setSectionData] = useState<Section | null>(null);
   const [coefficients, setCoefficients] = useState<{[key: string]: number}>({});
   const [coefficient, setCoefficient] = useState(0);
@@ -55,6 +55,16 @@ const DetailUltilitiesHouse: React.FC = () => {
         } else {
           const firstItemId = data.Items[0].Id;
           setCheckedItems({[firstItemId]: true});
+        }
+
+        // Set quantity to 1 if item name matches specific combos
+        const firstItemName = data.Items[0].Name;
+        if (
+          ['Combo Hạch Toán', 'Combo Điện Nước', 'Combo Giấy Phép'].includes(
+            firstItemName,
+          )
+        ) {
+          setQuantity('1');
         }
       } else {
         setUnitPrice(data?.UnitPrice || 0);
@@ -154,12 +164,26 @@ const DetailUltilitiesHouse: React.FC = () => {
             </>
           ) : (
             <>
-              <InputField
-                placeholder="Nhập diện tích"
-                value={quantity}
-                onChangeText={setQuantity}
-                name=""
-              />
+              {[
+                'Combo Hạch Toán',
+                'Combo Điện Nước',
+                'Combo Giấy Phép',
+              ].includes(sectionData.Name) ? (
+                <>
+                  <View style={styles.titleGroup}>
+                    <Text style={styles.title}>Số lượng</Text>
+                    <Text style={styles.price}>1</Text>
+                  </View>
+                  <Separator />
+                </>
+              ) : (
+                <InputField
+                  placeholder="Nhập diện tích"
+                  value={quantity}
+                  onChangeText={setQuantity}
+                  name=""
+                />
+              )}
               <View style={styles.titleGroup}>
                 <Text style={styles.title}>Đơn giá</Text>
                 <Text style={styles.price}>

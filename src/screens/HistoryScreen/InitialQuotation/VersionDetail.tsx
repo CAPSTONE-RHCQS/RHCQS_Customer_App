@@ -48,6 +48,7 @@ const VersionDetail: React.FC = () => {
   const [responseStatus, setResponseStatus] = useState<TrackingType | null>(
     null,
   );
+  const [status, setStatus] = useState<string>('');
   const [commentSuccessVisible, setCommentSuccessVisible] = useState<boolean>(false);
 
   useEffect(() => {
@@ -67,6 +68,7 @@ const VersionDetail: React.FC = () => {
       try {
         const versions = await getVersion(projectId);
         const matchedVersion = versions.find(v => v.Version === version);
+        setStatus(matchedVersion?.Status || '');
         setSelectedVersion(matchedVersion || null);
 
         if (matchedVersion?.File) {
@@ -131,7 +133,8 @@ const VersionDetail: React.FC = () => {
       <AppBar nameScreen={`Báo giá sơ bộ phiên bản ${version}`} />
       <View style={styles.content}>
         {responseStatus?.InitialResponse &&
-          responseStatus.InitialResponse.Status !== 'Finalized' && (
+          responseStatus.InitialResponse.Status !== 'Finalized' &&
+          status !== 'Ended' && (
             <View style={styles.inputContainer}>
               <Text style={styles.title}>Ghi chú</Text>
               <TextInput
@@ -203,7 +206,10 @@ const VersionDetail: React.FC = () => {
         </Dialog.Description>
         <Dialog.Button
           label="Đóng"
-          onPress={() => setCommentSuccessVisible(false)}
+          onPress={() => {
+            setCommentSuccessVisible(false);
+            navigationApp.navigate('VersionScreen', {projectId: projectId});
+          }}
           style={styles.dialogButton}
         />
       </Dialog.Container>

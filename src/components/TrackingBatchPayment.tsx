@@ -28,7 +28,7 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
   const navigation = useNavigation<AppStackNavigationProp>();
-
+  
   const isPressable = status !== 'Pending' && status !== 'Canceled';
 
   const getStatusColor = (status: string | undefined) => {

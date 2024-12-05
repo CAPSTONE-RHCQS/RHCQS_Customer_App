@@ -21,6 +21,7 @@ const VersionScreen: React.FC = () => {
     const fetchVersion = async () => {
       const versions = await getVersion(projectId);
       setVersions(versions);
+      console.log('versions', versions);
     };
     fetchVersion();
   }, [projectId]);
@@ -36,9 +37,12 @@ const VersionScreen: React.FC = () => {
     <View style={styles.container}>
       <AppBar nameScreen="Lịch sử báo giá sơ bộ" />
       <View style={styles.content}>
-        {versions.length === 0 ? (
+        {versions.length === 0 ||
+        (versions.length === 1 && Number(versions[0].Version) === 0) ? (
           <View style={styles.centeredContent}>
-            <Text style={styles.noVersionText}>Báo giá sơ bộ đang được tạo</Text>
+            <Text style={styles.noVersionText}>
+              Báo giá sơ bộ đang được tạo
+            </Text>
           </View>
         ) : (
           versions

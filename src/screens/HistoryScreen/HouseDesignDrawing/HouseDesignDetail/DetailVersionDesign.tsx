@@ -192,7 +192,10 @@ const DetailVersionDesign: React.FC = () => {
         </Dialog.Description>
         <Dialog.Button
           label="Đóng"
-          onPress={() => setCommentSuccessVisible(false)}
+          onPress={() => {
+            setCommentSuccessVisible(false);
+            navigationApp.navigate('TrackingVersionDesign', {projectId: projectId});
+          }}
           style={styles.dialogButton}
         />
       </Dialog.Container>
