@@ -28,7 +28,6 @@ import DetailUltilitiesHouse from '../screens/HouseDesginTemplate/DetailUltiliti
 import VersionFinalScreen from '../screens/HistoryScreen/FinalQuotation/VersionFinalScreen';
 import VersionFinalDetail from '../screens/HistoryScreen/FinalQuotation/VersionFinalDetail';
 import ContactContruction from '../screens/HistoryScreen/ContactContruction/ContactContruction';
-import TrackingContruction from '../screens/HistoryScreen/ContactContruction/TrackingContruction';
 import Hasdesign from '../screens/HasDesign/Hasdesign';
 import ChatScreen from '../screens/Chat/ChatScreen';
 import ChatList from '../screens/Chat/ChatList';
@@ -98,10 +97,6 @@ const AppStack: React.FC = () => {
       <Stack.Screen
         name="ContactContructionScreen"
         component={ContactContruction}
-      />
-      <Stack.Screen
-        name="TrackingContruction"
-        component={TrackingContruction}
       />
       <Stack.Screen name="UploadBill" component={UploadBill} />
       {/* Blog */}

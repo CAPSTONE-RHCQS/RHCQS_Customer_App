@@ -15,6 +15,7 @@ import {
   cancelInitialQuotation,
   getProjectById,
   getTracking,
+  getTrackingPaymentContruction,
   requestDesign,
 } from '../../api/Project/project';
 import {
@@ -29,9 +30,11 @@ import {
 } from '../../types/TypeScreen';
 import {FONTFAMILY} from '../../theme/theme';
 import {
+  TrackingContructionType,
   ProjectHistory,
   TrackingType,
 } from '../../types/screens/History/HistoryType';
+import TrackingBatchPayment from '../../components/TrackingBatchPayment';
 
 const TrackingScreen: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'TrackingScreen'>>();
@@ -49,6 +52,15 @@ const TrackingScreen: React.FC = () => {
     useState(false);
   const [dialogMessage, setDialogMessage] = useState('');
   const [isCancelDialogVisible, setCancelDialogVisible] = useState(false);
+
+  const [trackingPayment, setTrackingPayment] = useState<
+    TrackingContructionType[]
+  >([]);
+
+  const fetchData = async () => {
+    const data = await getTrackingPaymentContruction(projectId);
+    setTrackingPayment(Array.isArray(data) ? data : [data]);
+  };
 
   const fetchProject = async () => {
     try {
@@ -112,10 +124,37 @@ const TrackingScreen: React.FC = () => {
     fetchTracking();
   };
 
+  const formatDate = (date: string) => {
+    const dateObj = new Date(date);
+    return dateObj.toLocaleDateString('vi-VN');
+  };
+
+  const formatPrice = (price: number) => {
+    return price.toLocaleString('vi-VN');
+  };
+
+  const insertLineBreak = (text: string, maxLength: number) => {
+    if (text.length > maxLength) {
+      const lastSpaceIndex = text.lastIndexOf(' ', maxLength);
+      const breakIndex = lastSpaceIndex > -1 ? lastSpaceIndex : maxLength;
+      return text.slice(0, breakIndex) + '\n' + text.slice(breakIndex).trim();
+    }
+    return text;
+  };
+
+  const subItems = trackingPayment.map(item => ({
+    id: item.Id,
+    subTitle: insertLineBreak(item.Description, 20),
+    price: formatPrice(item.TotalPrice) + ' VNĐ',
+    date: formatDate(item.InsDate),
+    subStatus: item.Status,
+  }));
+
   useFocusEffect(
     React.useCallback(() => {
       fetchProject();
       fetchTracking();
+      fetchData();
     }, [projectId]),
   );
 
@@ -131,7 +170,9 @@ const TrackingScreen: React.FC = () => {
         navigationApp.navigate('VersionFinalScreen', {projectId: projectId});
         break;
       case 'Hợp đồng thi công':
-        navigationApp.navigate('TrackingContruction', {projectId: projectId});
+        navigationApp.navigate('ContactContructionScreen', {
+          projectId: projectId,
+        });
         break;
       default:
         console.log('Title:', title);
@@ -191,8 +232,21 @@ const TrackingScreen: React.FC = () => {
           }
         />
         <View>
-          <View style={styles.content}>{renderTrackingItems()}</View>
+          <View style={styles.content}>
+            {renderTrackingItems()}
+            <TrackingBatchPayment
+              title="Thanh toán"
+              onPress={(id: string) => {
+                navigationApp.navigate('UploadBill', {
+                  projectId: projectId,
+                  paymentId: id,
+                });
+              }}
+              subItems={subItems}
+            />
+          </View>
         </View>
+
         {tracking?.InitialResponse?.Status &&
           tracking.InitialResponse.Status !== 'Finalized' &&
           tracking.InitialResponse.Status !== 'Approved' &&
