@@ -94,11 +94,13 @@ const styles = StyleSheet.create({
   },
   loader: {
     flex: 1,
+
     justifyContent: 'center',
     alignItems: 'center',
   },
   pdf: {
     flex: 1,
+    marginTop: 10,
     backgroundColor: 'white',
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,

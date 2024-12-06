@@ -178,7 +178,7 @@ const DetailUltilitiesHouse: React.FC = () => {
                 </>
               ) : (
                 <InputField
-                  placeholder="Nhập diện tích"
+                  placeholder="Nhập số lượng"
                   value={quantity}
                   onChangeText={setQuantity}
                   name=""

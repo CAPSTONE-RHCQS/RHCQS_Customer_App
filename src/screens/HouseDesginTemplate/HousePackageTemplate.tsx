@@ -141,6 +141,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontSize: 12,
     fontFamily: FONTFAMILY.montserat_regular,
+    color: 'black',
   },
   imageContainer: {
     width: '100%',

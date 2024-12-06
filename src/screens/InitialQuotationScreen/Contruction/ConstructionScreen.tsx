@@ -55,14 +55,20 @@ const ConstructionScreen: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const updatedTotalPrice = checkedItems.reduce((acc, id) => {
+    const autoCheckedItems = detailConstructionData
+      .filter((detail: any) => detail.totalPrice > 0)
+      .map((detail: any) => detail.id);
+
+    setCheckedItems(autoCheckedItems);
+
+    const updatedTotalPrice = autoCheckedItems.reduce((acc: number, id: string) => {
       const detail = detailConstructionData.find(
         (detail: any) => detail.id === id,
       );
       return acc + (detail ? detail.totalPrice : 0);
     }, 0);
     setTotalPrice(updatedTotalPrice);
-  }, [detailConstructionData, checkedItems]);
+  }, [detailConstructionData]);
 
   const handleAreaChange = (value: string) => {
     setConstructionArea(value);
@@ -182,7 +188,7 @@ const ConstructionScreen: React.FC = () => {
       <View style={styles.bodyContainer}>
         <View>
           <InputField
-            name="Diện tích xây dựng"
+            name="Diện tích đất"
             value={constructionArea}
             onChangeText={handleAreaChange}
             placeholder="90"
@@ -226,14 +232,14 @@ const ConstructionScreen: React.FC = () => {
           <View style={styles.selectedPackages}>
             {packageData.selectedRough && (
               <Text style={styles.packageText}>
-                {packageData.roughPackagePrice.toLocaleString()} -{' '}
-                {packageData.roughPackageName}
+                {packageData.roughPackageName} -{' '}
+                {packageData.roughPackagePrice.toLocaleString()}
               </Text>
             )}
             {packageData.selectedComplete && (
               <Text style={styles.packageText}>
-                {packageData.completePackagePrice.toLocaleString()} -{' '}
-                {packageData.completePackageName}
+                {packageData.completePackageName} -{' '}
+                {packageData.completePackagePrice.toLocaleString()}
               </Text>
             )}
           </View>

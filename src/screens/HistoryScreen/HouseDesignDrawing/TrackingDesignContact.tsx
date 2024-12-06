@@ -73,7 +73,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   content: {
-    marginTop: 10,
     marginHorizontal: 20,
   },
 });

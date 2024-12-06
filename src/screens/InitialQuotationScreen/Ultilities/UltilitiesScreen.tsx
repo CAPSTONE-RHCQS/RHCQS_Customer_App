@@ -340,6 +340,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   inputContainer: {
+    marginTop: 10,
     marginHorizontal: 20,
   },
   titleText: {

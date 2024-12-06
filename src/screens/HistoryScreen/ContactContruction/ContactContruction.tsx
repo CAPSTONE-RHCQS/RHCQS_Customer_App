@@ -96,6 +96,7 @@ const styles = StyleSheet.create({
   },
   pdf: {
     flex: 1,
+    marginTop: 10,
     backgroundColor: 'white',
     width: Dimensions.get('window').width,
     height: Dimensions.get('window').height,

@@ -59,6 +59,7 @@ const TrackingScreen: React.FC = () => {
 
   const fetchData = async () => {
     const data = await getTrackingPaymentContruction(projectId);
+    console.log('data', JSON.stringify(data, null, 2));
     setTrackingPayment(Array.isArray(data) ? data : [data]);
   };
 
@@ -327,7 +328,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   content: {
-    marginTop: 10,
     marginHorizontal: 20,
   },
   buttonContainer: {
