@@ -29,7 +29,7 @@ const ChatScreen: React.FC = () => {
   useEffect(() => {
     const connection = new HubConnectionBuilder()
       .withUrl(
-        'https://rhqs-fzbda8gefsh7bnft.southeastasia-01.azurewebsites.net/chatHub',
+        'https://rhcqs-b4brchgaeqb9abd5.southeastasia-01.azurewebsites.net/chatHub',
       )
       .configureLogging(LogLevel.Information)
       .withAutomaticReconnect()
@@ -55,8 +55,8 @@ const ChatScreen: React.FC = () => {
     startConnection();
 
     // Listening to incoming messages from the SignalR group
-    connection.on('ReceiveMessage', (user, message) => {
-      console.log('New message received:', user, message);
+    connection.on('ReceiveMessage', (user, userId, message, roomId) => {
+      console.log('New message received:', user, message, roomId);
       setMessages(prev => [...prev, {user, message}]);
     });
 
