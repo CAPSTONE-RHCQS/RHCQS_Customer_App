@@ -118,6 +118,7 @@ const ConfirmInformation: React.FC = () => {
 
     const projectData = {
       customerId: customerId,
+      customerName: name,
       name: projectName,
       type: projectType,
       address: address,

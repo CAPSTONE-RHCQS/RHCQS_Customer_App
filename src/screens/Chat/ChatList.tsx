@@ -23,6 +23,7 @@ const ChatList: React.FC = () => {
     const fetchChatList = async () => {
       try {
         const chatList = await getChatList(accountId);
+        console.log('chatList', chatList);
         setChatList(chatList);
       } catch (error) {
         console.error('Failed to fetch chat list:', error);
@@ -64,11 +65,13 @@ const ChatList: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     paddingHorizontal: 2,
+    marginTop: 5,
   },
   emptyContainer: {
     flex: 1,
+    backgroundColor: 'white',
     justifyContent: 'center',
     alignItems: 'center',
   },

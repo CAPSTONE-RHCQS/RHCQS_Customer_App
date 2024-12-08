@@ -1,11 +1,13 @@
 import React from 'react';
-import {View, Image, StyleSheet} from 'react-native';
+import {View, Image, StyleSheet, TouchableOpacity} from 'react-native';
 
 export default function BannerSlider({data}: {data: any}) {
   return (
-    <View style={styles.container}>
-      <Image source={data.image} style={styles.image} resizeMode="stretch" />
-    </View>
+    <TouchableOpacity style={styles.container} onPress={() => {}}> 
+      <View >
+        <Image source={data.image} style={styles.image} resizeMode="stretch" />
+      </View>
+    </TouchableOpacity>
   );
 }
 
