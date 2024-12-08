@@ -65,6 +65,7 @@ const ConfirmInformationHouseTemplate: React.FC = () => {
     );
 
     const projectData = {
+      customerName: name,
       subTemplateId: subTemplateData,
       accountId: customerId,
       address: address,
