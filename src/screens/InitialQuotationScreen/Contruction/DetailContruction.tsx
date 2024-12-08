@@ -17,6 +17,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {pushDetailConstruction} from '../../../redux/actions/Contruction/DetailContructionAction';
 import {PackageSelector} from '../../../redux/selectors/PackageSelector/PackageSelector';
 import {DetailContructionSelector} from '../../../redux/selectors/ContructionSelector/DetailContructionSelector/DetailContructionSelector';
+import {ScrollView} from 'react-native-gesture-handler';
 
 const DetailContruction: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'DetailContruction'>>();
@@ -27,6 +28,7 @@ const DetailContruction: React.FC = () => {
 
   const detailConstructionData = useSelector(DetailContructionSelector);
   const packageData = useSelector(PackageSelector);
+  console.log('packageData', packageData);
   const [area, setArea] = useState('');
   const [coefficient, setCoefficient] = useState(0);
   const [constructionData, setConstructionData] = useState<
@@ -40,6 +42,9 @@ const DetailContruction: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [checkedItemName, setCheckedItemName] = useState('');
   const roughPackagePrice = packageData.roughPackagePrice;
+  const completePackagePrice = packageData.completePackagePrice;
+  const roughPackageName = packageData.roughPackageName;
+  const completePackageName = packageData.completePackageName;
   const hasSubConstructionItems = constructionData.length > 0;
   const constructionArea =
     isNaN(parseFloat(area)) || isNaN(coefficient)
@@ -48,7 +53,12 @@ const DetailContruction: React.FC = () => {
   const unitPrice = hasSubConstructionItems
     ? roughPackagePrice
     : roughPackagePrice;
-  const totalPrice = constructionArea * unitPrice || 0;
+  const unitCompletePrice = hasSubConstructionItems
+    ? completePackagePrice
+    : completePackagePrice;
+  const totalRoughPrice = constructionArea * roughPackagePrice || 0;
+  const totalCompletePrice = constructionArea * completePackagePrice || 0;
+  const totalPrice = totalRoughPrice + totalCompletePrice;
 
   useEffect(() => {
     const fetchConstructionOption = async () => {
@@ -114,7 +124,11 @@ const DetailContruction: React.FC = () => {
   }, [Id, detailConstructionData]);
 
   const handleContinuePress = async () => {
-    await AsyncStorage.setItem('totalPrice', totalPrice.toString());
+    await AsyncStorage.setItem('totalRoughPrice', totalRoughPrice.toString());
+    await AsyncStorage.setItem(
+      'totalCompletePrice',
+      totalCompletePrice.toString(),
+    );
     await AsyncStorage.setItem('area', area.toString());
 
     navigationContruction.navigate('ConstructionScreen');
@@ -126,12 +140,19 @@ const DetailContruction: React.FC = () => {
       ? constructionData.find(item => item.Id === selectedItemId)?.Name || null
       : null;
 
+    const totalPriceToDispatch = roughPackageName
+      ? totalRoughPrice
+      : completePackageName
+      ? totalCompletePrice
+      : totalPrice;
+
     dispatch(
       pushDetailConstruction({
         id: constructionId,
         name: checkedItemName,
-        totalPrice: totalPrice,
+        totalPrice: totalPriceToDispatch,
         area: area,
+        areaBuilding: constructionArea.toFixed(0),
         ...(checkedItemName && {checkedItemName}),
         ...(selectedItemId && {checkedItems: selectedItemId}),
         coefficient: coefficient,
@@ -170,10 +191,6 @@ const DetailContruction: React.FC = () => {
     );
   };
 
-  const formatCurrency = (value: number | undefined): string => {
-    return value ? value.toLocaleString() : '0';
-  };
-
   const isContinueDisabled = hasSubConstructionItems
     ? !Object.values(checkedItems).some(isChecked => isChecked) || !area
     : !area;
@@ -181,11 +198,14 @@ const DetailContruction: React.FC = () => {
   return (
     <View style={styles.container}>
       <AppBar nameScreen="Tính chi phí xây dựng thô" />
-      <View style={styles.noteContainer}>
-        <Text style={styles.titleText}>{checkedItemName}</Text>
-        <Text style={styles.noteText}> *</Text>
-      </View>
-      <View style={styles.bodyContainer}>
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.bodyContainer}>
+        <View style={styles.noteContainer}>
+          <Text style={styles.titleText}>{checkedItemName}</Text>
+          <Text style={styles.noteText}> *</Text>
+        </View>
         <InputField
           name=""
           value={area}
@@ -208,16 +228,62 @@ const DetailContruction: React.FC = () => {
           <Text style={styles.title}>Diện tích xây dựng</Text>
           <Text style={styles.price}>{constructionArea.toFixed(0)} m²</Text>
         </View>
-        <View style={styles.titleGroup}>
-          <Text style={styles.title}>Đơn giá</Text>
-          <Text style={styles.price}>{unitPrice.toLocaleString()} VNĐ/m²</Text>
-        </View>
-        <Separator />
-        <View style={styles.titleGroup}>
-          <Text style={styles.title}>Thành tiền</Text>
-          <Text style={styles.total}>{totalPrice.toLocaleString()} VNĐ</Text>
-        </View>
-      </View>
+        {roughPackageName && (
+          <>
+            <Separator />
+            <View style={styles.titleGroup}>
+              <Text style={styles.title}>Đơn giá thô</Text>
+              <Text style={styles.price}>
+                {unitPrice.toLocaleString()} VNĐ/m²
+              </Text>
+            </View>
+            <View style={styles.titleGroup}>
+              <Text style={styles.title}>Thành tiền thô</Text>
+              <Text
+                style={
+                  roughPackageName && !completePackageName
+                    ? styles.total
+                    : styles.totalPrice
+                }>
+                {totalRoughPrice.toLocaleString()} VNĐ
+              </Text>
+            </View>
+          </>
+        )}
+        {completePackageName && (
+          <>
+            <Separator />
+            <View style={styles.titleGroup}>
+              <Text style={styles.title}>Đơn giá hoàn thiện</Text>
+              <Text style={styles.price}>
+                {unitCompletePrice.toLocaleString()} VNĐ/m²
+              </Text>
+            </View>
+            <View style={styles.titleGroup}>
+              <Text style={styles.title}>Thành tiền hoàn thiện</Text>
+              <Text
+                style={
+                  completePackageName && !roughPackageName
+                    ? styles.total
+                    : styles.totalPrice
+                }>
+                {totalCompletePrice.toLocaleString()} VNĐ
+              </Text>
+            </View>
+          </>
+        )}
+        {roughPackageName && completePackageName && (
+          <>
+            <Separator />
+            <View style={styles.titleGroup}>
+              <Text style={styles.title}>Thành tiền</Text>
+              <Text style={styles.total}>
+                {totalPrice.toLocaleString()} VNĐ
+              </Text>
+            </View>
+          </>
+        )}
+      </ScrollView>
       <View style={styles.buttonContainer}>
         <CustomButton
           title="Tiếp tục"
@@ -241,7 +307,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   titleText: {
-    marginLeft: 20,
     marginTop: 20,
     fontFamily: FONTFAMILY.montserat_bold,
     fontSize: 16,
@@ -285,6 +350,13 @@ const styles = StyleSheet.create({
     right: 0,
     marginRight: 10,
     color: 'red',
+  },
+  totalPrice: {
+    fontFamily: FONTFAMILY.montserat_semibold,
+    position: 'absolute',
+    right: 0,
+    marginRight: 10,
+    color: '#1F7F81',
   },
   buttonContainer: {
     justifyContent: 'flex-end',

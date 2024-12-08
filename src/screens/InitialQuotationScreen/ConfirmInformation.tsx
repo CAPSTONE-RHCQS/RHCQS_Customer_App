@@ -165,6 +165,10 @@ const ConfirmInformation: React.FC = () => {
 
     try {
       await createProject(projectData);
+      console.log(
+        'create project success',
+        JSON.stringify(projectData, null, 2),
+      );
       AsyncStorage.removeItem('constructionArea');
       AsyncStorage.removeItem('checkedItemsConstruction');
       dispatch(resetDataPackage());

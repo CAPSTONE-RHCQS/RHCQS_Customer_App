@@ -151,17 +151,17 @@ const ConstructionScreen: React.FC = () => {
 
       const displayPrice = detail ? detail.totalPrice : 0;
       const displayArea = detail ? parseFloat(detail.area) : 0;
-
+      const displayAreaBuilding = detail ? parseFloat(detail.areaBuilding) : 0;
       const formattedPrice = displayPrice.toLocaleString();
       const formattedArea = displayArea.toLocaleString();
-
+      const formattedAreaBuilding = displayAreaBuilding.toLocaleString();
       return (
         <Construction
           key={index}
           id={option.Id}
           title={option.Name}
           price={formattedPrice}
-          area={formattedArea}
+          area={formattedAreaBuilding}
           unit={option.Unit}
           onDetailPress={() => handleDetailPress(option.Id)}
           isChecked={checkedItems.includes(option.Id)}

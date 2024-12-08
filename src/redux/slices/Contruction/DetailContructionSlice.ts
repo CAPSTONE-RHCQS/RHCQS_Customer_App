@@ -3,6 +3,7 @@ interface DetailConstruction {
   name: string;
   totalPrice: number;
   area: string;
+  areaBuilding: string;
   checkedItemName?: string;
   checkedItems?: string;
   coefficient: number;
