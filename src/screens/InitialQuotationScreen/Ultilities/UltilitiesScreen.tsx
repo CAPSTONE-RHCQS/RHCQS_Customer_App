@@ -111,6 +111,19 @@ const UltilitiesScreen: React.FC = () => {
     }, [packageData, checkedItems, detailUltilitiesData]),
   );
 
+  useEffect(() => {
+    const initialCheckedItems = detailUltilitiesData
+      .filter((detail: any) => detail.totalPrice > 0)
+      .map((detail: any) => detail.id);
+
+    setCheckedItems(initialCheckedItems);
+    const initialTotalPrice = initialCheckedItems.reduce((total: number, id: string) => {
+      const detail = detailUltilitiesData.find((detail: any) => detail.id === id);
+      return total + (detail ? detail.totalPrice : 0);
+    }, 0);
+    setTotalPrice(initialTotalPrice);
+  }, [detailUltilitiesData]);
+
   const handleDetailPress = (Id: string) => {
     navigationApp.navigate('DetailUltilities', {Id});
   };
