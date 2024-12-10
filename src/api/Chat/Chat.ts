@@ -1,5 +1,5 @@
-import { ChatData, ChatDetail } from '../../types/screens/Chat/Chat';
-import axiosInstance, { getHeaders } from '../../utils/axios';
+import {ChatData, ChatDetail, ChatDetailData} from '../../types/screens/Chat/Chat';
+import axiosInstance, {getHeaders} from '../../utils/axios';
 
 export const getChatList = async (accountId: string): Promise<ChatData[]> => {
     try {

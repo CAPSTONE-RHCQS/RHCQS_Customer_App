@@ -1,11 +1,12 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef} from 'react';
 import {
   View,
   Text,
   TextInput,
-  Button,
   FlatList,
   StyleSheet,
+  Image,
+  TouchableOpacity,
 } from 'react-native';
 import {
   HubConnectionBuilder,
@@ -19,6 +20,8 @@ import {RouteProp} from '@react-navigation/native';
 import {getProfile} from '../../api/Account/Account';
 import AppBar from '../../components/Appbar';
 import {getChatDetail} from '../../api/Chat/Chat';
+import {FONTFAMILY} from '../../theme/theme';
+import {ChatDetail} from '@/types/screens/Chat/Chat';
 
 const ChatScreen: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'ChatScreen'>>();
@@ -26,15 +29,28 @@ const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<{user: string; message: string}[]>(
     [],
   );
+  const [sender, setSender] = useState<string>('');
   const [message, setMessage] = useState<string>('');
   const [isConnected, setIsConnected] = useState(false);
   const [customerName, setCustomerName] = useState<string>('');
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [isProfileFetched, setIsProfileFetched] = useState(false);
 
+  const flatListRef = useRef<FlatList<{user: string; message: string}> | null>(null);
+
   useEffect(() => {
     const fetchChatDetail = async () => {
-      const chatDetail = await getChatDetail(roomId);
+      const chatDetailResponse = await getChatDetail(roomId);
+      console.log('chatDetail', JSON.stringify(chatDetailResponse, null, 2));
+      const formattedMessages = chatDetailResponse.MessageRooms.map(msg => ({
+        user: msg.UserName,
+        message: msg.MessageContext,
+        sendAt: new Date(msg.SendAt),
+      }));
+      formattedMessages.sort((a, b) => a.sendAt.getTime() - b.sendAt.getTime());
+      setMessages(formattedMessages);
+      setSender(formattedMessages[0].user);
+      flatListRef.current?.scrollToEnd({animated: true});
     };
     fetchChatDetail();
   }, []);
@@ -69,11 +85,10 @@ const ChatScreen: React.FC = () => {
         await connection.start();
         console.log('SignalR connected');
         setIsConnected(true);
-        setConnection(connection); // Store the connection in the state
+        setConnection(connection);
 
         console.log('RoomId - AccountId', roomId, id);
 
-        // Join the room using SignalR
         await connection.invoke('JoinRoom', roomId, customerName);
         console.log('Joined room successfully');
       } catch (err) {
@@ -83,27 +98,24 @@ const ChatScreen: React.FC = () => {
 
     startConnection();
 
-    // Listening to incoming messages from the SignalR group
     connection.on('ReceiveMessage', (user, userId, message, roomId) => {
       console.log('New message received:', user, message, roomId);
-      setMessages(prev => [...prev, {user, message}]);
+      setMessages(prev => {
+        const updatedMessages = [...prev, {user, message}];
+        flatListRef.current?.scrollToEnd({animated: true});
+        return updatedMessages;
+      });
     });
 
-    connection.on('UserJoined', user => {
-      console.log(`${user} has joined the room`);
-      setMessages(messages => [
-        ...messages,
-        {user: 'System', message: `${user} has joined the room.`},
-      ]);
+    connection.on('UserJoined', () => {
+      setMessages(messages => [...messages]);
     });
 
-    // Cleanup when component unmounts
     return () => {
       connection.stop().then(() => console.log('SignalR disconnected'));
     };
   }, [isProfileFetched]);
 
-  // Send a message to the SignalR server
   const sendMessage = async () => {
     if (message.trim() && connection) {
       try {
@@ -114,7 +126,7 @@ const ChatScreen: React.FC = () => {
           message,
         );
         console.log('Message sent:', message);
-        setMessage(''); // Clear input field
+        setMessage('');
       } catch (err) {
         console.error('Error sending message:', err);
       }
@@ -128,6 +140,7 @@ const ChatScreen: React.FC = () => {
         {isConnected ? (
           <>
             <FlatList
+              ref={flatListRef}
               data={messages}
               keyExtractor={(item, index) => index.toString()}
               renderItem={({item}) => (
@@ -138,7 +151,7 @@ const ChatScreen: React.FC = () => {
                       ? styles.sentMessage
                       : styles.receivedMessage,
                   ]}>
-                  {item.user}: {item.message}
+                  {item.message}
                 </Text>
               )}
             />
@@ -149,7 +162,12 @@ const ChatScreen: React.FC = () => {
                 onChangeText={setMessage}
                 placeholder="Type a message..."
               />
-              <Button title="Send" onPress={sendMessage} />
+              <TouchableOpacity onPress={sendMessage}>
+                <Image
+                  source={require('../../assets/image/icon/send.png')}
+                  style={styles.sendButton}
+                />
+              </TouchableOpacity>
             </View>
           </>
         ) : (
@@ -170,31 +188,45 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   message: {
-    fontSize: 16,
+    fontSize: 14,
     marginBottom: 8,
     padding: 10,
     borderRadius: 10,
     maxWidth: '80%',
+    fontFamily: FONTFAMILY.montserat_medium,
+    color: 'black',
   },
   sentMessage: {
     alignSelf: 'flex-end',
     backgroundColor: '#DCF8C6',
+    fontFamily: FONTFAMILY.montserat_medium,
+    color: 'black',
   },
   receivedMessage: {
     alignSelf: 'flex-start',
     backgroundColor: '#ECECEC',
+    fontFamily: FONTFAMILY.montserat_medium,
+    color: 'black',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
+    fontFamily: FONTFAMILY.montserat_medium,
+    color: 'black',
   },
   input: {
     flex: 1,
     borderWidth: 1,
     borderColor: '#ccc',
-    borderRadius: 4,
+    borderRadius: 50,
+    fontFamily: FONTFAMILY.montserat_medium,
+    color: 'black',
     padding: 8,
     marginRight: 8,
+  },
+  sendButton: {
+    width: 30,
+    height: 30,
   },
 });
 

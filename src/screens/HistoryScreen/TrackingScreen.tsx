@@ -75,6 +75,7 @@ const TrackingScreen: React.FC = () => {
     try {
       const trackingData: TrackingType = await getTracking(projectId);
       setTracking(trackingData);
+      console.log('trackingData', trackingData);
     } catch (error) {
       console.error('Error fetching tracking data:', error);
     }
@@ -260,7 +261,8 @@ const TrackingScreen: React.FC = () => {
           tracking.InitialResponse.Status !== 'Processing' &&
           tracking.InitialResponse.Status !== 'Updating' &&
           tracking.InitialResponse.Status !== 'Canceled' &&
-          tracking.InitialResponse.Status !== 'Ended' && (
+          tracking.InitialResponse.Status !== 'Ended' &&
+          tracking.InitialResponse.Status !== 'Rejected' && (
             <View style={styles.buttonContainer}>
               <View style={styles.button}>
                 <TouchableOpacity onPress={handleCancelInitialQuotation}>

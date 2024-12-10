@@ -42,7 +42,8 @@ const DetailVersionDesign: React.FC = () => {
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [pdfUri, setPdfUri] = useState<string | null>(null);
-  const [commentSuccessVisible, setCommentSuccessVisible] = useState<boolean>(false);
+  const [commentSuccessVisible, setCommentSuccessVisible] =
+    useState<boolean>(false);
 
   const fetchVersionDetail = async () => {
     try {
@@ -119,23 +120,26 @@ const DetailVersionDesign: React.FC = () => {
           <Text style={styles.note}>Điều chỉnh:</Text>
           <Text style={styles.noteDetail}>{versionDetail?.Note}</Text>
         </View>
-        {status !== 'Finished' && status !== 'Accepted' && status !== 'Updating' && (
-          <View style={styles.inputContainer}>
-            <Text style={styles.title}>Ghi chú</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Nhập ghi chú..."
-              placeholderTextColor="gray"
-              value={inputValue}
-              onChangeText={setInputValue}
-              multiline={true}
-              textAlignVertical="top"
-            />
-            <TouchableOpacity onPress={handlePutComment}>
-              <Text style={styles.buttonText}>Gửi ghi chú</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+        {status !== 'Finished' &&
+          status !== 'Accepted' &&
+          status !== 'Updating' &&
+          status !== 'Finalized' && (
+            <View style={styles.inputContainer}>
+              <Text style={styles.title}>Ghi chú</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Nhập ghi chú..."
+                placeholderTextColor="gray"
+                value={inputValue}
+                onChangeText={setInputValue}
+                multiline={true}
+                textAlignVertical="top"
+              />
+              <TouchableOpacity onPress={handlePutComment}>
+                <Text style={styles.buttonText}>Gửi ghi chú</Text>
+              </TouchableOpacity>
+            </View>
+          )}
         {loading ? (
           <View style={styles.loader}>
             <ActivityIndicator size="large" color="#0000ff" />
@@ -152,16 +156,19 @@ const DetailVersionDesign: React.FC = () => {
           <Text style={styles.text}>Bản vẽ đang được cập nhật</Text>
         )}
       </View>
-      {status !== 'Finished' && status !== 'Accepted' && status !== 'Updating' && (
-        <View style={styles.buttonContainer}>
-          <CustomButton
-            title="Chấp nhận thiết kế"
-            colors={['#53A6A8', '#3C9597', '#1F7F81']}
-            onPress={() => setVisible(true)}
-            loading={loading}
-          />
-        </View>
-      )}
+      {status !== 'Finished' &&
+        status !== 'Accepted' &&
+        status !== 'Updating' &&
+        status !== 'Finalized' && (
+          <View style={styles.buttonContainer}>
+            <CustomButton
+              title="Chấp nhận thiết kế"
+              colors={['#53A6A8', '#3C9597', '#1F7F81']}
+              onPress={() => setVisible(true)}
+              loading={loading}
+            />
+          </View>
+        )}
 
       <Dialog.Container contentStyle={styles.dialogContainer} visible={visible}>
         <Dialog.Title style={styles.dialogTitle}>Xác nhận</Dialog.Title>
@@ -185,7 +192,9 @@ const DetailVersionDesign: React.FC = () => {
         />
       </Dialog.Container>
 
-      <Dialog.Container contentStyle={styles.dialogContainer} visible={commentSuccessVisible}>
+      <Dialog.Container
+        contentStyle={styles.dialogContainer}
+        visible={commentSuccessVisible}>
         <Dialog.Title style={styles.dialogTitle}>Thông báo</Dialog.Title>
         <Dialog.Description style={styles.dialogDescription}>
           Ghi chú đã được gửi thành công.
@@ -194,7 +203,9 @@ const DetailVersionDesign: React.FC = () => {
           label="Đóng"
           onPress={() => {
             setCommentSuccessVisible(false);
-            navigationApp.navigate('TrackingVersionDesign', {projectId: projectId});
+            navigationApp.navigate('TrackingVersionDesign', {
+              projectId: projectId,
+            });
           }}
           style={styles.dialogButton}
         />

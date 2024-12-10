@@ -12,7 +12,7 @@ export interface ProjectHistory {
 }
 
 // Response Status
-type ResponseStatus = 'Pending' | 'Processing' | 'Finalized' | 'Canceled' | 'Approved' | 'Reviewing' | 'Ended' | 'Updating';
+type ResponseStatus = 'Pending' | 'Processing' | 'Finalized' | 'Canceled' | 'Approved' | 'Reviewing' | 'Ended' | 'Updating' | 'Rejected';
 
 interface Response {
   Status: ResponseStatus;
