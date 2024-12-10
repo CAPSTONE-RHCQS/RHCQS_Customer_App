@@ -59,7 +59,6 @@ const TrackingScreen: React.FC = () => {
 
   const fetchData = async () => {
     const data = await getTrackingPaymentContruction(projectId);
-    console.log('data', JSON.stringify(data, null, 2));
     setTrackingPayment(Array.isArray(data) ? data : [data]);
   };
 
@@ -76,7 +75,6 @@ const TrackingScreen: React.FC = () => {
     try {
       const trackingData: TrackingType = await getTracking(projectId);
       setTracking(trackingData);
-      console.log('trackingData', JSON.stringify(trackingData, null, 2));
     } catch (error) {
       console.error('Error fetching tracking data:', error);
     }

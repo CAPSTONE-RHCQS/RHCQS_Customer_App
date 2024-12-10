@@ -154,21 +154,8 @@ const ConfirmInformation: React.FC = () => {
       isDrawing: hasDrawing,
     };
 
-    projectData.initialQuotation.initialQuotationItemRequests.forEach(
-      (item: any, index: number) => {
-        console.log(
-          `initialQuotationItemRequests[${index}]`,
-          JSON.stringify(item, null, 2),
-        );
-      },
-    );
-
     try {
       await createProject(projectData);
-      console.log(
-        'create project success',
-        JSON.stringify(projectData, null, 2),
-      );
       AsyncStorage.removeItem('constructionArea');
       AsyncStorage.removeItem('checkedItemsConstruction');
       dispatch(resetDataPackage());

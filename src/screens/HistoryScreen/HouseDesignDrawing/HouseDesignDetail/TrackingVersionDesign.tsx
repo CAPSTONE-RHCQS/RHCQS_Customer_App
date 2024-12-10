@@ -27,7 +27,6 @@ const TrackingVersionDesign: React.FC = () => {
   const route =
     useRoute<RouteProp<AppStackParamList, 'TrackingVersionDesign'>>();
   const {projectId} = route.params;
-  console.log('projectId', projectId);
   const [designData, setDesignData] = useState<FormattedDesignData[]>([]);
 
   const fetchData = useCallback(async () => {

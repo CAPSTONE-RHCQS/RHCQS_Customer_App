@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, Alert, StatusBar} from 'react-native';
+import {View, Text, StyleSheet, Alert, StatusBar, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {getPackages} from '../../api/Package/Package';
 import Checkbox from '../../components/Checkbox';
@@ -128,7 +128,7 @@ const Package: React.FC = () => {
 
   // Hàm xử lý khi nhấn nút tiếp tục
   const handleNext = async () => {
-    // Tìm gói thô và gói hoàn thiện dựa trên ID đã chọn
+    // Tìm gói thô và gói ho��n thiện dựa trên ID đã chọn
     const roughPackage = packages.find(pkg => pkg.Id === selectedRough);
     const completePackage = packages.find(pkg => pkg.Id === selectedComplete);
 
@@ -162,6 +162,15 @@ const Package: React.FC = () => {
         completePackagePrice: completePackage?.Price || 0,
       }),
     );
+  };
+
+  // Hàm xử lý khi nhấn vào chữ "Chi tiết"
+  const handleDetailPress = (type: 'ROUGH' | 'FINISHED') => {
+    if (type === 'ROUGH') {
+      navigationApp.navigate('RoughPackager'); // Điều hướng đến RoughPackage
+    } else {
+      navigationApp.navigate('FinishedPackage'); // Điều hướng đến FinishedPackage
+    }
   };
 
   // Hàm render gói thô
@@ -203,11 +212,21 @@ const Package: React.FC = () => {
       <AppBar nameScreen="Chọn gói thi công" />
       <View style={styles.packageContainer}>
         <View>
-          <Text style={styles.sectionTitle}>Gói thô</Text>
+          <View style={styles.containerDetail}>
+            <Text style={styles.sectionTitle}>Gói thô</Text>
+            <TouchableOpacity onPress={() => handleDetailPress('ROUGH')} style={styles.detailButton}>
+              <Text style={styles.detailText}>Chi tiết</Text>
+            </TouchableOpacity>
+          </View>
           {renderRoughPackages()}
         </View>
         <View>
-          <Text style={styles.sectionTitle2}>Gói hoàn thiện</Text>
+          <View style={styles.containerDetail2}>
+            <Text style={styles.sectionTitle2}>Gói hoàn thiện</Text>
+            <TouchableOpacity onPress={() => handleDetailPress('FINISHED')} style={styles.detailButton}>
+              <Text style={styles.detailText2}>Chi tiết</Text>
+            </TouchableOpacity>
+          </View>
           {renderCompletePackages()}
         </View>
       </View>
@@ -243,6 +262,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'black',
     marginVertical: 10,
+    flex: 1,
   },
   sectionTitle2: {
     marginTop: 40,
@@ -250,6 +270,36 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'black',
     marginVertical: 10,
+    flex: 1,
+  },
+  detailButton: {
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
+  detailText: {
+    color: '#1F7F81',
+    fontSize: 14,
+    fontFamily: FONTFAMILY.montserat_bold,
+    marginVertical: 10,
+    marginRight: 10,
+  },
+  detailText2: {
+    marginTop: 40,
+    color: '#1F7F81',
+    fontSize: 14,
+    fontFamily: FONTFAMILY.montserat_bold,
+    marginVertical: 10,
+    marginRight: 10,
+  },
+  containerDetail: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  containerDetail2: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
   },
   buttonContainer: {
     justifyContent: 'flex-end',

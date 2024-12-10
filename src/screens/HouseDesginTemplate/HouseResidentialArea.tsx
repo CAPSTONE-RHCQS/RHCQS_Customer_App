@@ -71,7 +71,6 @@ const HouseResidentialArea: React.FC = () => {
       url: template.Url,
       totalRough: template.TotalRough,
     });
-    console.log('Selected SubTemplate Id:', template.Id);
   };
 
   const renderTemplateDetails = () => {

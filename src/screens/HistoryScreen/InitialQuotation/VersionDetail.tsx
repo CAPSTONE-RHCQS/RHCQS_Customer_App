@@ -68,7 +68,6 @@ const VersionDetail: React.FC = () => {
     const fetchVersion = async () => {
       try {
         const versions = await getVersion(projectId);
-        console.log('versions', JSON.stringify(versions));
         const matchedVersion = versions.find(v => v.Version === version);
         setStatus(matchedVersion?.Status || '');
         setSelectedVersion(matchedVersion || null);
