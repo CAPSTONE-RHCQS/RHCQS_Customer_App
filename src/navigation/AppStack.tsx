@@ -32,6 +32,8 @@ import Hasdesign from '../screens/HasDesign/Hasdesign';
 import ChatScreen from '../screens/Chat/ChatScreen';
 import ChatList from '../screens/Chat/ChatList';
 import UploadBill from '../screens/HistoryScreen/ContactContruction/UploadBill';
+import RoughPackager from '../screens/Package/RoughPackager';
+import FinishedPackage from '../screens/Package/FinishedPackage';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -105,6 +107,9 @@ const AppStack: React.FC = () => {
       {/* Chat */}
       <Stack.Screen name="ChatList" component={ChatList} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
+      {/* Package */}
+      <Stack.Screen name="RoughPackager" component={RoughPackager} />
+      <Stack.Screen name="FinishedPackage" component={FinishedPackage} />
     </Stack.Navigator>
   );
 };

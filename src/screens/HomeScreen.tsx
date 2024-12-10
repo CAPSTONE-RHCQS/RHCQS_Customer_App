@@ -38,10 +38,6 @@ const HomeScreen: React.FC = ({}) => {
   const [customerImg, setCustomerImg] = useState<string | null>(null);
   const [accountId, setAccountId] = useState<string>('');
   const [blogData, setBlogData] = useState<Blog[]>([]);
-  // Render
-  const renderBanner = ({item}: {item: any; index: number}) => {
-    return <BannerSlider data={item} />;
-  };
 
   useEffect(() => {
     const getToken = async () => {
@@ -81,6 +77,20 @@ const HomeScreen: React.FC = ({}) => {
     };
     fetchBlog();
   }, []);
+
+  const handleBannerPress = (id: number) => {
+    if (id === 2) {
+      navigationApp.navigate('RoughPackager');
+    } else if (id === 1) {
+      navigationApp.navigate('FinishedPackage');
+    }
+  };
+
+  const renderBanner = ({item}: {item: any; index: number}) => {
+    return (
+      <BannerSlider data={item} onPress={() => handleBannerPress(item.id)} />
+    );
+  };
 
   // Handle
   const handlePress = (option: string) => {

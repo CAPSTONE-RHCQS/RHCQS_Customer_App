@@ -5,7 +5,6 @@ import {
   Text,
   Image,
   TouchableOpacity,
-  Alert,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import AppBar from '../../../components/Appbar';
@@ -16,6 +15,7 @@ import {FONTFAMILY} from '../../../theme/theme';
 import {uploadBill} from '../../../api/Project/project';
 import {getPaymentById} from '../../../api/Project/project';
 import Dialog from 'react-native-dialog';
+import {deleteBill} from '../../../api/Project/project';
 
 const UploadBill: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'UploadBill'>>();
@@ -25,6 +25,7 @@ const UploadBill: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [payment, setPayment] = useState<any>(null);
 
   const handleSelectImage = () => {
@@ -35,19 +36,30 @@ const UploadBill: React.FC = () => {
     });
   };
 
-  const handleDeleteImage = () => {
-    setSelectedImage(null);
+  const fetchPayment = async () => {
+    const paymentData = await getPaymentById(paymentId);
+    setPayment(paymentData);
+    setSelectedImage(paymentData);
   };
 
   useEffect(() => {
-    const fetchPayment = async () => {
-      const paymentData = await getPaymentById(paymentId);
-      setPayment(paymentData);
-      setSelectedImage(paymentData);
-      console.log('payment', paymentId);
-    };
     fetchPayment();
-  }, []);
+  }, [paymentId]);
+
+  const handleDeleteImage = async () => {
+    try {
+      setLoading(true);
+      await deleteBill(paymentId);
+      setSuccessMessage('Đã gỡ hóa đơn thành công');
+      setVisible(true);
+      fetchPayment();
+    } catch (error) {
+      setErrorMessage('Lỗi khi gỡ hóa đơn');
+      setVisible(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleUploadImage = async () => {
     if (selectedImage) {
@@ -55,6 +67,7 @@ const UploadBill: React.FC = () => {
       try {
         await uploadBill(paymentId, {selectedImage});
         setErrorMessage(null);
+        setSuccessMessage('Hóa đơn đã được tải lên thành công!');
         setVisible(true);
       } catch (error) {
         console.error('Error uploading image:', error);
@@ -86,12 +99,8 @@ const UploadBill: React.FC = () => {
       </View>
       <View style={styles.buttonContainer}>
         <CustomButton
-          title={payment ? 'Xóa hóa đơn' : 'Xác nhận thanh toán'}
-          onPress={
-            payment
-              ? handleDeleteImage
-              : handleUploadImage
-          }
+          title={payment ? 'Gỡ hóa đơn' : 'Xác nhận thanh toán'}
+          onPress={payment ? handleDeleteImage : handleUploadImage}
           colors={
             payment
               ? ['#FF0000', '#C70000', '#A00000']
@@ -102,10 +111,10 @@ const UploadBill: React.FC = () => {
       </View>
       <Dialog.Container contentStyle={styles.dialogContainer} visible={visible}>
         <Dialog.Title style={styles.dialogTitle}>
-          {errorMessage ? 'Lỗi' : 'Thành công'}
+          {errorMessage ? 'Lỗi' : 'Thông báo'}
         </Dialog.Title>
         <Dialog.Description style={styles.dialogDescription}>
-          {errorMessage || 'Hóa đơn đã được tải lên thành công!'}
+          {errorMessage || successMessage}
         </Dialog.Description>
         <Dialog.Button
           label="Đóng"
@@ -115,6 +124,8 @@ const UploadBill: React.FC = () => {
               navigationApp.navigate('TrackingScreen', {
                 projectId: projectId,
               });
+            } else {
+              navigationApp.navigate('UploadBill', {paymentId, projectId});
             }
           }}
           style={styles.dialogButton}

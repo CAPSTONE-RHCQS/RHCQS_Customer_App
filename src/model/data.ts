@@ -1,8 +1,10 @@
 export const sliderData = [
   {
+    id: 1,
     image: require('../assets/image/banner/1x/Banner_hoan_thien-100.jpg'),
   },
   {
+    id: 2,
     image: require('../assets/image/banner/1x/Banner_phan_tho-100.jpg'),
   },
 ];

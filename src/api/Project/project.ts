@@ -319,3 +319,17 @@ export const uploadBill = async (paymentId: string, data: any) => {
     throw error;
   }
 };
+
+export const deleteBill = async (paymentId: string) => {
+  try {
+    const headers = await getHeaders();
+    const response = await axiosInstance.delete(
+      `/contract/bill/delete?paymentId=${encodeURIComponent(paymentId)}`,
+      {headers},
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error delete bill:', error);
+    throw error;
+  }
+};

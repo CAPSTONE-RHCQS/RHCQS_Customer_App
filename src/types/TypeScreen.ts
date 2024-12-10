@@ -13,6 +13,8 @@ export type AppStackParamList = {
   UltilitiesScreen: undefined;
   DetailUltilities: { Id: string };
   Package: undefined;
+  RoughPackager: undefined;
+  FinishedPackage: undefined;
   HasDesignScreen: { projectId: string };
   ConfirmInformation: undefined;
   DetailContruction: { Id: string };
