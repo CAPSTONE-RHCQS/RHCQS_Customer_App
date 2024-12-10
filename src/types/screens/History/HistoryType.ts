@@ -78,6 +78,7 @@ export interface TrackingContructionType {
   Percents: string
   Description: string
   Status: string
+  IsConfirm: boolean
 }
 
 export interface VersionDetail {

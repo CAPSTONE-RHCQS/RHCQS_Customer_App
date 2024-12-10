@@ -1,5 +1,12 @@
-import React, {useState} from 'react';
-import {View, StyleSheet, Text, Image, TouchableOpacity, Alert} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  StyleSheet,
+  Text,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import AppBar from '../../../components/Appbar';
 import {AppStackNavigationProp, AppStackParamList} from '@/types/TypeScreen';
@@ -7,6 +14,7 @@ import {RouteProp, useRoute, useNavigation} from '@react-navigation/native';
 import CustomButton from '../../../components/CustomButton';
 import {FONTFAMILY} from '../../../theme/theme';
 import {uploadBill} from '../../../api/Project/project';
+import {getPaymentById} from '../../../api/Project/project';
 import Dialog from 'react-native-dialog';
 
 const UploadBill: React.FC = () => {
@@ -17,6 +25,7 @@ const UploadBill: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [payment, setPayment] = useState<any>(null);
 
   const handleSelectImage = () => {
     launchImageLibrary({mediaType: 'photo'}, response => {
@@ -25,6 +34,20 @@ const UploadBill: React.FC = () => {
       }
     });
   };
+
+  const handleDeleteImage = () => {
+    setSelectedImage(null);
+  };
+
+  useEffect(() => {
+    const fetchPayment = async () => {
+      const paymentData = await getPaymentById(paymentId);
+      setPayment(paymentData);
+      setSelectedImage(paymentData);
+      console.log('payment', paymentId);
+    };
+    fetchPayment();
+  }, []);
 
   const handleUploadImage = async () => {
     if (selectedImage) {
@@ -52,7 +75,7 @@ const UploadBill: React.FC = () => {
           style={styles.uploadContainer}
           onPress={handleSelectImage}>
           {selectedImage ? (
-            <Image source={{uri: selectedImage}} style={styles.image} />
+            <Image source={{uri: selectedImage || ''}} style={styles.image} />
           ) : (
             <Image
               source={require('../../../assets/image/icon/upload-icon.png')}
@@ -63,9 +86,17 @@ const UploadBill: React.FC = () => {
       </View>
       <View style={styles.buttonContainer}>
         <CustomButton
-          title="Xác nhận thanh toán"
-          onPress={handleUploadImage}
-          colors={['#53A6A8', '#3C9597', '#1F7F81']}
+          title={payment ? 'Xóa hóa đơn' : 'Xác nhận thanh toán'}
+          onPress={
+            payment
+              ? handleDeleteImage
+              : handleUploadImage
+          }
+          colors={
+            payment
+              ? ['#FF0000', '#C70000', '#A00000']
+              : ['#53A6A8', '#3C9597', '#1F7F81']
+          }
           loading={loading}
         />
       </View>
@@ -81,7 +112,7 @@ const UploadBill: React.FC = () => {
           onPress={() => {
             setVisible(false);
             if (!errorMessage) {
-              navigationApp.navigate('TrackingContruction', {
+              navigationApp.navigate('TrackingScreen', {
                 projectId: projectId,
               });
             }

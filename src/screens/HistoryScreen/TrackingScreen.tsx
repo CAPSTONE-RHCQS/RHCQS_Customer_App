@@ -236,12 +236,19 @@ const TrackingScreen: React.FC = () => {
           <View style={styles.content}>
             {renderTrackingItems()}
             <TrackingBatchPayment
-              title="Thanh toán"
+              title="Đợt thanh toán"
               onPress={(id: string) => {
-                navigationApp.navigate('UploadBill', {
-                  projectId: projectId,
-                  paymentId: id,
-                });
+                const selectedItem = subItems.find(item => item.id === id);
+                if (
+                  selectedItem &&
+                  selectedItem.subStatus !== 'Paid' &&
+                  selectedItem.subStatus !== 'Cancel'
+                ) {
+                  navigationApp.navigate('UploadBill', {
+                    projectId: projectId,
+                    paymentId: id,
+                  });
+                }
               }}
               subItems={subItems}
             />

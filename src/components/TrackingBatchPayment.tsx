@@ -27,9 +27,8 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
   onPress,
 }) => {
   const [expanded, setExpanded] = useState(false);
-  const navigation = useNavigation<AppStackNavigationProp>();
 
-  const isPressable = status !== 'Pending' && status !== 'Canceled';
+  const isPressable = status !== 'Paid';
 
   const getStatusColor = (status: string | undefined) => {
     switch (status) {
@@ -37,7 +36,7 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
         return '#FFA500';
       case 'Paid':
         return '#008000';
-      case 'Canceled':
+      case 'Cancel':
         return '#FF0000';
       default:
         return 'black';
@@ -50,7 +49,7 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
         return 'Chờ thanh toán';
       case 'Paid':
         return 'Đã thanh toán';
-      case 'Canceled':
+      case 'Cancel':
         return 'Đã hủy';
       default:
         return '';
@@ -92,7 +91,9 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
             <TouchableOpacity
               key={index}
               style={styles.subItem}
-              onPress={() => handleSubItemPress(item.id)}>
+              onPress={() => handleSubItemPress(item.id)}
+              disabled={status === 'Paid'}
+            >
               <View>
                 <Text
                   style={styles.subItemTitle}
@@ -147,6 +148,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
     fontSize: 16,
     fontFamily: FONTFAMILY.montserat_bold,
+    textAlign: 'right',
   },
   icon: {
     width: 18,
@@ -177,10 +179,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginLeft: 10,
     fontFamily: FONTFAMILY.montserat_regular,
+    textAlign: 'right',
   },
   subItemStatus: {
     fontSize: 13,
     fontFamily: FONTFAMILY.montserat_regular,
+    textAlign: 'right',
   },
   subItemDescription: {
     color: 'black',

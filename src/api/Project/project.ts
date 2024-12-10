@@ -1,12 +1,22 @@
-import { ContactDesignType, ProjectHistory, TrackingContructionType, TrackingType, TrackingVersionDesignType, VersionDetail, VersionType } from '../../types/screens/History/HistoryType';
-import axiosInstance, { getHeaders } from '../../utils/axios';
+import {
+  ContactDesignType,
+  ProjectHistory,
+  TrackingContructionType,
+  TrackingType,
+  TrackingVersionDesignType,
+  VersionDetail,
+  VersionType,
+} from '../../types/screens/History/HistoryType';
+import axiosInstance, {getHeaders} from '../../utils/axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Create project
 export const createProject = async (projectData: any) => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.post('/project', projectData, { headers });
+    const response = await axiosInstance.post('/project', projectData, {
+      headers,
+    });
     return response.data;
   } catch (error) {
     throw error;
@@ -14,10 +24,15 @@ export const createProject = async (projectData: any) => {
 };
 
 // Get project by email
-export const getProjectByEmail = async (email: string): Promise<ProjectHistory[]> => {
+export const getProjectByEmail = async (
+  email: string,
+): Promise<ProjectHistory[]> => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.get(`/project/email?email=${encodeURIComponent(email)}`, { headers });
+    const response = await axiosInstance.get(
+      `/project/email?email=${encodeURIComponent(email)}`,
+      {headers},
+    );
     await AsyncStorage.setItem('projectHistory', JSON.stringify(response.data));
     return response.data;
   } catch (error) {
@@ -26,10 +41,15 @@ export const getProjectByEmail = async (email: string): Promise<ProjectHistory[]
 };
 
 // Get project by id
-export const getProjectById = async (projectId: string): Promise<ProjectHistory> => {
+export const getProjectById = async (
+  projectId: string,
+): Promise<ProjectHistory> => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.get(`/project/id?id=${encodeURIComponent(projectId)}`, { headers });
+    const response = await axiosInstance.get(
+      `/project/id?id=${encodeURIComponent(projectId)}`,
+      {headers},
+    );
     return response.data;
   } catch (error) {
     throw error;
@@ -40,7 +60,10 @@ export const getProjectById = async (projectId: string): Promise<ProjectHistory>
 export const getTracking = async (projectId: string): Promise<TrackingType> => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.get(`/project/tracking?projectId=${encodeURIComponent(projectId)}`, { headers });
+    const response = await axiosInstance.get(
+      `/project/tracking?projectId=${encodeURIComponent(projectId)}`,
+      {headers},
+    );
     return response.data;
   } catch (error) {
     console.error('Error getting tracking:', error);
@@ -49,10 +72,15 @@ export const getTracking = async (projectId: string): Promise<TrackingType> => {
 };
 
 // Get tracking payment construction
-export const getTrackingPaymentContruction = async (projectId: string): Promise<TrackingContructionType> => {
+export const getTrackingPaymentContruction = async (
+  projectId: string,
+): Promise<TrackingContructionType> => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.get(`/payment/list/app?projectId=${encodeURIComponent(projectId)}`, { headers });
+    const response = await axiosInstance.get(
+      `/payment/list/app?projectId=${encodeURIComponent(projectId)}`,
+      {headers},
+    );
     return response.data;
   } catch (error) {
     console.error('Error getting tracking payment construction :', error);
@@ -64,7 +92,10 @@ export const getTrackingPaymentContruction = async (projectId: string): Promise<
 export const getVersion = async (projectId: string): Promise<VersionType[]> => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.get(`/quotation/initial/list?projectId=${encodeURIComponent(projectId)}`, { headers });
+    const response = await axiosInstance.get(
+      `/quotation/initial/list?projectId=${encodeURIComponent(projectId)}`,
+      {headers},
+    );
     return response.data;
   } catch (error) {
     console.error('Error getting version:', error);
@@ -72,10 +103,15 @@ export const getVersion = async (projectId: string): Promise<VersionType[]> => {
   }
 };
 
-export const getVersionFinal = async (projectId: string): Promise<VersionType[]> => {
+export const getVersionFinal = async (
+  projectId: string,
+): Promise<VersionType[]> => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.get(`/quotation/final/list?projectId=${encodeURIComponent(projectId)}`, { headers });
+    const response = await axiosInstance.get(
+      `/quotation/final/list?projectId=${encodeURIComponent(projectId)}`,
+      {headers},
+    );
     return response.data;
   } catch (error) {
     console.error('Error getting version:', error);
@@ -84,10 +120,15 @@ export const getVersionFinal = async (projectId: string): Promise<VersionType[]>
 };
 
 // Get contact design
-export const getContactDesign = async (projectId: string): Promise<ContactDesignType> => {
+export const getContactDesign = async (
+  projectId: string,
+): Promise<ContactDesignType> => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.get(`/contract/file?projectId=${encodeURIComponent(projectId)}&type=Design`, { headers });
+    const response = await axiosInstance.get(
+      `/contract/file?projectId=${encodeURIComponent(projectId)}&type=Design`,
+      {headers},
+    );
     return response.data;
   } catch (error) {
     console.error('Error getting contact design:', error);
@@ -95,10 +136,17 @@ export const getContactDesign = async (projectId: string): Promise<ContactDesign
   }
 };
 
-export const getContactContruction = async (projectId: string): Promise<ContactDesignType> => {
+export const getContactContruction = async (
+  projectId: string,
+): Promise<ContactDesignType> => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.get(`/contract/file?projectId=${encodeURIComponent(projectId)}&type=Construction`, { headers });
+    const response = await axiosInstance.get(
+      `/contract/file?projectId=${encodeURIComponent(
+        projectId,
+      )}&type=Construction`,
+      {headers},
+    );
     return response.data;
   } catch (error) {
     console.error('Error getting contact design:', error);
@@ -107,10 +155,15 @@ export const getContactContruction = async (projectId: string): Promise<ContactD
 };
 
 // Get version design detail
-export const getVersionDesignDetail = async (projectId: string): Promise<TrackingVersionDesignType[]> => {
+export const getVersionDesignDetail = async (
+  projectId: string,
+): Promise<TrackingVersionDesignType[]> => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.get(`/housedesign/list?projectId=${encodeURIComponent(projectId)}`, { headers });
+    const response = await axiosInstance.get(
+      `/housedesign/list?projectId=${encodeURIComponent(projectId)}`,
+      {headers},
+    );
     return response.data;
   } catch (error) {
     console.error('Error getting version design detail:', error);
@@ -118,10 +171,15 @@ export const getVersionDesignDetail = async (projectId: string): Promise<Trackin
   }
 };
 
-export const getVersionDesignDetailById = async (id: string): Promise<VersionDetail> => {
+export const getVersionDesignDetailById = async (
+  id: string,
+): Promise<VersionDetail> => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.get(`/design/id?versionId=${encodeURIComponent(id)}`, { headers });
+    const response = await axiosInstance.get(
+      `/design/id?versionId=${encodeURIComponent(id)}`,
+      {headers},
+    );
     return response.data;
   } catch (error) {
     console.error('Error getting version design detail:', error);
@@ -135,8 +193,8 @@ export const putComment = async (id: string, note: string): Promise<any> => {
     const headers = await getHeaders();
     const response = await axiosInstance.put(
       `/quotation/initial/comment?initialId=${encodeURIComponent(id)}`,
-      { note },
-      { headers }
+      {note},
+      {headers},
     );
     return response.data;
   } catch (error) {
@@ -152,7 +210,7 @@ export const putFinalized = async (id: string): Promise<any> => {
     const response = await axiosInstance.put(
       `/quotation/finalized?quotationId=${encodeURIComponent(id)}`,
       null,
-      { headers }
+      {headers},
     );
     return response.data;
   } catch (error) {
@@ -162,10 +220,17 @@ export const putFinalized = async (id: string): Promise<any> => {
 };
 
 //put comment version design
-export const putCommentVersionDesign = async (id: string, note: string): Promise<any> => {
+export const putCommentVersionDesign = async (
+  id: string,
+  note: string,
+): Promise<any> => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.put(`/design/feedback?versionId=${encodeURIComponent(id)}`, { note }, { headers });
+    const response = await axiosInstance.put(
+      `/design/feedback?versionId=${encodeURIComponent(id)}`,
+      {note},
+      {headers},
+    );
     return response.data;
   } catch (error) {
     console.error('Error put comment version design:', error);
@@ -177,7 +242,11 @@ export const putCommentVersionDesign = async (id: string, note: string): Promise
 export const putConfirmVersionDesign = async (id: string): Promise<any> => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.put(`/design/confirm?versionId=${encodeURIComponent(id)}`, null, { headers });
+    const response = await axiosInstance.put(
+      `/design/confirm?versionId=${encodeURIComponent(id)}`,
+      null,
+      {headers},
+    );
     return response.data;
   } catch (error) {
     console.error('Error put confirmed version design:', error);
@@ -189,7 +258,11 @@ export const putConfirmVersionDesign = async (id: string): Promise<any> => {
 export const cancelInitialQuotation = async (id: string): Promise<any> => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.put(`/project/cancel?projectId=${encodeURIComponent(id)}`, null, { headers });
+    const response = await axiosInstance.put(
+      `/project/cancel?projectId=${encodeURIComponent(id)}`,
+      null,
+      {headers},
+    );
     return response.data;
   } catch (error) {
     console.error('Error cancel initial quotation:', error);
@@ -200,11 +273,28 @@ export const cancelInitialQuotation = async (id: string): Promise<any> => {
 export const requestDesign = async (data: any) => {
   try {
     const headers = await getHeaders();
-    const response = await axiosInstance.post(`/housedesign/request/design`, data, { headers });
+    const response = await axiosInstance.post(
+      `/housedesign/request/design`,
+      data,
+      {headers},
+    );
     return response.data;
   } catch (error) {
     console.error('Error request design:', error);
     throw error;
+  }
+};
+
+export const getPaymentById = async (paymentId: string): Promise<any> => {
+  try {
+    const headers = await getHeaders();
+    const response = await axiosInstance.get(
+      `/payment/customer/bill?paymentId=${encodeURIComponent(paymentId)}`,
+      {headers},
+    );
+    return response.data;
+  } catch (error) {
+    return null;
   }
 };
 
@@ -218,7 +308,11 @@ export const uploadBill = async (paymentId: string, data: any) => {
       type: 'image/png',
       name: data.selectedImage.split('/').pop(),
     } as any);
-    const response = await axiosInstance.put(`/payment/confirm?paymentId=${encodeURIComponent(paymentId)}`, formData, { headers });
+    const response = await axiosInstance.put(
+      `/payment/confirm?paymentId=${encodeURIComponent(paymentId)}`,
+      formData,
+      {headers},
+    );
     return response.data;
   } catch (error) {
     console.error('Error upload bill:', error);

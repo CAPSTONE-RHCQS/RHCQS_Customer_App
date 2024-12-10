@@ -170,15 +170,17 @@ const VersionDetail: React.FC = () => {
           <Text>Version not found.</Text>
         )}
       </View>
-      {responseStatus?.InitialResponse?.Status !== 'Finalized' && pdfUri && (
-        <CustomButton
-          title="Chấp nhận báo giá sơ bộ"
-          colors={['#53A6A8', '#3C9597', '#1F7F81']}
-          onPress={() => setVisible(true)}
-          loading={loading}
-          style={styles.button}
-        />
-      )}
+      {responseStatus?.InitialResponse?.Status !== 'Finalized' &&
+        responseStatus?.InitialResponse?.Status !== 'Updating' &&
+        pdfUri && (
+          <CustomButton
+            title="Chấp nhận báo giá sơ bộ"
+            colors={['#53A6A8', '#3C9597', '#1F7F81']}
+            onPress={() => setVisible(true)}
+            loading={loading}
+            style={styles.button}
+          />
+        )}
       <Dialog.Container contentStyle={styles.dialogContainer} visible={visible}>
         <Dialog.Title style={styles.dialogTitle}>Xác nhận</Dialog.Title>
         <Dialog.Description style={styles.dialogDescription}>

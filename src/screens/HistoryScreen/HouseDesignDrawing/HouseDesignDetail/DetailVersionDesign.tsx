@@ -152,7 +152,7 @@ const DetailVersionDesign: React.FC = () => {
           <Text style={styles.text}>Bản vẽ đang được cập nhật</Text>
         )}
       </View>
-      {status !== 'Finished' && status !== 'Accepted' && (
+      {status !== 'Finished' && status !== 'Accepted' && status !== 'Updating' && (
         <View style={styles.buttonContainer}>
           <CustomButton
             title="Chấp nhận thiết kế"
