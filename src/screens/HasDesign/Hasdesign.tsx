@@ -19,6 +19,7 @@ import {
   AppStackNavigationProp,
   AppStackParamList,
 } from '../../types/TypeScreen';
+import DocumentPicker from 'react-native-document-picker';
 
 const Hasdesign: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'HasDesignScreen'>>();
@@ -52,15 +53,24 @@ const Hasdesign: React.FC = () => {
     electricityWaterImages,
   ]);
 
-  const handleImagePicker = (
+  const handleFilePicker = async (
     setImages: React.Dispatch<React.SetStateAction<string[]>>,
   ) => {
-    launchImageLibrary({mediaType: 'photo', selectionLimit: 0}, response => {
-      if (response.assets) {
-        const uris = response.assets.map(asset => asset.uri || '');
-        setImages(prevImages => [...prevImages, ...uris]);
+    try {
+      const results = await DocumentPicker.pick({
+        type: [DocumentPicker.types.images, DocumentPicker.types.pdf],
+        allowMultiSelection: true,
+      });
+      
+      const uris = results.map(result => result.uri);
+      setImages(prevImages => [...prevImages, ...uris]);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // Người dùng hủy chọn file
+      } else {
+        console.error('Lỗi khi chọn file:', err);
       }
-    });
+    }
   };
 
   const handleContinuePress = async () => {
@@ -94,11 +104,17 @@ const Hasdesign: React.FC = () => {
         <Text style={styles.title}>{title}</Text>
         <View style={styles.imageWrapper}>
           {images.map((uri, index) => (
-            <Image key={index} source={{uri}} style={styles.image} />
+            <View key={index} style={styles.filePreview}>
+              {uri.toLowerCase().endsWith('.pdf') ? (
+                <Text style={styles.pdfText}>PDF</Text>
+              ) : (
+                <Image source={{uri}} style={styles.image} />
+              )}
+            </View>
           ))}
           <TouchableOpacity
             style={styles.drawings}
-            onPress={() => handleImagePicker(setImages)}>
+            onPress={() => handleFilePicker(setImages)}>
             <Image
               source={require('../../assets/image/icon/upload-icon.png')}
               style={styles.uploadIcon}
@@ -245,6 +261,22 @@ const styles = StyleSheet.create({
     color: '#1F7F81',
     fontFamily: FONTFAMILY.montserat_semibold,
     textTransform: 'none',
+  },
+  filePreview: {
+    width: '40%',
+    height: 100,
+    marginTop: 10,
+    marginRight: '4%',
+    marginBottom: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f5f5f5',
+    borderRadius: 8,
+  },
+  pdfText: {
+    fontFamily: FONTFAMILY.montserat_semibold,
+    fontSize: 16,
+    color: '#1F7F81',
   },
 });
 

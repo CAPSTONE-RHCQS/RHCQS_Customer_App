@@ -21,6 +21,7 @@ const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
       try {
         const token = await AsyncStorage.getItem('accessToken');
         if (token) {
+          console.log(token)
           setUserToken(token);
         }
       } catch (error) {

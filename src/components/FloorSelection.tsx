@@ -11,7 +11,7 @@ const FloorSelection: React.FC<FloorSelectionProps> = ({
   selectedFloor,
   onSelect,
 }) => {
-  const floors = [1, 2, 3, 4, 5, 6];
+  const floors = [1, 2, 3, 4];
 
   return (
     <View style={styles.container}>

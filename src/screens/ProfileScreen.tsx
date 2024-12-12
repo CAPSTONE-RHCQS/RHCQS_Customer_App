@@ -10,7 +10,7 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import {AuthContext} from '../context/AuthContext';
 import storage from '../utils/storage';
-import {getProfile, updateProfile} from '../api/Account/Account';
+import {getProfile, updateImageProfile, updateProfile} from '../api/Account/Account';
 import {height} from '../utils/Dimensions';
 import {FONTFAMILY} from '../theme/theme';
 import InputField from '../components/InputField';
@@ -80,7 +80,15 @@ const ProfileScreen: React.FC = () => {
       let imageUrl = customerImg;
 
       if (customerImg && customerImg.startsWith('file://')) {
-        imageUrl = await uploadImage(customerImg);
+        const formData = new FormData();
+        formData.append('AccountImage', {
+          uri: customerImg,
+          type: 'image/jpeg',
+          name: 'profile-image.jpg',
+        } as any);
+
+        const uploadResponse = await updateImageProfile(formData);
+        imageUrl = uploadResponse.ImageUrl;
       }
 
       const updatedProfile: UpdateProfile = {
@@ -91,13 +99,11 @@ const ProfileScreen: React.FC = () => {
         dateOfBirth: dateOfBirth,
       };
 
-      const userId = customerId;
-
-      await updateProfile(userId, updatedProfile);
+      await updateProfile(customerId, updatedProfile);
       setIsEditing(false);
       setReload(!reload);
     } catch (error) {
-      console.error('Failed to update profile:', error);
+      console.error('Lỗi khi cập nhật thông tin:', error);
     } finally {
       setIsLoading(false);
     }

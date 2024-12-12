@@ -34,7 +34,7 @@ const TrackingVersionDesign: React.FC = () => {
       const data: TrackingVersionDesignType[] = await getVersionDesignDetail(
         projectId,
       );
-      console.log('data', JSON.stringify(data, null, 2));
+      console.log(JSON.stringify(data, null,2))
       const formattedData = data.map(item => ({
         title: item.Name,
         status: item.Status,
@@ -63,10 +63,17 @@ const TrackingVersionDesign: React.FC = () => {
     }, [fetchData])
   );
 
+  const handleContentPress = () => {
+    fetchData();
+  };
+
   return (
     <View style={styles.container}>
       <AppBar nameScreen="Bản vẽ chi tiết" />
-      <View style={styles.content}>
+      <View 
+        style={styles.content}
+        onTouchEnd={handleContentPress}
+      >
         {designData.length === 0 ? (
           <View style={styles.centeredContent}>
             <Text style={styles.noVersionText}>Bản thiết kế đang cập nhật</Text>
