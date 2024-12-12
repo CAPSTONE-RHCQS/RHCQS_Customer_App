@@ -29,7 +29,7 @@ const ChatScreen: React.FC = () => {
   const [messages, setMessages] = useState<{user: string; message: string}[]>(
     [],
   );
-  const [sender, setSender] = useState<string>('');
+
   const [message, setMessage] = useState<string>('');
   const [isConnected, setIsConnected] = useState(false);
   const [customerName, setCustomerName] = useState<string>('');
@@ -41,7 +41,6 @@ const ChatScreen: React.FC = () => {
   useEffect(() => {
     const fetchChatDetail = async () => {
       const chatDetailResponse = await getChatDetail(roomId);
-      console.log('chatDetail', JSON.stringify(chatDetailResponse, null, 2));
       const formattedMessages = chatDetailResponse.MessageRooms.map(msg => ({
         user: msg.UserName,
         message: msg.MessageContext,
@@ -49,7 +48,7 @@ const ChatScreen: React.FC = () => {
       }));
       formattedMessages.sort((a, b) => a.sendAt.getTime() - b.sendAt.getTime());
       setMessages(formattedMessages);
-      setSender(formattedMessages[0].user);
+
       flatListRef.current?.scrollToEnd({animated: true});
     };
     fetchChatDetail();
@@ -83,14 +82,10 @@ const ChatScreen: React.FC = () => {
     const startConnection = async () => {
       try {
         await connection.start();
-        console.log('SignalR connected');
         setIsConnected(true);
         setConnection(connection);
 
-        console.log('RoomId - AccountId', roomId, id);
-
         await connection.invoke('JoinRoom', roomId, customerName);
-        console.log('Joined room successfully');
       } catch (err) {
         console.error('SignalR connection or JoinRoom error:', err);
       }
@@ -99,7 +94,6 @@ const ChatScreen: React.FC = () => {
     startConnection();
 
     connection.on('ReceiveMessage', (user, userId, message, roomId) => {
-      console.log('New message received:', user, message, roomId);
       setMessages(prev => {
         const updatedMessages = [...prev, {user, message}];
         flatListRef.current?.scrollToEnd({animated: true});
@@ -125,7 +119,6 @@ const ChatScreen: React.FC = () => {
           customerName,
           message,
         );
-        console.log('Message sent:', message);
         setMessage('');
       } catch (err) {
         console.error('Error sending message:', err);
@@ -213,6 +206,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     fontFamily: FONTFAMILY.montserat_medium,
     color: 'black',
+    marginBottom: 20,
   },
   input: {
     flex: 1,

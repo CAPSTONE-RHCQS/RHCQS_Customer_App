@@ -23,7 +23,6 @@ const ChatList: React.FC = () => {
     const fetchChatList = async () => {
       try {
         const chatList = await getChatList(accountId);
-        console.log('chatList', chatList);
         setChatList(chatList);
       } catch (error) {
         console.error('Failed to fetch chat list:', error);

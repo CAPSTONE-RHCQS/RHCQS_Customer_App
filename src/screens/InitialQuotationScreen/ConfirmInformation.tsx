@@ -98,14 +98,14 @@ const ConfirmInformation: React.FC = () => {
       },
     );
 
-    const quotationUtilitiesRequest = ultilitiesData.checkedItems.map(
-      (item: any) => ({
-        utilitiesItemId: item.checkedItems ?? item.id,
-        name: item.checkedItemName ?? item.name,
-        price: item.totalPrice,
-        quantity: item.area === '' ? null : item.area,
-      }),
-    );
+    const quotationUtilitiesRequest = ultilitiesData.checkedItems.length > 0
+      ? ultilitiesData.checkedItems.map((item: any) => ({
+          utilitiesItemId: item.checkedItems ?? item.id,
+          name: item.checkedItemName ?? item.name,
+          price: item.totalPrice,
+          quantity: item.area === '' ? null : item.area,
+        }))
+      : null;
 
     let projectType = 'ROUGH';
     if (hasDrawing) {
@@ -153,7 +153,7 @@ const ConfirmInformation: React.FC = () => {
       quotationUtilitiesRequest,
       isDrawing: hasDrawing,
     };
-
+    console.log('projectData', JSON.stringify(projectData, null, 2));
     try {
       await createProject(projectData);
       AsyncStorage.removeItem('constructionArea');

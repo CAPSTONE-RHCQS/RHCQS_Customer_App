@@ -160,7 +160,6 @@ const UltilitiesScreen: React.FC = () => {
   };
 
   const handleContinuePress = () => {
-    if (checkedItems.length === 0) return;
     navigationApp.navigate('ConfirmInformation');
 
     const detailedCheckedItems = checkedItems
@@ -281,11 +280,6 @@ const UltilitiesScreen: React.FC = () => {
     );
   };
 
-  const isContinueButtonEnabled = checkedItems.length > 0 && 
-  !(packageData.selectedRoughType === undefined &&
-      packageData.selectedCompleteType === 'FINISHED' &&
-      !constructionArea);
-
   return (
     <View style={styles.container}>
       <AppBar nameScreen="Tính chi phí xây dựng" onBackPress={handleBack} />
@@ -325,12 +319,8 @@ const UltilitiesScreen: React.FC = () => {
         <CustomButton
           title="Tiếp tục"
           onPress={handleContinuePress}
-          colors={
-            checkedItems.length > 0
-              ? ['#53A6A8', '#3C9597', '#1F7F81']
-              : ['#d3d3d3', '#d3d3d3', '#d3d3d3']
-          }
-          disabled={!isContinueButtonEnabled}
+          colors={['#53A6A8', '#3C9597', '#1F7F81']}
+          disabled={false}
           loading={loading}
         />
       </View>
