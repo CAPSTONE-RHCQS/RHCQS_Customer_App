@@ -40,6 +40,7 @@ const ConstructionScreen: React.FC = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [buildOptionsData, setBuildOptionsData] = useState<Item[]>([]);
   const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [totalArea, setTotalArea] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     const fetchConstructionOption = async () => {
@@ -68,6 +69,14 @@ const ConstructionScreen: React.FC = () => {
       return acc + (detail ? detail.totalPrice : 0);
     }, 0);
     setTotalPrice(updatedTotalPrice);
+
+    const updatedTotalArea = autoCheckedItems.reduce((acc: number, id: string) => {
+      const detail = detailConstructionData.find(
+        (detail: any) => detail.id === id,
+      );
+      return acc + (detail ? parseFloat(detail.areaBuilding) : 0);
+    }, 0);
+    setTotalArea(updatedTotalArea);
   }, [detailConstructionData]);
 
   const handleAreaChange = (value: string) => {
@@ -93,6 +102,14 @@ const ConstructionScreen: React.FC = () => {
         return acc + (detail ? detail.totalPrice : 0);
       }, 0);
       setTotalPrice(updatedTotalPrice);
+
+      const updateArea = newCheckedItems.reduce((acc: number, itemId: string) => {
+        const detail = detailConstructionData.find(
+          (detail: any) => detail.id === itemId,
+        );
+        return acc + (detail ? parseFloat(detail.areaBuilding) : 0);
+      }, 0);
+      setTotalArea(updateArea);
 
       if (isChecked) {
         AsyncStorage.setItem(
@@ -127,7 +144,7 @@ const ConstructionScreen: React.FC = () => {
 
     dispatch(
       pushConstruction({
-        constructionArea: constructionArea,
+        constructionArea: totalArea,
         checkedItems: detailedCheckedItems,
         totalPrice: totalPrice,
       }),

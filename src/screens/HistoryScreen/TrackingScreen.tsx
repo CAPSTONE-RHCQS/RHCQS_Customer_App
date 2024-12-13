@@ -75,7 +75,6 @@ const TrackingScreen: React.FC = () => {
     try {
       const trackingData: TrackingType = await getTracking(projectId);
       setTracking(trackingData);
-      console.log('trackingData', trackingData);
     } catch (error) {
       console.error('Error fetching tracking data:', error);
     }
@@ -120,6 +119,7 @@ const TrackingScreen: React.FC = () => {
   const closeModal = () => {
     setModalPosition(null);
     setRequestDesignDialogVisible(false);
+    fetchData();
     fetchProject();
     fetchTracking();
   };
@@ -163,7 +163,7 @@ const TrackingScreen: React.FC = () => {
       case 'Báo giá sơ bộ':
         navigationApp.navigate('VersionScreen', {projectId: projectId});
         break;
-      case 'Hợp đồng thiết kế':
+      case 'Thiết kế':
         navigationApp.navigate('TrackingDesignContact', {projectId: projectId});
         break;
       case 'Báo giá chi tiết':
@@ -185,7 +185,7 @@ const TrackingScreen: React.FC = () => {
 
     const items = [
       {title: 'Báo giá sơ bộ', data: tracking.InitialResponse},
-      {title: 'Hợp đồng thiết kế', data: tracking.ContractDesignResponse},
+      {title: 'Thiết kế', data: tracking.ContractDesignResponse},
       {title: 'Báo giá chi tiết', data: tracking.FinalAppResponse},
       {title: 'Hợp đồng thi công', data: tracking.ContractProcessingResponse},
     ];

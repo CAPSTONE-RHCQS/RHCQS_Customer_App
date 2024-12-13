@@ -298,7 +298,7 @@ const ConfirmInformation: React.FC = () => {
           {errorMessage || 'Dự án đã được tạo thành công!'}
         </Dialog.Description>
         <Dialog.Button
-          label="Danh sách dự án"
+          label={errorMessage ? 'Đóng' : 'Danh sách dự án'}
           onPress={() => {
             setVisible(false);
             if (!errorMessage) {
