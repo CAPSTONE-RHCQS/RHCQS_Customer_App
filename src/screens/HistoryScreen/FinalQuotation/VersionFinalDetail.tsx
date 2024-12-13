@@ -22,7 +22,7 @@ import {
 import {
   getTracking,
   getVersionFinal,
-  putComment,
+  putCommentFinalized,
   putFinalized,
 } from '../../../api/Project/project';
 import Pdf from 'react-native-pdf';
@@ -100,7 +100,7 @@ const VersionFinalDetail: React.FC = () => {
 
   const handlePutComment = useCallback(async () => {
     if (selectedVersion && selectedVersion.Id) {
-      await putComment(selectedVersion.Id, inputValue);
+      await putCommentFinalized(selectedVersion.Id, inputValue);
       setCommentSuccessVisible(true);
       setInputValue('');
       Keyboard.dismiss();

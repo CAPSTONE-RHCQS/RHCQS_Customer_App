@@ -203,6 +203,25 @@ export const putComment = async (id: string, note: string): Promise<any> => {
   }
 };
 
+// Put comment
+export const putCommentFinalized = async (
+  id: string,
+  note: string,
+): Promise<any> => {
+  try {
+    const headers = await getHeaders();
+    const response = await axiosInstance.put(
+      `/quotation/final/comment?finalid=${encodeURIComponent(id)}`,
+      {note},
+      {headers},
+    );
+    return response.data;
+  } catch (error) {
+    console.error('Error getting comments:', error);
+    throw error;
+  }
+};
+
 // Put finalized
 export const putFinalized = async (id: string): Promise<any> => {
   try {
