@@ -47,7 +47,8 @@ export type AppStackParamList = {
   //Chat
   ChatList: {accountId: string};
   ChatScreen: {id: string, roomId: string};
-
+  //Design Price
+  DesignPrice: undefined;
 };
 
 // Auth

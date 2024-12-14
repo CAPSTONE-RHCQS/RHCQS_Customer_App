@@ -34,6 +34,7 @@ import ChatList from '../screens/Chat/ChatList';
 import UploadBill from '../screens/HistoryScreen/ContactContruction/UploadBill';
 import RoughPackager from '../screens/Package/RoughPackager';
 import FinishedPackage from '../screens/Package/FinishedPackage';
+import DesignPrice from '../screens/DesignPrice/DesignPrice';
 
 const Stack = createNativeStackNavigator<AppStackParamList>();
 
@@ -110,6 +111,8 @@ const AppStack: React.FC = () => {
       {/* Package */}
       <Stack.Screen name="RoughPackager" component={RoughPackager} />
       <Stack.Screen name="FinishedPackage" component={FinishedPackage} />
+      {/* Design Price */}
+      <Stack.Screen name="DesignPrice" component={DesignPrice} />
     </Stack.Navigator>
   );
 };

@@ -84,7 +84,7 @@ const CustomerOptions: React.FC = () => {
 
         {/* Ưu đãi khách hàng */}
         <TouchableOpacity
-          onPress={() => console.log('Ưu đãi khách hàng')}
+          onPress={() => navigationApp.navigate('DesignPrice')}
           activeOpacity={0.7}>
           <LinearGradient
             colors={['#14787A', '#3C9597', '#5BABAD']}
@@ -96,7 +96,7 @@ const CustomerOptions: React.FC = () => {
                 resizeMode="contain"
               />
             </View>
-            <Text style={styles.optionText}>Ưu đãi khách hàng</Text>
+            <Text style={styles.optionText}>Báo giá thiết kế</Text>
             <Image
               source={require('../assets/image/logo_white.png')}
               style={styles.logobgPromotion}

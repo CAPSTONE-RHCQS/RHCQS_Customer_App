@@ -1,4 +1,11 @@
-import {View, Text, StyleSheet, Alert, StatusBar, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Alert,
+  StatusBar,
+  TouchableOpacity,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {getPackages} from '../../api/Package/Package';
 import Checkbox from '../../components/Checkbox';
@@ -214,16 +221,21 @@ const Package: React.FC = () => {
         <View>
           <View style={styles.containerDetail}>
             <Text style={styles.sectionTitle}>Gói thô</Text>
-            <TouchableOpacity onPress={() => handleDetailPress('ROUGH')} style={styles.detailButton}>
+            <TouchableOpacity
+              onPress={() => handleDetailPress('ROUGH')}
+              style={styles.detailButton}>
               <Text style={styles.detailText}>Chi tiết</Text>
             </TouchableOpacity>
           </View>
           {renderRoughPackages()}
         </View>
+        <Separator />
         <View>
           <View style={styles.containerDetail2}>
             <Text style={styles.sectionTitle2}>Gói hoàn thiện</Text>
-            <TouchableOpacity onPress={() => handleDetailPress('FINISHED')} style={styles.detailButton}>
+            <TouchableOpacity
+              onPress={() => handleDetailPress('FINISHED')}
+              style={styles.detailButton}>
               <Text style={styles.detailText2}>Chi tiết</Text>
             </TouchableOpacity>
           </View>
