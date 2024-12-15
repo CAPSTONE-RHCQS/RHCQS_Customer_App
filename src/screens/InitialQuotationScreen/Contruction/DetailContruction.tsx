@@ -139,8 +139,10 @@ const DetailContruction: React.FC = () => {
       ? constructionData.find(item => item.Id === selectedItemId)?.Name || null
       : null;
 
-    const totalPriceToDispatch = roughPackageName
-      ? totalRoughPrice
+    const totalPriceToDispatch = roughPackageName && completePackageName 
+      ? totalPrice
+      : roughPackageName
+      ? totalRoughPrice 
       : completePackageName
       ? totalCompletePrice
       : totalPrice;
