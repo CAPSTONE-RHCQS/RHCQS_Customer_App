@@ -48,17 +48,19 @@ const TrackingScreen: React.FC = () => {
     x: number;
     y: number;
   } | null>(null);
-  const [isRequestDesignDialogVisible, setRequestDesignDialogVisible] =
-    useState(false);
-  const [dialogMessage, setDialogMessage] = useState('');
   const [isCancelDialogVisible, setCancelDialogVisible] = useState(false);
 
   const [trackingPayment, setTrackingPayment] = useState<
     TrackingContructionType[]
   >([]);
 
+  const [cancelReason, setCancelReason] = useState('');
+
+  const [isSuccessDialogVisible, setSuccessDialogVisible] = useState(false);
+
   const fetchData = async () => {
     const data = await getTrackingPaymentContruction(projectId);
+
     setTrackingPayment(Array.isArray(data) ? data : [data]);
   };
 
@@ -85,25 +87,20 @@ const TrackingScreen: React.FC = () => {
   };
 
   const confirmCancelInitialQuotation = async () => {
-    await cancelInitialQuotation(projectId);
-    navigationApp.navigate('HistoryScreen');
-    setCancelDialogVisible(false);
+    if (!cancelReason.trim()) return;
+    
+    try {
+      await cancelInitialQuotation(projectId, cancelReason);
+      setCancelDialogVisible(false);
+      setCancelReason('');
+      setSuccessDialogVisible(true);
+    } catch (error) {
+      console.error('Error confirming cancel initial quotation:', error);
+    }
   };
 
   const handleHasDesign = () => {
     navigationApp.navigate('HasDesignScreen', {projectId: projectId});
-  };
-
-  const handleRequestDesign = async () => {
-    try {
-      await requestDesign(projectId);
-      setDialogMessage('Yêu cầu bản vẽ thiết kế đã được gửi thành công.');
-    } catch (error) {
-      console.error('Error requesting design:', error);
-      setDialogMessage('Đã xảy ra lỗi khi gửi yêu cầu bản vẽ thiết kế.');
-    } finally {
-      setRequestDesignDialogVisible(true);
-    }
   };
 
   const handleIconPress = (event: any) => {
@@ -118,7 +115,6 @@ const TrackingScreen: React.FC = () => {
 
   const closeModal = () => {
     setModalPosition(null);
-    setRequestDesignDialogVisible(false);
     fetchData();
     fetchProject();
     fetchTracking();
@@ -225,10 +221,10 @@ const TrackingScreen: React.FC = () => {
           icon={require('../../assets/image/icon/plus-icon.png')}
           onIconPress={handleIconPress}
           showIcon={
-            tracking?.InitialResponse?.Status === 'Finalized' &&
+            tracking?.InitialResponse?.Status === 'Pending' &&
             !tracking?.ContractDesignResponse &&
             !tracking?.FinalAppResponse &&
-            project?.Type !== 'TEMPLATE'
+            project?.Type === 'HAVE_DRAWING'
           }
         />
         <View>
@@ -266,7 +262,7 @@ const TrackingScreen: React.FC = () => {
             <View style={styles.buttonContainer}>
               <View style={styles.button}>
                 <TouchableOpacity onPress={handleCancelInitialQuotation}>
-                  <Text style={styles.buttonText}>Hủy báo giá sơ bộ</Text>
+                  <Text style={styles.buttonText}>Hủy dự án</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -278,49 +274,57 @@ const TrackingScreen: React.FC = () => {
               styles.customModal,
               {top: modalPosition.y, left: modalPosition.x},
             ]}>
-            {!project?.IsDrawing && (
-              <Pressable onPress={handleRequestDesign}>
-                <Text style={styles.modalText}>Yêu cầu bản vẽ thiết kế</Text>
-              </Pressable>
-            )}
-
-            {project?.IsDrawing && (
-              <Pressable onPress={handleHasDesign}>
-                <Text style={styles.modalText}>Gửi bản thiết kế</Text>
-              </Pressable>
-            )}
+            <Pressable onPress={handleHasDesign}>
+              <Text style={styles.modalText}>Gửi bản thiết kế</Text>
+            </Pressable>
           </View>
         )}
-
-        <Dialog.Container
-          contentStyle={styles.dialogContainer}
-          visible={isRequestDesignDialogVisible}>
-          <Dialog.Title style={styles.dialogTitle}>Thông báo</Dialog.Title>
-          <Dialog.Description style={styles.dialogDescription}>
-            {dialogMessage}
-          </Dialog.Description>
-          <Dialog.Button
-            style={styles.dialogButtonClose}
-            label="Đóng"
-            onPress={closeModal}
-          />
-        </Dialog.Container>
 
         <Dialog.Container
           contentStyle={styles.dialogContainer}
           visible={isCancelDialogVisible}>
           <Dialog.Title style={styles.dialogTitle}>Xác nhận</Dialog.Title>
           <Dialog.Description style={styles.dialogDescription}>
-            Bạn có chắc chắn muốn hủy báo giá sơ bộ?
+            Hãy cho chúng tôi biết lý do hủy dự án !
           </Dialog.Description>
+          <Dialog.Input
+            style={styles.dialogInput}
+            placeholder="Nhập lý do hủy dự án"
+            value={cancelReason}
+            onChangeText={setCancelReason}
+          />
           <Dialog.Button
             label="Hủy"
-            onPress={() => setCancelDialogVisible(false)}
+            onPress={() => {
+              setCancelDialogVisible(false);
+              setCancelReason('');
+            }}
             style={styles.dialogButtonCancel}
           />
           <Dialog.Button
             label="Xác nhận"
             onPress={confirmCancelInitialQuotation}
+            style={[
+              styles.dialogButton,
+              {color: cancelReason.trim() ? '#1F7F81' : '#ccc'}
+            ]}
+            disabled={!cancelReason.trim()}
+          />
+        </Dialog.Container>
+
+        <Dialog.Container
+          contentStyle={styles.dialogContainer}
+          visible={isSuccessDialogVisible}>
+          <Dialog.Title style={styles.dialogTitle}>Thông báo</Dialog.Title>
+          <Dialog.Description style={styles.dialogDescription}>
+            Hủy dự án thành công
+          </Dialog.Description>
+          <Dialog.Button
+            label="Đóng"
+            onPress={() => {
+              setSuccessDialogVisible(false);
+              navigationApp.navigate('HistoryScreen');
+            }}
             style={styles.dialogButton}
           />
         </Dialog.Container>
@@ -411,6 +415,11 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.montserat_medium,
     fontSize: 18,
     color: 'gray',
+  },
+  dialogInput: {
+    marginBottom: 10,
+    fontFamily: FONTFAMILY.montserat_regular,
+    color: '#333',
   },
 });
 

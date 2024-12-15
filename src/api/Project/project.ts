@@ -274,11 +274,14 @@ export const putConfirmVersionDesign = async (id: string): Promise<any> => {
 };
 
 // Cancel initial quotation
-export const cancelInitialQuotation = async (id: string): Promise<any> => {
+export const cancelInitialQuotation = async (
+  id: string,
+  reasonCanceled: string,
+): Promise<any> => {
   try {
     const headers = await getHeaders();
     const response = await axiosInstance.put(
-      `/project/cancel?projectId=${encodeURIComponent(id)}`,
+      `/project/cancel?projectId=${encodeURIComponent(id)}&reasonCanceled=${encodeURIComponent(reasonCanceled)}`,
       null,
       {headers},
     );

@@ -64,6 +64,7 @@ export interface Version {
   NamePrevious: any
   Note?: string
   Confirmed: boolean
+  Reason: string
 }
 
 export interface TrackingContructionType {

@@ -34,21 +34,24 @@ const TrackingVersionDesign: React.FC = () => {
       const data: TrackingVersionDesignType[] = await getVersionDesignDetail(
         projectId,
       );
+      console.log('data', JSON.stringify (data, null ,2))
       const formattedData = data.map(item => ({
         title: item.Name,
         status: item.Status,
-        subItems: item.Versions.map(version => ({
-          subTitle: version.Version,
-          subStatus: version.Status,
-          confirmed: version.Confirmed,
-          versionId: version.Id,
-          onPress: () => {
-            navigation.navigate('DetailVersionDesign', {
-              versionId: version.Id,
-              projectId: projectId,
-            });
-          },
-        })),
+        subItems: item.Versions
+          .filter(version => version.Reason === null)
+          .map(version => ({
+            subTitle: version.Version,
+            subStatus: version.Status,
+            confirmed: version.Confirmed,
+            versionId: version.Id,
+            onPress: () => {
+              navigation.navigate('DetailVersionDesign', {
+                versionId: version.Id,
+                projectId: projectId,
+              });
+            },
+          })),
       }));
       setDesignData(formattedData);
     } catch (error) {
