@@ -433,12 +433,12 @@ const styles = StyleSheet.create({
   totalArea: {
     fontFamily: FONTFAMILY.montserat_semibold,
     fontSize: 14,
-    color: 'red',
+    color: COLORS.primary,
   },
   totalPrice: {
     fontFamily: FONTFAMILY.montserat_semibold,
     fontSize: 14,
-    color: COLORS.primary,
+    color: 'red',
   },
 });
 

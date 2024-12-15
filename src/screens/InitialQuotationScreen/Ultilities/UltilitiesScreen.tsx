@@ -117,10 +117,15 @@ const UltilitiesScreen: React.FC = () => {
       .map((detail: any) => detail.id);
 
     setCheckedItems(initialCheckedItems);
-    const initialTotalPrice = initialCheckedItems.reduce((total: number, id: string) => {
-      const detail = detailUltilitiesData.find((detail: any) => detail.id === id);
-      return total + (detail ? detail.totalPrice : 0);
-    }, 0);
+    const initialTotalPrice = initialCheckedItems.reduce(
+      (total: number, id: string) => {
+        const detail = detailUltilitiesData.find(
+          (detail: any) => detail.id === id,
+        );
+        return total + (detail ? detail.totalPrice : 0);
+      },
+      0,
+    );
     setTotalPrice(initialTotalPrice);
   }, [detailUltilitiesData]);
 
@@ -302,18 +307,27 @@ const UltilitiesScreen: React.FC = () => {
         <View style={styles.promotionContainer}>{renderPromotions()}</View>
       </ScrollView>
       <View style={styles.buttonContainer}>
-        <Separator />
+        <View style={styles.rowContainer}>
+          <View style={styles.leftPriceContainer}>
+            <Text style={styles.totalPriceText}>Tổng tiện ích: </Text>
+            <Text style={styles.totalPrice}>
+              {isNaN(totalPrice) ? '0' : totalPrice.toLocaleString()} VND
+            </Text>
+          </View>
+          <View style={styles.rightPriceContainer}>
+            <Text style={styles.totalPriceText}>Khuyễn mãi: </Text>
+            <Text style={styles.totalPrice}>
+              {isNaN(discountAmount) ? '0' : discountAmount.toLocaleString()}{' '}
+              VND
+            </Text>
+          </View>
+        </View>
+
         <View style={styles.totalPriceContainer}>
           <Text style={styles.totalPriceText}>Tổng tiền: </Text>
-          <Text style={styles.totalPrice}>
+          <Text style={styles.totalPriceFinal}>
             {isNaN(finalTotalPrice) ? '0' : finalTotalPrice.toLocaleString()}{' '}
             VND
-          </Text>
-        </View>
-        <View style={styles.totalPriceContainer}>
-          <Text style={styles.totalPriceText}>Đã giảm: </Text>
-          <Text style={styles.totalPrice}>
-            {isNaN(discountAmount) ? '0' : discountAmount.toLocaleString()} VND
           </Text>
         </View>
         <CustomButton
@@ -372,10 +386,35 @@ const styles = StyleSheet.create({
     textAlign: 'right',
     marginBottom: 10,
   },
+  totalPriceFinal: {
+    fontFamily: FONTFAMILY.montserat_semibold,
+    fontSize: 14,
+    color: 'red',
+    textAlign: 'right',
+    marginBottom: 10,
+  },
   buttonContainer: {
+    borderTopWidth: 1,
     justifyContent: 'flex-end',
     marginHorizontal: 20,
     marginBottom: 20,
+
+  },
+  rowContainer: {
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  leftPriceContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+  },
+  rightPriceContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
   },
 });
 

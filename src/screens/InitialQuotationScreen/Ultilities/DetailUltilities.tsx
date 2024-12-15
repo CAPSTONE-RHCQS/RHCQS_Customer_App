@@ -39,6 +39,7 @@ const DetailUltilities: React.FC = () => {
   useEffect(() => {
     const fetchUltilitiesOption = async () => {
       const data = await getUltilitiesSectionById(Id);
+      console.log('data', data)
       setSectionData(data);
       if (data?.Items && data.Items.length > 0) {
         const initialCoefficients = data.Items.reduce((acc, item) => {
@@ -177,7 +178,8 @@ const DetailUltilities: React.FC = () => {
               <View style={styles.titleGroup}>
                 <Text style={styles.title}>Đơn giá</Text>
                 <Text style={styles.price}>
-                  {unitPrice?.toLocaleString()} VNĐ
+                  {unitPrice?.toLocaleString()}
+                  {sectionData.Unit !== 'đ' ? `đ/ ${sectionData.Unit}` : 'đ'}
                 </Text>
               </View>
               <View style={styles.titleGroup}>

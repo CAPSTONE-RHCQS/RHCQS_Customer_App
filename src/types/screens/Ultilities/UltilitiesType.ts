@@ -16,6 +16,7 @@ export interface Section {
     Description?: string;
     Items?: Item[] | null;
     UnitPrice?: number;
+    Unit: string;
 }
 
 export interface Ultilities {
