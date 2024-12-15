@@ -63,10 +63,10 @@ const styles = StyleSheet.create({
   },
   table: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: 'black',
     borderRadius: 5,
     overflow: 'hidden',
-    backgroundColor: 'white',
+
   },
   row: {
     flexDirection: 'row',

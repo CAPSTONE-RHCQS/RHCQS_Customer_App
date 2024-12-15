@@ -1,16 +1,18 @@
 import {RouteProp, useRoute} from '@react-navigation/native';
 import AppBar from '../../components/Appbar';
 import React, {useEffect, useState} from 'react';
-import {Image, ScrollView, StatusBar, StyleSheet, Text, View} from 'react-native';
+import {Image, ScrollView, StatusBar, StyleSheet, Text, View, useWindowDimensions} from 'react-native';
 import {AppStackParamList} from '../../types/TypeScreen';
 import {getBlogDetail} from '../../api/Blog/Blog';
 import {Blog} from '../../types/screens/Blog/BlogType';
 import {FONTFAMILY} from '../../theme/theme';
+import RenderHtml from 'react-native-render-html';
 
 const BlogDetail: React.FC = () => {
   const route = useRoute<RouteProp<AppStackParamList, 'BlogDetail'>>();
   const {id} = route.params;
   const [blogDetail, setBlogDetail] = useState<Blog | null>(null);
+  const {width} = useWindowDimensions();
 
   useEffect(() => {
     const fetchBlog = async () => {
@@ -38,7 +40,18 @@ const BlogDetail: React.FC = () => {
               <Text style={styles.insDate}>
                 {formatDate(blogDetail?.InsDate || '')}
               </Text>
-              <Text style={styles.context}>{blogDetail?.Context}</Text>
+              <RenderHtml
+                contentWidth={width}
+                source={{ html: blogDetail?.Context || '' }}
+                tagsStyles={{
+                  p: {
+                    fontSize: 16,
+                    fontFamily: FONTFAMILY.montserat_regular,
+                    color: 'black',
+                    marginVertical: 20,
+                  }
+                }}
+              />
             </View>
           </>
         )}

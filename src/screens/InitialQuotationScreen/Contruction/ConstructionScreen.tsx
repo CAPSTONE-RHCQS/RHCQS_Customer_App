@@ -263,10 +263,16 @@ const ConstructionScreen: React.FC = () => {
         </View>
         <Separator />
         <View style={styles.totalPriceContainer}>
-          <Text style={styles.totalPriceText}>Tổng tiền: </Text>
-          <Text style={styles.totalPrice}>
-            {totalPrice.toLocaleString()} VND
-          </Text>
+          <View style={styles.areaContainer}>
+            <Text style={styles.totalPriceText}>DTXD dự tính: </Text>
+            <Text style={styles.totalArea}>{totalArea.toLocaleString()} m²</Text>
+          </View>
+          <View style={styles.priceContainer}>
+            <Text style={styles.totalPriceText}>Tổng tiền: </Text>
+            <Text style={styles.totalPrice}>
+              {totalPrice.toLocaleString()} VND
+            </Text>
+          </View>
         </View>
         <CustomButton
           title="Tiếp tục"
@@ -408,21 +414,31 @@ const styles = StyleSheet.create({
   },
   totalPriceContainer: {
     flexDirection: 'row',
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
+  areaContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems: 'center', 
   },
   totalPriceText: {
     fontFamily: FONTFAMILY.montserat_semibold,
     fontSize: 14,
     color: 'black',
-    textAlign: 'right',
-    marginBottom: 10,
+  },
+  totalArea: {
+    fontFamily: FONTFAMILY.montserat_semibold,
+    fontSize: 14,
+    color: 'red',
   },
   totalPrice: {
     fontFamily: FONTFAMILY.montserat_semibold,
     fontSize: 14,
     color: COLORS.primary,
-    textAlign: 'right',
-    marginBottom: 10,
   },
 });
 
