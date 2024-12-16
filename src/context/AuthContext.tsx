@@ -2,6 +2,7 @@ import {API_ROOT} from '../utils/constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axiosInstance from '../utils/axios';
 import React, {createContext, useState, useEffect} from 'react';
+import {isTokenValid, decodeToken} from '../utils/jwt';
 
 interface AuthContextType {
   login: (email: string, password: string) => Promise<any>;
@@ -21,8 +22,9 @@ const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
       try {
         const token = await AsyncStorage.getItem('accessToken');
         if (token) {
-          console.log(token)
+          console.log(token);
           setUserToken(token);
+          decodeToken(token);
         }
       } catch (error) {
         console.error('Failed to load token from storage:', error);
@@ -42,11 +44,21 @@ const AuthProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
         password,
       });
       const {Token} = response.data;
+      const decodedToken = decodeToken(Token);
+
+      if (
+        decodedToken[
+          'http://schemas.microsoft.com/ws/2008/06/identity/claims/role'
+        ] !== 'Customer'
+      ) {
+        throw new Error('Không thể đăng nhập');
+      }
+
       setUserToken(Token);
       await AsyncStorage.setItem('accessToken', Token);
       return response.data;
     } catch (error: any) {
-      throw new Error(error.response?.data?.Error);
+      throw new Error(error.response?.data?.Error || error.message);
     } finally {
       setIsLoading(false);
     }

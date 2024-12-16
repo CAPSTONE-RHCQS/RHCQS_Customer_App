@@ -17,7 +17,6 @@ import InputField from '../components/InputField';
 import Dialog from 'react-native-dialog';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {UpdateProfile} from '../types/Account/AccountType';
-import {uploadImage} from '../api/Upload/UploadImage';
 import {ActivityIndicator} from 'react-native';
 
 const ProfileScreen: React.FC = () => {
