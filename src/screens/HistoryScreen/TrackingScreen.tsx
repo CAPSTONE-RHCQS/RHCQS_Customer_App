@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -58,6 +58,8 @@ const TrackingScreen: React.FC = () => {
 
   const [isSuccessDialogVisible, setSuccessDialogVisible] = useState(false);
 
+  const [isReasonDialogVisible, setReasonDialogVisible] = useState(false);
+
   const fetchData = async () => {
     const data = await getTrackingPaymentContruction(projectId);
 
@@ -88,7 +90,7 @@ const TrackingScreen: React.FC = () => {
 
   const confirmCancelInitialQuotation = async () => {
     if (!cancelReason.trim()) return;
-    
+
     try {
       await cancelInitialQuotation(projectId, cancelReason);
       setCancelDialogVisible(false);
@@ -146,11 +148,25 @@ const TrackingScreen: React.FC = () => {
     subStatus: item.Status,
   }));
 
+  useEffect(() => {
+    if (tracking?.InitialResponse?.Status === 'Canceled') {
+      setReasonDialogVisible(true);
+    } else {
+      setReasonDialogVisible(false);
+    }
+  }, [tracking]);
+
   useFocusEffect(
     React.useCallback(() => {
-      fetchProject();
-      fetchTracking();
-      fetchData();
+      const loadData = async () => {
+        await Promise.all([
+          fetchProject(),
+          fetchTracking(),
+          fetchData()
+        ]);
+      };
+
+      loadData();
     }, [projectId]),
   );
 
@@ -224,7 +240,8 @@ const TrackingScreen: React.FC = () => {
             tracking?.InitialResponse?.Status === 'Pending' &&
             !tracking?.ContractDesignResponse &&
             !tracking?.FinalAppResponse &&
-            project?.Type === 'HAVE_DRAWING'
+            project?.Type === 'HAVE_DRAWING' &&
+            !project?.IsCustomerUpload
           }
         />
         <View>
@@ -306,7 +323,7 @@ const TrackingScreen: React.FC = () => {
             onPress={confirmCancelInitialQuotation}
             style={[
               styles.dialogButton,
-              {color: cancelReason.trim() ? '#1F7F81' : '#ccc'}
+              {color: cancelReason.trim() ? '#1F7F81' : '#ccc'},
             ]}
             disabled={!cancelReason.trim()}
           />
@@ -323,6 +340,23 @@ const TrackingScreen: React.FC = () => {
             label="Đóng"
             onPress={() => {
               setSuccessDialogVisible(false);
+              navigationApp.navigate('HistoryScreen');
+            }}
+            style={styles.dialogButton}
+          />
+        </Dialog.Container>
+
+        <Dialog.Container
+          contentStyle={styles.dialogContainer}
+          visible={isReasonDialogVisible}>
+          <Dialog.Title style={styles.dialogTitle}>Lý do hủy</Dialog.Title>
+          <Dialog.Description style={styles.dialogDescription}>
+            {project?.ReasonCanceled || 'Không có lý do nào được cung cấp.'}
+          </Dialog.Description>
+          <Dialog.Button
+            label="Đóng"
+            onPress={() => {
+              setReasonDialogVisible(false);
               navigationApp.navigate('HistoryScreen');
             }}
             style={styles.dialogButton}

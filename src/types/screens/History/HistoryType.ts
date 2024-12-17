@@ -9,6 +9,8 @@ export interface ProjectHistory {
   UpsDate: string
   ProjectCode: string
   IsDrawing: boolean
+  ReasonCanceled: string
+  IsCustomerUpload: boolean
 }
 
 // Response Status

@@ -10,7 +10,6 @@ import React, {useEffect, useState} from 'react';
 import AppBar from '../../components/Appbar';
 import Separator from '../../components/Separator';
 import {FONTFAMILY} from '../../theme/theme';
-import {launchImageLibrary} from 'react-native-image-picker';
 import CustomButton from '../../components/CustomButton';
 import {createProjectHaveDesign} from '../../api/HasDesign/HasDesign';
 import Dialog from 'react-native-dialog';
@@ -88,10 +87,13 @@ const Hasdesign: React.FC = () => {
       setVisible(true);
     } catch (error) {
       console.error('Error creating project:', error);
-      // TODO: Handle error (e.g., show an error message)
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRemoveImage = (setImages: React.Dispatch<React.SetStateAction<string[]>>, uri: string) => {
+    setImages(prevImages => prevImages.filter(image => image !== uri));
   };
 
   const renderUploadSection = (
@@ -110,6 +112,11 @@ const Hasdesign: React.FC = () => {
               ) : (
                 <Image source={{uri}} style={styles.image} />
               )}
+              <TouchableOpacity
+                style={styles.removeButton}
+                onPress={() => handleRemoveImage(setImages, uri)}>
+                <Text style={styles.removeButtonText}>-</Text>
+              </TouchableOpacity>
             </View>
           ))}
           <TouchableOpacity
@@ -128,7 +135,7 @@ const Hasdesign: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <AppBar nameScreen="Gửi bảng thiết kế" />
+      <AppBar nameScreen="Gửi bản thiết kế" />
       <ScrollView style={styles.content}>
         {renderUploadSection(
           'Phối cảnh',
@@ -164,7 +171,7 @@ const Hasdesign: React.FC = () => {
       <Dialog.Container contentStyle={styles.dialogContainer} visible={visible}>
         <Dialog.Title style={styles.dialogTitle}>Thành công</Dialog.Title>
         <Dialog.Description style={styles.dialogDescription}>
-          Dự án đã được tạo thành công!
+          Gửi bản vẽ thành công!
         </Dialog.Description>
         <Dialog.Button
           label="Xem danh sách"
@@ -277,6 +284,21 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.montserat_semibold,
     fontSize: 16,
     color: '#1F7F81',
+  },
+  removeButton: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    width: 20,
+    height: 20,
+    borderRadius: 15,
+    backgroundColor: 'red',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  removeButtonText: {
+    color: 'white',
+    fontSize: 20,
   },
 });
 

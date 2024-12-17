@@ -163,13 +163,6 @@ const ProfileScreen: React.FC = () => {
           editable={isEditing}
         />
         <InputField
-          name="Email"
-          value={email}
-          onChangeText={setEmail}
-          placeholder=""
-          editable={isEditing}
-        />
-        <InputField
           name="Ngày sinh"
           value={dateOfBirth}
           onChangeText={setDateOfBirth}

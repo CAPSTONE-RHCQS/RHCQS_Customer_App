@@ -35,7 +35,6 @@ const ConfirmInformation: React.FC = () => {
   const [phone, setPhone] = useState('');
   const [email, setEmail] = useState('');
   const [address, setAddress] = useState('');
-  const [projectName, setProjectName] = useState('');
   const [customerId, setCustomerId] = useState('');
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -76,13 +75,6 @@ const ConfirmInformation: React.FC = () => {
     if (!address) {
       setAddressError('Địa chỉ không được để trống');
     }
-    if (!projectName) {
-      setProjectNameError('Tên dự án không được để trống');
-    }
-    if (!address || !projectName) {
-      setLoading(false);
-      return;
-    }
 
     const initialQuotationItemRequests = constructionData.checkedItems.map(
       (item: any) => {
@@ -98,14 +90,15 @@ const ConfirmInformation: React.FC = () => {
       },
     );
 
-    const quotationUtilitiesRequest = ultilitiesData.checkedItems.length > 0
-      ? ultilitiesData.checkedItems.map((item: any) => ({
-          utilitiesItemId: item.checkedItems ?? item.id,
-          name: item.checkedItemName ?? item.name,
-          price: item.totalPrice,
-          quantity: item.area === '' ? null : item.area,
-        }))
-      : null;
+    const quotationUtilitiesRequest =
+      ultilitiesData.checkedItems.length > 0
+        ? ultilitiesData.checkedItems.map((item: any) => ({
+            utilitiesItemId: item.checkedItems ?? item.id,
+            name: item.checkedItemName ?? item.name,
+            price: item.totalPrice,
+            quantity: item.area === '' ? null : item.area,
+          }))
+        : null;
 
     let projectType = 'ROUGH';
     if (hasDrawing) {
@@ -119,7 +112,6 @@ const ConfirmInformation: React.FC = () => {
     const projectData = {
       customerId: customerId,
       customerName: name,
-      name: projectName,
       type: projectType,
       address: address,
       area: constructionData.constructionArea,
@@ -153,7 +145,7 @@ const ConfirmInformation: React.FC = () => {
       quotationUtilitiesRequest,
       isDrawing: hasDrawing,
     };
-    console.log('projectData', JSON.stringify(projectData, null, 2));
+    
     try {
       await createProject(projectData);
       AsyncStorage.removeItem('constructionArea');
@@ -182,7 +174,6 @@ const ConfirmInformation: React.FC = () => {
     }
   }, [
     customerId,
-    projectName,
     address,
     constructionData,
     packageData,
@@ -249,13 +240,6 @@ const ConfirmInformation: React.FC = () => {
           value={address}
           onChangeText={setAddress}
           placeholder="Nhập địa chỉ"
-        />
-
-        <InputField
-          name="Tên dự án"
-          value={projectName}
-          onChangeText={setProjectName}
-          placeholder="Nhập tên dự án"
         />
         <Checkbox
           id="hasDrawing"

@@ -39,7 +39,6 @@ const DetailUltilities: React.FC = () => {
   useEffect(() => {
     const fetchUltilitiesOption = async () => {
       const data = await getUltilitiesSectionById(Id);
-      console.log('data', data)
       setSectionData(data);
       if (data?.Items && data.Items.length > 0) {
         const initialCoefficients = data.Items.reduce((acc, item) => {
@@ -48,7 +47,6 @@ const DetailUltilities: React.FC = () => {
         }, {} as {[key: string]: number});
         setCoefficients(initialCoefficients);
 
-        // Kiểm tra trong detailUltilitiesData
         const existingItem = detailUltilitiesData.find(
           (item: any) => item.id === Id,
         );
