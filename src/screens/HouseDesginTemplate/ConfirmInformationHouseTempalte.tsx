@@ -55,14 +55,14 @@ const ConfirmInformationHouseTemplate: React.FC = () => {
   const handleSubmit = useCallback(async () => {
     setLoading(true);
 
-    const quotationUtilitiesRequest = ultilitiesData.checkedItems.map(
+    const quotationUtilitiesRequest = ultilitiesData.checkedItems.length > 0 ? ultilitiesData.checkedItems.map(
       (item: any) => ({
         utilitiesItemId: item.checkedItems ?? item.id,
         name: item.checkedItemName ?? item.name,
         price: item.totalPrice,
         quantity: item.area === '' ? null : item.area,
       }),
-    );
+    ) : null;
 
     const projectData = {
       customerName: name,

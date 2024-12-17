@@ -22,7 +22,9 @@ const HousePackageTemplate: React.FC = () => {
   const [packageHouse, setPackageHouse] = useState<any[]>([]);
   const [currentImage, setCurrentImage] = useState<string | null>(null);
   const [description, setDescription] = useState<string>('');
-  const [selectedPackageId, setSelectedPackageId] = useState<string | null>(null);
+  const [selectedPackageId, setSelectedPackageId] = useState<string | null>(
+    null,
+  );
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -104,7 +106,11 @@ const HousePackageTemplate: React.FC = () => {
       <View style={styles.buttonContainer}>
         <CustomButton
           title="Tiếp tục"
-          colors={selectedPackageId && !loading ? ['#53A6A8', '#3C9597', '#1F7F81'] : ['#d3d3d3', '#d3d3d3', '#d3d3d3']}
+          colors={
+            selectedPackageId && !loading
+              ? ['#53A6A8', '#3C9597', '#1F7F81']
+              : ['#d3d3d3', '#d3d3d3', '#d3d3d3']
+          }
           onPress={handleContinue}
           loading={loading}
           disabled={!selectedPackageId || loading}

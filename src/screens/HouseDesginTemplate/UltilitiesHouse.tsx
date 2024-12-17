@@ -91,7 +91,6 @@ const UltilitiesHouse: React.FC = () => {
 
   const handleContinuePress = () => {
     setLoading(true);
-    if (checkedItems.length === 0) return;
     navigationApp.navigate('ConfirmInformationHouseTemplate');
 
     const detailedCheckedItems = checkedItems
@@ -160,12 +159,8 @@ const UltilitiesHouse: React.FC = () => {
         <CustomButton
           title="Tiếp tục"
           onPress={handleContinuePress}
-          colors={
-            checkedItems.length > 0
-              ? ['#53A6A8', '#3C9597', '#1F7F81']
-              : ['#d3d3d3', '#d3d3d3', '#d3d3d3']
-          }
-          disabled={checkedItems.length === 0}
+          colors={['#53A6A8', '#3C9597', '#1F7F81']}
+          disabled={false}
           loading={loading}
         />
       </View>
