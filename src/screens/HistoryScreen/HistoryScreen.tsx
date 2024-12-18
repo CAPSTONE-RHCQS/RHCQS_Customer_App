@@ -6,6 +6,7 @@ import {
   StatusBar,
   TouchableOpacity,
   BackHandler,
+  ActivityIndicator,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBar from '../../components/Appbar';
@@ -21,16 +22,20 @@ import {FONTFAMILY} from '../../theme/theme';
 const HistoryScreen: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
   const [projectHistory, setProjectHistory] = useState<ProjectHistory[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useFocusEffect(
     React.useCallback(() => {
       const fetchProfile = async () => {
         try {
+          setIsLoading(true);
           const profile = await getProfile();
           const projects = await getProjectByEmail(profile.Email);
           setProjectHistory(projects);
         } catch (error) {
           console.error('Failed to fetch profile:', error);
+        } finally {
+          setIsLoading(false);
         }
       };
       fetchProfile();
@@ -91,7 +96,11 @@ const HistoryScreen: React.FC = () => {
       <AppBar nameScreen="Danh sách dự án" onBackPress={handleBackToHome} />
       <ScrollView>
         <View style={styles.content}>
-          {projectHistory.length === 0 ? (
+          {isLoading ? (
+            <View style={styles.emptyContainer}>
+              <ActivityIndicator size="large" color="#3BC0C2FF" />
+            </View>
+          ) : projectHistory.length === 0 ? (
             <View style={styles.emptyContainer}>
               <Text style={styles.emptyText}>Bạn chưa có dự án nào !</Text>
               <TouchableOpacity

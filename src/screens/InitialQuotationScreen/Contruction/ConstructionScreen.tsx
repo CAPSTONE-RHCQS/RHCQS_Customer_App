@@ -62,20 +62,26 @@ const ConstructionScreen: React.FC = () => {
 
     setCheckedItems(autoCheckedItems);
 
-    const updatedTotalPrice = autoCheckedItems.reduce((acc: number, id: string) => {
-      const detail = detailConstructionData.find(
-        (detail: any) => detail.id === id,
-      );
-      return acc + (detail ? detail.totalPrice : 0);
-    }, 0);
+    const updatedTotalPrice = autoCheckedItems.reduce(
+      (acc: number, id: string) => {
+        const detail = detailConstructionData.find(
+          (detail: any) => detail.id === id,
+        );
+        return acc + (detail ? detail.totalPrice : 0);
+      },
+      0,
+    );
     setTotalPrice(updatedTotalPrice);
 
-    const updatedTotalArea = autoCheckedItems.reduce((acc: number, id: string) => {
-      const detail = detailConstructionData.find(
-        (detail: any) => detail.id === id,
-      );
-      return acc + (detail ? parseFloat(detail.areaBuilding) : 0);
-    }, 0);
+    const updatedTotalArea = autoCheckedItems.reduce(
+      (acc: number, id: string) => {
+        const detail = detailConstructionData.find(
+          (detail: any) => detail.id === id,
+        );
+        return acc + (detail ? parseFloat(detail.areaBuilding) : 0);
+      },
+      0,
+    );
     setTotalArea(updatedTotalArea);
   }, [detailConstructionData]);
 
@@ -103,12 +109,15 @@ const ConstructionScreen: React.FC = () => {
       }, 0);
       setTotalPrice(updatedTotalPrice);
 
-      const updateArea = newCheckedItems.reduce((acc: number, itemId: string) => {
-        const detail = detailConstructionData.find(
-          (detail: any) => detail.id === itemId,
-        );
-        return acc + (detail ? parseFloat(detail.areaBuilding) : 0);
-      }, 0);
+      const updateArea = newCheckedItems.reduce(
+        (acc: number, itemId: string) => {
+          const detail = detailConstructionData.find(
+            (detail: any) => detail.id === itemId,
+          );
+          return acc + (detail ? parseFloat(detail.areaBuilding) : 0);
+        },
+        0,
+      );
       setTotalArea(updateArea);
 
       if (isChecked) {
@@ -243,7 +252,7 @@ const ConstructionScreen: React.FC = () => {
         <View style={styles.separator}></View>
         <View style={styles.selectedPackagesContainer}>
           <View style={styles.modalTitleContainer}>
-            <Text style={styles.modalTitlePackage}>Gói xây dựng</Text>
+            <Text style={styles.modalTitlePackage}></Text>
           </View>
 
           <View style={styles.selectedPackages}>
@@ -265,7 +274,9 @@ const ConstructionScreen: React.FC = () => {
         <View style={styles.totalPriceContainer}>
           <View style={styles.areaContainer}>
             <Text style={styles.totalPriceText}>DTXD dự tính: </Text>
-            <Text style={styles.totalArea}>{totalArea.toLocaleString()} m²</Text>
+            <Text style={styles.totalArea}>
+              {totalArea.toLocaleString()} m²
+            </Text>
           </View>
           <View style={styles.priceContainer}>
             <Text style={styles.totalPriceText}>Tổng tiền: </Text>
@@ -423,7 +434,7 @@ const styles = StyleSheet.create({
   },
   priceContainer: {
     flexDirection: 'row',
-    alignItems: 'center', 
+    alignItems: 'center',
   },
   totalPriceText: {
     fontFamily: FONTFAMILY.montserat_semibold,

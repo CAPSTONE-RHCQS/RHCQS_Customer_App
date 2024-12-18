@@ -286,6 +286,7 @@ const styles = StyleSheet.create({
   descriptionText: {
     fontFamily: FONTFAMILY.montserat_medium,
     marginTop: 10,
+    color: 'black',
   },
   buttonContainer: {
     justifyContent: 'flex-end',

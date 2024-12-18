@@ -56,6 +56,7 @@ const VersionDetail: React.FC = () => {
     const fetchTracking = async () => {
       try {
         const response = await getTracking(projectId);
+
         setResponseStatus(response);
       } catch (error) {
         console.error('Error fetching tracking data:', error);

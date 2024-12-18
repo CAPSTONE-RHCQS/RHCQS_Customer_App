@@ -285,6 +285,15 @@ const UltilitiesScreen: React.FC = () => {
     );
   };
 
+  const hasOnlyNonZeroPrice = () => {
+    return checkedItems.every(id => {
+      const detail = detailUltilitiesData.find(
+        (detail: any) => detail.id === id,
+      );
+      return detail && detail.totalPrice > 0;
+    });
+  };
+
   return (
     <View style={styles.container}>
       <AppBar nameScreen="Tính chi phí xây dựng" onBackPress={handleBack} />
@@ -315,7 +324,7 @@ const UltilitiesScreen: React.FC = () => {
             </Text>
           </View>
           <View style={styles.rightPriceContainer}>
-            <Text style={styles.totalPriceText}>Khuyễn mãi: </Text>
+            <Text style={styles.totalPriceText}>Khuyến mãi: </Text>
             <Text style={styles.totalPrice}>
               {isNaN(discountAmount) ? '0' : discountAmount.toLocaleString()}{' '}
               VND
@@ -333,8 +342,12 @@ const UltilitiesScreen: React.FC = () => {
         <CustomButton
           title="Tiếp tục"
           onPress={handleContinuePress}
-          colors={['#53A6A8', '#3C9597', '#1F7F81']}
-          disabled={false}
+          colors={
+            !hasOnlyNonZeroPrice()
+              ? ['#A9A9A9', '#A9A9A9', '#A9A9A9']
+              : ['#53A6A8', '#3C9597', '#1F7F81']
+          }
+          disabled={!hasOnlyNonZeroPrice()}
           loading={loading}
         />
       </View>
@@ -398,7 +411,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginHorizontal: 20,
     marginBottom: 20,
-
   },
   rowContainer: {
     marginTop: 10,

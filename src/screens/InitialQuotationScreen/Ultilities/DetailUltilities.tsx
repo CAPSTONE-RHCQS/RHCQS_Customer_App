@@ -258,6 +258,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: FONTFAMILY.montserat_medium,
+    color: 'black',
   },
   titleDescription: {
     fontFamily: FONTFAMILY.montserat_bold,
@@ -268,6 +269,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     marginRight: 10,
+    color: 'black',
   },
   totalPrice: {
     fontFamily: FONTFAMILY.montserat_semibold,
@@ -279,6 +281,7 @@ const styles = StyleSheet.create({
   descriptionText: {
     fontFamily: FONTFAMILY.montserat_medium,
     marginTop: 10,
+    color: 'black',
   },
   buttonContainer: {
     justifyContent: 'flex-end',

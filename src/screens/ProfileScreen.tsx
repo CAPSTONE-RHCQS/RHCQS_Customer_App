@@ -10,7 +10,11 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import {AuthContext} from '../context/AuthContext';
 import storage from '../utils/storage';
-import {getProfile, updateImageProfile, updateProfile} from '../api/Account/Account';
+import {
+  getProfile,
+  updateImageProfile,
+  updateProfile,
+} from '../api/Account/Account';
 import {height} from '../utils/Dimensions';
 import {FONTFAMILY} from '../theme/theme';
 import InputField from '../components/InputField';
@@ -191,7 +195,9 @@ const ProfileScreen: React.FC = () => {
       </View>
 
       {/* Dialog xác nhận đăng xuất */}
-      <Dialog.Container visible={showLogoutDialog}>
+      <Dialog.Container
+        contentStyle={styles.dialogContainer}
+        visible={showLogoutDialog}>
         <Dialog.Title style={styles.dialogTitle}>
           Xác nhận đăng xuất
         </Dialog.Title>
@@ -305,6 +311,9 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.montserat_medium,
     color: 'green',
     fontSize: 18,
+  },
+  dialogContainer: {
+    backgroundColor: 'white',
   },
   profileNameInput: {
     fontSize: 24,

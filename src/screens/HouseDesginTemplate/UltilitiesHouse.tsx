@@ -19,7 +19,11 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {pushUltilities} from '../../redux/actions/Ultilities/UltilitiesAction';
 import {DetailUltilitiesSelector} from '../../redux/selectors/UltilitiesSelector/DetailUltilitiesSelector/DetailUltilitiesSelector';
 import {useFocusEffect} from '@react-navigation/native';
-import {selectTotalRough} from '../../redux/selectors/HouseTemplate/SubTemplateSelector';
+import {selectTotalPrice} from '../../redux/selectors/HouseTemplate/SubTemplateSelector';
+import {
+  resetDataDetailUltilities,
+  resetDataUltilities,
+} from '../../redux/actions/reset/resetData';
 
 const UltilitiesHouse: React.FC = () => {
   const navigationApp = useNavigation<AppStackNavigationProp>();
@@ -27,11 +31,11 @@ const UltilitiesHouse: React.FC = () => {
 
   const detailUltilitiesData = useSelector(DetailUltilitiesSelector);
   const packageData = useSelector(PackageSelector);
-  const totalRough = useSelector(selectTotalRough);
+  const totalPriceFianl = useSelector(selectTotalPrice);
 
   const [checkedItems, setCheckedItems] = useState<string[]>([]);
   const [ultilities, setUltilities] = useState<UltilitiesType[]>([]);
-  const [totalPrice, setTotalPrice] = useState<number>(totalRough);
+  const [totalPrice, setTotalPrice] = useState<number>(totalPriceFianl);
   const [loading, setLoading] = useState(false);
   const fetchUltilities = async () => {
     const selectedCompleteType = packageData.selectedCompleteType;
@@ -46,7 +50,7 @@ const UltilitiesHouse: React.FC = () => {
     React.useCallback(() => {
       fetchUltilities();
       const calculateTotalPrice = () => {
-        let newTotalPrice = totalRough;
+        let newTotalPrice = totalPriceFianl;
         checkedItems.forEach(id => {
           const detail = detailUltilitiesData.find(
             (detail: any) => detail.id === id,
@@ -60,6 +64,26 @@ const UltilitiesHouse: React.FC = () => {
       calculateTotalPrice();
     }, [packageData, checkedItems, detailUltilitiesData]),
   );
+
+  useEffect(() => {
+    const initialCheckedItems = detailUltilitiesData
+      .filter((detail: any) => detail.totalPrice > 0)
+      .map((detail: any) => detail.id);
+
+    setCheckedItems(initialCheckedItems);
+
+    const initialTotalPrice = initialCheckedItems.reduce(
+      (total: number, id: string) => {
+        const detail = detailUltilitiesData.find(
+          (detail: any) => detail.id === id,
+        );
+        return total + (detail ? detail.totalPrice : 0);
+      },
+      totalPriceFianl,
+    );
+
+    setTotalPrice(initialTotalPrice);
+  }, [detailUltilitiesData]);
 
   const handleDetailPress = (Id: string) => {
     navigationApp.navigate('DetailUltilitiesHouse', {Id});
@@ -105,6 +129,13 @@ const UltilitiesHouse: React.FC = () => {
     setLoading(false);
   };
 
+  const handleBack = () => {
+    AsyncStorage.removeItem('constructionArea');
+    dispatch(resetDataDetailUltilities());
+    dispatch(resetDataUltilities());
+    navigationApp.goBack();
+  };
+
   const formatPrice = (price: number): string => {
     return price.toLocaleString();
   };
@@ -142,9 +173,27 @@ const UltilitiesHouse: React.FC = () => {
     });
   };
 
+  const hasOnlyNonZeroPrice = () => {
+    return checkedItems.every(id => {
+      const detail = detailUltilitiesData.find(
+        (detail: any) => detail.id === id,
+      );
+      return detail && detail.totalPrice > 0;
+    });
+  };
+
+  const calculateUltilitiesTotal = () => {
+    return checkedItems.reduce((total, id) => {
+      const detail = detailUltilitiesData.find(
+        (detail: any) => detail.id === id,
+      );
+      return total + (detail ? detail.totalPrice : 0);
+    }, 0);
+  };
+
   return (
     <View style={styles.container}>
-      <AppBar nameScreen="Tính chi phí xây dựng" />
+      <AppBar nameScreen="Tính chi phí xây dựng" onBackPress={handleBack} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <Text style={styles.titleText}>Tùy chọn & tiện ích</Text>
 
@@ -153,14 +202,26 @@ const UltilitiesHouse: React.FC = () => {
       <View style={styles.buttonContainer}>
         <Separator />
         <View style={styles.totalPriceContainer}>
+          <Text style={styles.totalPriceText}>Tổng tiện ích: </Text>
+          <Text style={styles.totalPrice}>
+            {formatPrice(calculateUltilitiesTotal())} VNĐ
+          </Text>
+        </View>
+        <View style={styles.totalPriceContainer}>
           <Text style={styles.totalPriceText}>Tổng tiền: </Text>
-          <Text style={styles.totalPrice}>{formatPrice(totalPrice)} VNĐ</Text>
+          <Text style={styles.totalPriceFinal}>
+            {formatPrice(totalPrice)} VNĐ
+          </Text>
         </View>
         <CustomButton
           title="Tiếp tục"
           onPress={handleContinuePress}
-          colors={['#53A6A8', '#3C9597', '#1F7F81']}
-          disabled={false}
+          colors={
+            !hasOnlyNonZeroPrice()
+              ? ['#A9A9A9', '#A9A9A9', '#A9A9A9']
+              : ['#53A6A8', '#3C9597', '#1F7F81']
+          }
+          disabled={!hasOnlyNonZeroPrice()}
           loading={loading}
         />
       </View>
@@ -201,6 +262,13 @@ const styles = StyleSheet.create({
     fontFamily: FONTFAMILY.montserat_semibold,
     fontSize: 16,
     color: COLORS.primary,
+    textAlign: 'right',
+    marginBottom: 10,
+  },
+  totalPriceFinal: {
+    fontFamily: FONTFAMILY.montserat_semibold,
+    fontSize: 16,
+    color: 'red',
     textAlign: 'right',
     marginBottom: 10,
   },

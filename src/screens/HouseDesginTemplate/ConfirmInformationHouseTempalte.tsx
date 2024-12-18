@@ -1,4 +1,4 @@
-import {View, StyleSheet, Animated} from 'react-native';
+import {View, StyleSheet, Animated, Text} from 'react-native';
 import React, {useState, useCallback, useEffect, useRef} from 'react';
 import AppBar from '../../components/Appbar';
 import InputField from '../../components/InputField';
@@ -32,6 +32,7 @@ const ConfirmInformationHouseTemplate: React.FC = () => {
   const [customerId, setCustomerId] = useState('');
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
+  const [addressError, setAddressError] = useState('');
 
   const ultilitiesData = useSelector(UltilitiesSelector);
   const packageData = useSelector(PackageSelector);
@@ -53,16 +54,22 @@ const ConfirmInformationHouseTemplate: React.FC = () => {
   }, []);
 
   const handleSubmit = useCallback(async () => {
+    if (!address) {
+      setAddressError('Địa chỉ không được để trống');
+      return;
+    }
+    setAddressError('');
     setLoading(true);
 
-    const quotationUtilitiesRequest = ultilitiesData.checkedItems.length > 0 ? ultilitiesData.checkedItems.map(
-      (item: any) => ({
-        utilitiesItemId: item.checkedItems ?? item.id,
-        name: item.checkedItemName ?? item.name,
-        price: item.totalPrice,
-        quantity: item.area === '' ? null : item.area,
-      }),
-    ) : null;
+    const quotationUtilitiesRequest =
+      ultilitiesData.checkedItems.length > 0
+        ? ultilitiesData.checkedItems.map((item: any) => ({
+            utilitiesItemId: item.checkedItems ?? item.id,
+            name: item.checkedItemName ?? item.name,
+            price: item.totalPrice,
+            quantity: item.area === '' ? null : item.area,
+          }))
+        : null;
 
     const projectData = {
       customerName: name,
@@ -142,10 +149,13 @@ const ConfirmInformationHouseTemplate: React.FC = () => {
           onChangeText={setAddress}
           placeholder="Nhập địa chỉ"
         />
+        {addressError ? (
+          <Text style={styles.errorText}>{addressError}</Text>
+        ) : null}
       </View>
       <View style={styles.buttonContainer}>
         <CustomButton
-          title="Xác nhận thông tin"
+          title="Yêu cầu báo giá"
           onPress={handleSubmit}
           colors={['#53A6A8', '#3C9597', '#1F7F81']}
           loading={loading}
@@ -188,6 +198,7 @@ const styles = StyleSheet.create({
   dialogContainer: {
     borderRadius: 12,
     marginHorizontal: 20,
+    backgroundColor: 'white',
   },
   dialogTitle: {
     color: '#1F7F81',
@@ -208,6 +219,12 @@ const styles = StyleSheet.create({
     color: '#1F7F81',
     fontFamily: FONTFAMILY.montserat_semibold,
     textTransform: 'none',
+  },
+  errorText: {
+    fontFamily: FONTFAMILY.montserat_bold,
+    color: 'red',
+    fontSize: 14,
+    marginTop: 5,
   },
 });
 

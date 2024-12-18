@@ -62,8 +62,8 @@ const TrackingScreen: React.FC = () => {
 
   const fetchData = async () => {
     const data = await getTrackingPaymentContruction(projectId);
-
-    setTrackingPayment(Array.isArray(data) ? data : [data]);
+    const sortedData = Array.isArray(data) ? data.sort((a, b) => new Date(a.InsDate).getTime() - new Date(b.InsDate).getTime()) : [data];
+    setTrackingPayment(sortedData);
   };
 
   const fetchProject = async () => {
@@ -78,6 +78,7 @@ const TrackingScreen: React.FC = () => {
   const fetchTracking = async () => {
     try {
       const trackingData: TrackingType = await getTracking(projectId);
+
       setTracking(trackingData);
     } catch (error) {
       console.error('Error fetching tracking data:', error);
@@ -159,11 +160,7 @@ const TrackingScreen: React.FC = () => {
   useFocusEffect(
     React.useCallback(() => {
       const loadData = async () => {
-        await Promise.all([
-          fetchProject(),
-          fetchTracking(),
-          fetchData()
-        ]);
+        await Promise.all([fetchProject(), fetchTracking(), fetchData()]);
       };
 
       loadData();
@@ -247,23 +244,25 @@ const TrackingScreen: React.FC = () => {
         <View>
           <View style={styles.content}>
             {renderTrackingItems()}
-            <TrackingBatchPayment
-              title="Đợt thanh toán"
-              onPress={(id: string) => {
-                const selectedItem = subItems.find(item => item.id === id);
-                if (
-                  selectedItem &&
-                  selectedItem.subStatus !== 'Paid' &&
-                  selectedItem.subStatus !== 'Cancel'
-                ) {
-                  navigationApp.navigate('UploadBill', {
-                    projectId: projectId,
-                    paymentId: id,
-                  });
-                }
-              }}
-              subItems={subItems}
-            />
+            {(tracking?.ContractDesignResponse || tracking?.ContractProcessingResponse) && (
+              <TrackingBatchPayment
+                title="Đợt thanh toán"
+                onPress={(id: string) => {
+                  const selectedItem = subItems.find(item => item.id === id);
+                  if (
+                    selectedItem &&
+                    selectedItem.subStatus !== 'Paid' &&
+                    selectedItem.subStatus !== 'Cancel'
+                  ) {
+                    navigationApp.navigate('UploadBill', {
+                      projectId: projectId,
+                      paymentId: id,
+                    });
+                  }
+                }}
+                subItems={subItems}
+              />
+            )}
           </View>
         </View>
 
@@ -323,7 +322,7 @@ const TrackingScreen: React.FC = () => {
             onPress={confirmCancelInitialQuotation}
             style={[
               styles.dialogButton,
-              {color: cancelReason.trim() ? '#1F7F81' : '#ccc'},
+              {color: cancelReason.trim() ? 'red' : '#ccc'},
             ]}
             disabled={!cancelReason.trim()}
           />
@@ -414,6 +413,7 @@ const styles = StyleSheet.create({
   dialogContainer: {
     borderRadius: 12,
     marginHorizontal: 20,
+    backgroundColor: 'white',
   },
   dialogTitle: {
     color: '#1F7F81',

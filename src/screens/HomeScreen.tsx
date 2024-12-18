@@ -148,10 +148,6 @@ const HomeScreen: React.FC = ({}) => {
                     style={styles.chatIcon}
                   />
                 </TouchableOpacity>
-                <Image
-                  source={require('../assets/image/icon/notification_icon.png')}
-                  style={styles.notificationIcon}
-                />
               </View>
             </View>
           </LinearGradient>

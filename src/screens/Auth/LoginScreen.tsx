@@ -29,7 +29,10 @@ const LoginScreen: React.FC = () => {
   const handleLogin = async () => {
     setIsButtonDisabled(true);
     try {
-      await login(email, password);
+      const trimmedEmail = email.trim().replace(/\s+/g, '');
+      const trimmedPassword = password.trim().replace(/\s+/g, '');
+      
+      await login(trimmedEmail, trimmedPassword);
       setSuccessMessage('Đăng nhập thành công!');
     } catch (error: any) {
       setErrorMessage(error.message);

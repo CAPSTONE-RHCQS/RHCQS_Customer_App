@@ -27,6 +27,7 @@ const HouseResidentialArea: React.FC = () => {
   const [currentTemplate, setCurrentTemplate] = useState<{
     id: string;
     url: string;
+    area: number;
     totalRough: number;
   } | null>(null);
 
@@ -42,6 +43,7 @@ const HouseResidentialArea: React.FC = () => {
             id: data.SubTemplates[0].Id,
             url: data.SubTemplates[0].Url,
             totalRough: data.SubTemplates[0].TotalRough,
+            area: data.SubTemplates[0].BuildingArea,
           });
         }
       } catch (error) {
@@ -59,6 +61,7 @@ const HouseResidentialArea: React.FC = () => {
       dispatch(
         pushSubTemplate({
           subTemplateId: currentTemplate.id,
+          area: currentTemplate.area,
           totalRough: currentTemplate.totalRough,
         }),
       );
@@ -70,6 +73,7 @@ const HouseResidentialArea: React.FC = () => {
       id: template.Id,
       url: template.Url,
       totalRough: template.TotalRough,
+      area: template.BuildingArea,
     });
   };
 

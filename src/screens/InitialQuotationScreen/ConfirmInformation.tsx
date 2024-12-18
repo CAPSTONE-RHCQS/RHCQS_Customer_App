@@ -314,6 +314,7 @@ const styles = StyleSheet.create({
   dialogContainer: {
     borderRadius: 12,
     marginHorizontal: 20,
+    backgroundColor: 'white'
   },
   dialogTitle: {
     color: '#1F7F81',

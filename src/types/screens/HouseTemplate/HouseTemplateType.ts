@@ -53,6 +53,7 @@ export interface PackageHouse {
   ImgUrl: string
   Description: string
   InsDate: string
+  Price: number
 }
 
 export interface ExteriorsUrl {

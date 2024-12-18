@@ -34,7 +34,6 @@ const TrackingVersionDesign: React.FC = () => {
       const data: TrackingVersionDesignType[] = await getVersionDesignDetail(
         projectId,
       );
-      console.log('data', JSON.stringify (data, null ,2))
       const formattedData = data.map(item => ({
         title: item.Name,
         status: item.Status,

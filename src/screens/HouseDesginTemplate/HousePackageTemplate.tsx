@@ -7,15 +7,22 @@ import {
 } from '../../types/TypeScreen';
 import AppBar from '../../components/Appbar';
 import {getHouseTemplateById} from '../../api/HouseTemplate/HouseTemplate';
-import {FONTFAMILY} from '../../theme/theme';
+import {COLORS, FONTFAMILY} from '../../theme/theme';
 import CustomButton from '../../components/CustomButton';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {pushPackage} from '../../redux/actions/Package/PackageAction';
+import {
+  selectArea,
+  selectTotalRough,
+} from '../../redux/selectors/HouseTemplate/SubTemplateSelector';
+import {pushSubTemplate} from '../../redux/actions/HouseTemplate/SubTemplate';
 
 const HousePackageTemplate: React.FC = () => {
   const route =
     useRoute<RouteProp<AppStackParamList, 'HousePackageTemplate'>>();
   const {houseId} = route.params;
+  const totalArea = useSelector(selectArea);
+  const totalRough = useSelector(selectTotalRough);
   const dispatch = useDispatch();
   const navigationApp = useNavigation<AppStackNavigationProp>();
   const [packageName, setPackageName] = useState<string>('');
@@ -26,6 +33,8 @@ const HousePackageTemplate: React.FC = () => {
     null,
   );
   const [loading, setLoading] = useState(true);
+  const [totalPrice, setTotalPrice] = useState<number>(0);
+  const [packagePrice, setPackagePrice] = useState<number>(0);
 
   useEffect(() => {
     const fetchHouseTemplate = async () => {
@@ -37,6 +46,8 @@ const HousePackageTemplate: React.FC = () => {
           setPackageName(data.PackageHouses[0].PackageName);
           setDescription(data.PackageHouses[0].Description);
           setSelectedPackageId(data.PackageHouses[0].PackageId);
+          setPackagePrice(data.PackageHouses[0].Price);
+          setTotalPrice(totalArea * data.PackageHouses[0].Price);
         }
       } catch (error) {
         console.error('Error fetching house template:', error);
@@ -45,17 +56,23 @@ const HousePackageTemplate: React.FC = () => {
       }
     };
     fetchHouseTemplate();
-  }, [houseId]);
+  }, [houseId, totalArea]);
 
   const handleContinue = () => {
     if (selectedPackageId) {
       navigationApp.navigate('UltilitiesHouse');
+      const totalCost = totalRough + totalPrice;
       dispatch(
         pushPackage({
           selectedRoughType: undefined,
           completePackageName: packageName,
           selectedComplete: selectedPackageId,
           selectedCompleteType: 'FINISHED',
+        }),
+      );
+      dispatch(
+        pushSubTemplate({
+          totalPrice: totalCost,
         }),
       );
     }
@@ -87,6 +104,8 @@ const HousePackageTemplate: React.FC = () => {
                 setCurrentImage(pkg.ImgUrl);
                 setPackageName(pkg.PackageName);
                 setSelectedPackageId(pkg.PackageId);
+                setPackagePrice(pkg.Price);
+                setTotalPrice(totalArea * pkg.Price);
               }}>
               <Text
                 style={[
@@ -98,10 +117,31 @@ const HousePackageTemplate: React.FC = () => {
             </TouchableOpacity>
           ))}
           <View style={styles.packageNoteContainer}>
+            <Text style={styles.packagePriceText}>
+              Giá gói hoàn thiện:{' '}
+              <Text style={styles.packagePrice}>
+                {packagePrice.toLocaleString()} VNĐ
+              </Text>
+            </Text>
+            <Text style={styles.packagePriceText}>
+              Diện tích xây dựng mãu đã chọn:{' '}
+              <Text style={styles.packagePrice}>{totalArea} m2</Text>
+            </Text>
+            <Text style={styles.packageNoteContent}>
+              Công thức tính tổng tiền: Diện tích x Giá gói
+            </Text>
             <Text style={styles.packageNoteTitle}>Chú thích</Text>
             <Text style={styles.packageNote}>{description}</Text>
           </View>
         </View>
+      </View>
+      <View style={styles.totalPriceContainer}>
+        <Text style={styles.totalPriceText}>Tổng tiền thô: </Text>
+        <Text style={styles.totalPrice}>{totalRough.toLocaleString()} VNĐ</Text>
+      </View>
+      <View style={styles.totalPriceContainer}>
+        <Text style={styles.totalPriceText}>Tổng tiền hoàn thiện: </Text>
+        <Text style={styles.totalPrice}>{totalPrice.toLocaleString()} VNĐ</Text>
       </View>
       <View style={styles.buttonContainer}>
         <CustomButton
@@ -135,7 +175,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   packageNoteContainer: {
-    marginTop: 40,
+    marginTop: 10,
   },
   packageNoteTitle: {
     fontSize: 16,
@@ -148,6 +188,12 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontFamily: FONTFAMILY.montserat_regular,
     color: 'black',
+  },
+  packageNoteContent: {
+    marginBottom: 5,
+    fontSize: 12,
+    fontFamily: FONTFAMILY.montserat_bold,
+    color: 'red',
   },
   imageContainer: {
     width: '100%',
@@ -189,6 +235,33 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     marginHorizontal: 20,
     marginBottom: 20,
+  },
+  totalPriceContainer: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    marginHorizontal: 20,
+    marginBottom: 10,
+  },
+  totalPriceText: {
+    fontFamily: FONTFAMILY.montserat_semibold,
+    fontSize: 16,
+    color: 'black',
+    textAlign: 'right',
+  },
+  totalPrice: {
+    fontFamily: FONTFAMILY.montserat_semibold,
+    fontSize: 16,
+    color: COLORS.primary,
+    textAlign: 'right',
+  },
+  packagePriceText: {
+    fontSize: 12,
+    fontFamily: FONTFAMILY.montserat_bold,
+    color: 'black',
+    marginBottom: 5,
+  },
+  packagePrice: {
+    color: COLORS.primary,
   },
 });
 
