@@ -317,22 +317,22 @@ const UltilitiesScreen: React.FC = () => {
       </ScrollView>
       <View style={styles.buttonContainer}>
         <View style={styles.rowContainer}>
-          <View style={styles.leftPriceContainer}>
+          <View style={styles.rightPriceContainer}>
             <Text style={styles.totalPriceText}>Tổng tiện ích: </Text>
             <Text style={styles.totalPrice}>
               {isNaN(totalPrice) ? '0' : totalPrice.toLocaleString()} VND
             </Text>
           </View>
-          <View style={styles.rightPriceContainer}>
+        </View>
+
+        <View style={styles.totalPriceContainer}>
+          <View style={styles.leftPriceContainer}>
             <Text style={styles.totalPriceText}>Khuyến mãi: </Text>
             <Text style={styles.totalPrice}>
               {isNaN(discountAmount) ? '0' : discountAmount.toLocaleString()}{' '}
               VND
             </Text>
           </View>
-        </View>
-
-        <View style={styles.totalPriceContainer}>
           <Text style={styles.totalPriceText}>Tổng tiền: </Text>
           <Text style={styles.totalPriceFinal}>
             {isNaN(finalTotalPrice) ? '0' : finalTotalPrice.toLocaleString()}{' '}
