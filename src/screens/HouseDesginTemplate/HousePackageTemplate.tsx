@@ -128,7 +128,8 @@ const HousePackageTemplate: React.FC = () => {
               <Text style={styles.packagePrice}>{totalArea} m2</Text>
             </Text>
             <Text style={styles.packageNoteContent}>
-              Công thức tính tổng tiền: Diện tích x Giá gói
+              Công thức tính tổng tiền hoàn thiện:{' '}
+              <Text style={{color: 'red'}}>Diện tích x Giá gói</Text>
             </Text>
             <Text style={styles.packageNoteTitle}>Chú thích</Text>
             <Text style={styles.packageNote}>{description}</Text>
@@ -193,7 +194,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     fontSize: 12,
     fontFamily: FONTFAMILY.montserat_bold,
-    color: 'red',
+    color: 'black',
   },
   imageContainer: {
     width: '100%',
