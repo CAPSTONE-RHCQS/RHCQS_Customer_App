@@ -157,12 +157,17 @@ const HouseResidentialArea: React.FC = () => {
       </ScrollView>
       <View style={styles.buttonContainer}>
         {currentTemplate && (
-          <Text style={styles.totalRough}>
-            Tổng tiền:{' '}
-            <Text style={styles.totalRoughPrimary}>
-              {currentTemplate.totalRough.toLocaleString('vi-VN')}đ
+          <View style={styles.totalContainer}>
+            <Text style={styles.totalRough}>
+              DTXD: <Text style={styles.areaText}>{currentTemplate.area} m2</Text>
             </Text>
-          </Text>
+            <Text style={styles.totalRough}>
+              Tổng tiền:{' '}
+              <Text style={styles.totalRoughPrimary}>
+                {currentTemplate.totalRough.toLocaleString('vi-VN')}đ
+              </Text>
+            </Text>
+          </View>
         )}
         <CustomButton
           title="Tiếp tục"
@@ -293,6 +298,16 @@ const styles = StyleSheet.create({
   totalRoughPrimary: {
     color: '#53A6A8',
     fontFamily: FONTFAMILY.montserat_semibold,
+  },
+  totalContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  areaText: {
+    color: 'red',
+    fontFamily: FONTFAMILY.montserat_bold,
   },
 });
 

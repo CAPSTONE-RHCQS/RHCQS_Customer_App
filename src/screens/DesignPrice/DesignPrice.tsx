@@ -11,6 +11,7 @@ const DesignPrice: React.FC = () => {
   useEffect(() => {
     const fetchDesignPrices = async () => {
       const prices = await getDesignPrice();
+      prices.sort((a, b) => a.AreaFrom - b.AreaFrom);
       setDesignPrices(prices);
     };
     fetchDesignPrices();
