@@ -7,6 +7,7 @@ import {
   Pressable,
   TouchableWithoutFeedback,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import Dialog from 'react-native-dialog';
 import AppBar from '../../components/Appbar';
@@ -229,7 +230,7 @@ const TrackingScreen: React.FC = () => {
 
   return (
     <TouchableWithoutFeedback onPress={closeModal}>
-      <View style={styles.container}>
+      <ScrollView style={styles.container}>
         <AppBar
           nameScreen="Lịch sử báo giá sơ bộ"
           icon={require('../../assets/image/icon/plus-icon.png')}
@@ -362,7 +363,7 @@ const TrackingScreen: React.FC = () => {
             style={styles.dialogButton}
           />
         </Dialog.Container>
-      </View>
+      </ScrollView>
     </TouchableWithoutFeedback>
   );
 };
