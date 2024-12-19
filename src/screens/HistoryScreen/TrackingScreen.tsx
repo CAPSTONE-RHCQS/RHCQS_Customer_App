@@ -62,6 +62,7 @@ const TrackingScreen: React.FC = () => {
 
   const fetchData = async () => {
     const data = await getTrackingPaymentContruction(projectId);
+    console.log('data', JSON.stringify(data, null, 2));
     const sortedData = Array.isArray(data) ? data.sort((a, b) => new Date(a.InsDate).getTime() - new Date(b.InsDate).getTime()) : [data];
     setTrackingPayment(sortedData);
   };
@@ -145,7 +146,7 @@ const TrackingScreen: React.FC = () => {
     id: item.Id,
     subTitle: insertLineBreak(item.Description, 20),
     price: formatPrice(item.TotalPrice) + ' VNĐ',
-    date: formatDate(item.InsDate),
+    date: item.Percents,
     subStatus: item.Status,
   }));
 

@@ -111,7 +111,7 @@ const TrackingBatchPayment: React.FC<TrackingBatchPaymentProps> = ({
                   ]}>
                   {getStatusText(item.subStatus)}
                 </Text>
-                <Text style={styles.subItemDate}>{item.date}</Text>
+                <Text style={styles.subItemDate}>{item.date}%</Text>
               </View>
             </TouchableOpacity>
           ))}
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     color: 'black',
     fontSize: 16,
     marginLeft: 10,
-    fontFamily: FONTFAMILY.montserat_regular,
+    fontFamily: FONTFAMILY.montserat_bold,
     textAlign: 'right',
   },
   subItemStatus: {
